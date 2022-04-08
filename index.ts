@@ -1,1 +1,1 @@
-export { YourWebComponent } from './src/your-webcomponent';
+export { ChannelSelector } from './src/channel-selector';

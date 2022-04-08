@@ -11,14 +11,14 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
-    "build": "tsc",
-    "prepare": "tsc && husky install",
+    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds --debug\"",
+    "build": "tsc && cp -R ./svgs/ ./dist/svgs",
+    "prepare": "yarn run build && husky install",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "circular": "madge --circular --extensions ts .",
-    "test": "tsc && yarn run lint && yarn run circular && wtr --coverage",
-    "test:watch": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
+    "test": "yarn run build && yarn run lint && yarn run circular && wtr --coverage",
+    "test:watch": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "types": "dist/index.d.ts",
   "dependencies": {
