@@ -1,6 +1,15 @@
-import { html, css, LitElement, TemplateResult, nothing } from 'lit';
+import {
+  html,
+  css,
+  LitElement,
+  TemplateResult,
+  nothing,
+  PropertyValues,
+} from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-
+// import { SharedResizeObserver } from '@internetarchive/shared-resize-observer';
+import { channelSelectorDropDown } from './style-dropdown';
+import { channelSelectorRadio } from './style-radio';
 import {
   channelTypes,
   iaButton,
@@ -31,12 +40,24 @@ export class ChannelSelector extends LitElement {
 
   @property({ attribute: true, type: Boolean, reflect: true }) samples = null;
 
-  @property({ type: String }) selected: channelTypes | '' = '';
+  @property({ type: String }) selected: channelTypes = channelTypes.ia;
 
   @property({ type: String, reflect: true }) displayStyle: displayStyle =
-    'dropdown'; // for now
+    'radio'; // for now
 
   @property({ type: Boolean }) dropdownOpen = false;
+
+  @property({ attribute: false }) sharedRO = undefined;
+
+  updated(changed: PropertyValues) {
+    if (changed.has('sharedRO')) {
+      if (changed.get('sharedRO') !== this.sharedRO) {
+        this.setupSharedResizeObserver();
+      }
+    }
+  }
+
+  setupSharedResizeObserver() {}
 
   emitChannelSelected(): void {
     this.dispatchEvent(
@@ -109,6 +130,7 @@ export class ChannelSelector extends LitElement {
       <li class=${selectedClass}>
         ${iaLink({
           samples: this.samples,
+          selected: this.selected === channelTypes.ia,
           onClick: () => this.webampClicked(),
         })}
       </li>
@@ -121,6 +143,7 @@ export class ChannelSelector extends LitElement {
       <li class=${selectedClass}>
         ${iaButton({
           samples: this.samples,
+          selected: this.selected === channelTypes.ia,
           onClick: () => this.webampClicked(),
         })}
       </li>
@@ -132,7 +155,10 @@ export class ChannelSelector extends LitElement {
       this.selected === channelTypes.continuous ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${continuousPlayButton({ onClick: () => this.iaContinuousClicked() })}
+        ${continuousPlayButton({
+          selected: this.selected === channelTypes.continuous,
+          onClick: () => this.iaContinuousClicked(),
+        })}
       </li>
     `;
   }
@@ -142,7 +168,10 @@ export class ChannelSelector extends LitElement {
       this.selected === channelTypes.spotify ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${spotifyButton({ onClick: () => this.spotifyClicked() })}
+        ${spotifyButton({
+          selected: this.selected === channelTypes.spotify,
+          onClick: () => this.spotifyClicked(),
+        })}
       </li>
     `;
   }
@@ -153,8 +182,9 @@ export class ChannelSelector extends LitElement {
     return html`
       <li class=${selectedClass}>
         ${webampLink({
-          onClick: () => this.webampClicked(),
           href: window.location.href,
+          selected: this.selected === channelTypes.webamp,
+          onClick: () => this.webampClicked(),
         })}
       </li>
     `;
@@ -165,7 +195,10 @@ export class ChannelSelector extends LitElement {
       this.selected === channelTypes.youtube ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${youtubeButton({ onClick: () => this.youtubeClicked() })}
+        ${youtubeButton({
+          selected: this.selected === channelTypes.youtube,
+          onClick: () => this.youtubeClicked(),
+        })}
       </li>
     `;
   }
@@ -208,16 +241,17 @@ export class ChannelSelector extends LitElement {
   render(): TemplateResult {
     const dropdownState =
       this.displayStyle === 'dropdown' && this.dropdownOpen ? '' : 'close';
-    console.log(
-      '**** RENDER, this.spotify, this.youtube',
-      this.spotify,
-      this.youtube
-    );
+    const playFromLabel =
+      this.displayStyle === 'radio'
+        ? html` <div id="selector-title"><h4>Play from:</h4></div>`
+        : nothing;
+
     return html`
-      <section class=${this.displayStyle}>
-        <div id="selector-title"><p>Play from:</p></div>
+      <section id=${this.displayStyle} class=${this.displayStyle}>
+        ${playFromLabel}
         <div>
           <button class="selected-option" @click=${() => this.toggleDropdown()}>
+            <span class="sr-only">Currently selcted: </span>
             ${this.selectedLabel}
           </button>
           <ul class=${dropdownState}>
@@ -232,62 +266,57 @@ export class ChannelSelector extends LitElement {
     `;
   }
 
-  static styles = css`
-    :host {
-      font-family: Arial, Helvetica, sans-serif;
-      display: block;
-      padding: 25px;
-      color: var(--channel-selector-text-color, #fff);
-    }
+  static styles = [
+    css`
+      :host {
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--channel-selector-text-color, #fff);
+      }
 
-    button {
-      background: none;
-      color: inherit;
-      border: none;
-      padding: 0;
-      font: inherit;
-      cursor: pointer;
-      outline: inherit;
-    }
+      button {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+      }
 
-    section,
-    ul,
-    li,
-    li > *,
-    .selected-option {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-flow: row wrap;
-    }
+      li:hover,
+      li.selected {
+        background-color: #fff;
+        color: #222;
+      }
 
-    ul,
-    li {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
+      ul,
+      li {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
 
-    li:hover {
-      pointer: cursor;
-      background-color: red;
-    }
+      #dropdown .close,
+      .sr-only {
+        width: 1px;
+        height: 1px;
+        padding: 0px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0px, 0px, 0px, 0px);
+        border: 0px;
+        display: block;
+      }
 
-    .selected-option:hover {
-      pointer: cursor;
-      background-color: rebeccapurple;
-    }
+      #radio .selected-option {
+        display: none;
+      }
 
-    li,
-    .selected-option {
-      height: 36px;
-      border: 1px dotted aliceblue;
-      width: 100%;
-    }
-
-    .close {
-      opacity: 0;
-    }
-  `;
+      .channel-img {
+        margin-right: 5px;
+      }
+    `,
+    channelSelectorDropDown,
+    channelSelectorRadio,
+  ];
 }
