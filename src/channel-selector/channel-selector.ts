@@ -299,6 +299,7 @@ export class ChannelSelector extends LitElement {
         justify-content: center;
         align-items: center;
         padding: 5px;
+        width: 100%;
       }
 
       li:hover,
@@ -333,6 +334,20 @@ export class ChannelSelector extends LitElement {
 
       #radio .selected-option {
         display: none;
+      }
+
+      li .ia.selected .channel-img,
+      li .ia:hover .channel-img {
+        filter: invert(1);
+      }
+
+      li .wa .channel-img {
+        filter: invert(1);
+      }
+
+      li .wa.selected .channel-img,
+      li .wa:hover .channel-img {
+        filter: unset;
       }
 
       .channel-img {

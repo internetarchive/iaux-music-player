@@ -9,20 +9,6 @@ export const channelSelectorRadio = css`
     align-items: center;
   }
 
-  #radio .ia.selected .channel-img,
-  #radio .ia:hover .channel-img {
-    filter: invert(1);
-  }
-
-  #radio .wa .channel-img {
-    filter: invert(1);
-  }
-
-  #radio .wa.selected .channel-img,
-  #radio .wa:hover .channel-img {
-    filter: unset;
-  }
-
   #radio #selector-title {
     margin-right: 5px;
   }
@@ -44,11 +30,13 @@ export const channelSelectorRadio = css`
   #radio li:first-child {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
+    padding-left: 2px;
   }
 
   #radio li:last-child {
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
+    padding-right: 10px;
   }
 
   #radio li:not(:last-child) {
