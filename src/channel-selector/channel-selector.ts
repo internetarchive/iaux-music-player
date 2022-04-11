@@ -269,8 +269,17 @@ export class ChannelSelector extends LitElement {
   static styles = [
     css`
       :host {
+        display: block;
         font-family: Arial, Helvetica, sans-serif;
         color: var(--channel-selector-text-color, #fff);
+      }
+
+      a:link,
+      a:visited,
+      a:hover,
+      a:active {
+        color: var(--channel-selector-text-color, #fff);
+        text-decoration: none;
       }
 
       button {
@@ -283,10 +292,22 @@ export class ChannelSelector extends LitElement {
         outline: inherit;
       }
 
+      li > *,
+      #dropdown .selected-option {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+      }
+
       li:hover,
       li.selected {
         background-color: #fff;
         color: #222;
+        cursor: pointer;
       }
 
       ul,
@@ -314,6 +335,10 @@ export class ChannelSelector extends LitElement {
 
       .channel-img {
         margin-right: 5px;
+      }
+
+      .channel-img img {
+        height: 20px;
       }
     `,
     channelSelectorDropDown,

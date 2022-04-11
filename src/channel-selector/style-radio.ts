@@ -9,6 +9,20 @@ export const channelSelectorRadio = css`
     align-items: center;
   }
 
+  #radio .ia.selected .channel-img,
+  #radio .ia:hover .channel-img {
+    filter: invert(1);
+  }
+
+  #radio .wa .channel-img {
+    filter: invert(1);
+  }
+
+  #radio .wa.selected .channel-img webamp,
+  #radio .wa:hover .channel-img {
+    filter: unset;
+  }
+
   #radio #selector-title {
     margin-right: 5px;
   }
@@ -27,12 +41,6 @@ export const channelSelectorRadio = css`
     align-items: center;
   }
 
-  #radio li:hover,
-  #radio li.selected {
-    background-color: #fff;
-    color: #222;
-  }
-
   #radio li:first-child {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
@@ -47,13 +55,15 @@ export const channelSelectorRadio = css`
     border-right: 1px solid;
   }
 
-  #radio li > * {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
+  @media (max-width: 600px) {
+    #radio .channel-name {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1200px) {
+    #radio .channel-name {
+      display: none;
+    }
   }
 `;
