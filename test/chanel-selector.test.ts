@@ -1,7 +1,7 @@
 import { html, fixture, expect } from '@open-wc/testing';
 
-import type { ChannelSelector } from '../src/channel-selector';
-import '../src/channel-selector';
+import type { ChannelSelector } from '../src/channel-selector/channel-selector';
+import '../src/channel-selector/channel-selector';
 
 describe('ChannelSelector', () => {
   it('has a default title "Hey there" and counter 5', async () => {

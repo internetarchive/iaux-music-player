@@ -1,1 +1,1 @@
-export { ChannelSelector } from './src/channel-selector';
+export { ChannelSelector } from './src/channel-selector/channel-selector';

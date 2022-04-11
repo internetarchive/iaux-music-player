@@ -18,7 +18,7 @@ export const channelSelectorRadio = css`
     filter: invert(1);
   }
 
-  #radio .wa.selected .channel-img webamp,
+  #radio .wa.selected .channel-img,
   #radio .wa:hover .channel-img {
     filter: unset;
   }

@@ -12,7 +12,7 @@
   "module": "dist/index.js",
   "scripts": {
     "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds --debug\"",
-    "build": "tsc && cp -R ./svgs/ ./dist/svgs",
+    "build": "tsc && cp -R ./assets/ ./dist/assets",
     "prepare": "yarn run build && husky install",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",

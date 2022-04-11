@@ -270,13 +270,11 @@ export class ChannelSelector extends LitElement {
     css`
       :host {
         display: block;
-        font-family: Arial, Helvetica, sans-serif;
         color: var(--channel-selector-text-color, #fff);
       }
 
       a:link,
       a:visited,
-      a:hover,
       a:active {
         color: var(--channel-selector-text-color, #fff);
         text-decoration: none;
@@ -308,6 +306,10 @@ export class ChannelSelector extends LitElement {
         background-color: #fff;
         color: #222;
         cursor: pointer;
+      }
+
+      li:hover a {
+        color: #222;
       }
 
       ul,
