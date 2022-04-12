@@ -1,30 +1,72 @@
 import { html, css, LitElement } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
+import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
+  @property({ type: String }) selectedByDropdown: channelTypes | '' = '';
+
+  @property({ type: String }) selectedByDropdownOnload: channelTypes | '' = '';
+
+  @property({ type: String }) selectedByRadio: channelTypes | '' = '';
+
+  @property({ type: String }) selectedByRadioOnload: channelTypes | '' = '';
+
   render() {
     return html`
-      <channel-selector
-        spotify
-        youtube
-        continuousPlay
-        .displayStyle=${'dropdown'}
+
+      <br />
+      <br />
+      <channel-selector spotify youtube continuousPlay samples
+        selected=${channelTypes.continuous}
+        @postInit=${(e: CustomEvent) => {
+          this.selectedByRadioOnload = e.detail.channel as channelTypes;
+        }}
+        @channelChange=${(e: CustomEvent) => {
+          this.selectedByRadio = e.detail.channel as channelTypes;
+        }}
       >
       </channel-selector>
       <br />
-      <channel-selector spotify youtube continuousPlay samples>
-      </channel-selector>
+      <br />
+      <section class='details'>
+        <h2>Selected by radio</2>
+        <h2>on first load: ${this.selectedByRadioOnload}</h2>
+        <h2>on change: ${this.selectedByRadio}</h2>
+      </section>
+      <br />
+      <br />
+      <channel-selector
+      spotify
+      youtube
+      continuousPlay
+      .displayStyle=${'dropdown'}
+      @postInit=${(e: CustomEvent) => {
+        this.selectedByDropdownOnload = e.detail.channel as channelTypes;
+      }}
+      @channelChange=${(e: CustomEvent) => {
+        this.selectedByDropdown = e.detail.channel as channelTypes;
+      }}
+    >
+    </channel-selector>
+    <section class='details'>
+    <h2>Selected by dropdown</2>
+    <h2>on first load: ${this.selectedByDropdownOnload}</h2>
+    <h2>on change: ${this.selectedByDropdown}</h2>
+    </section>
     `;
   }
 
   static styles = css`
     :host {
       display: block;
-      background-color: black;
-      border: 1px solid red;
       position: relative;
+      color: #fff;
+    }
+
+    .details {
+      margin: 20px;
     }
   `;
 }
