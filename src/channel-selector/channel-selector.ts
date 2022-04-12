@@ -139,7 +139,7 @@ export class ChannelSelector extends LitElement {
         ${iaButton({
           samples: this.samples,
           selected: this.selected === channelTypes.ia,
-          onClick: () => this.webampClicked(),
+          onClick: () => this.iaClicked(),
         })}
       </li>
     `;
@@ -247,7 +247,7 @@ export class ChannelSelector extends LitElement {
         ${playFromLabel}
         <div>
           <button class="selected-option" @click=${() => this.toggleDropdown()}>
-            <span class="sr-only">Currently selcted: </span>
+            <span class="sr-only">Current channel: </span>
             ${this.selectedLabel}
           </button>
           <ul class=${dropdownState}>
@@ -333,7 +333,7 @@ export class ChannelSelector extends LitElement {
       }
 
       li .ia.selected .channel-img,
-      li .ia:hover .channel-img {
+      li:hover .ia .channel-img {
         filter: invert(1);
       }
 
@@ -342,12 +342,12 @@ export class ChannelSelector extends LitElement {
       }
 
       li .wa.selected .channel-img,
-      li .wa:hover .channel-img {
+      li:hover .wa .channel-img {
         filter: unset;
       }
 
-      .channel-img {
-        margin-right: 5px;
+      .channel-name {
+        margin-left: 5px;
       }
 
       .channel-img img {

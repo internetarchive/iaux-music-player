@@ -30,7 +30,7 @@ export const channelSelectorRadio = css`
   #radio li:first-child {
     border-top-left-radius: 50px;
     border-bottom-left-radius: 50px;
-    padding-left: 2px;
+    padding-left: 5px;
   }
 
   #radio li:last-child {
