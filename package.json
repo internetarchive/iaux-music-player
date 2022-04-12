@@ -3,7 +3,7 @@
   "description": "An Internet Archive music player for archive.org items.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/internetarchive/iaux-your-webcomponent.git"
+    "url": "git+https://github.com/internetarchive/iaux-music-player.git"
   },
   "license": "AGPL-3.0-only",
   "author": "Internet Archive",
