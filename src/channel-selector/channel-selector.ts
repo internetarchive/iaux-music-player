@@ -1,13 +1,5 @@
-import {
-  html,
-  css,
-  LitElement,
-  TemplateResult,
-  nothing,
-  PropertyValues,
-} from 'lit';
+import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-// import { SharedResizeObserver } from '@internetarchive/shared-resize-observer';
 import { channelSelectorDropDown } from './style-dropdown';
 import { channelSelectorRadio } from './style-radio';
 import {
@@ -16,7 +8,7 @@ import {
   continuousPlayButton,
   youtubeButton,
   spotifyButton,
-  webampLink,
+  webampButton,
   iaLink,
   iaContinuousLabel,
   spotifyLabel,
@@ -27,41 +19,44 @@ import {
 
 export type displayStyle = 'dropdown' | 'radio';
 
+export enum channelEvents {
+  postInit = 'postInit',
+  channelChange = 'channelChange',
+}
+
 @customElement('channel-selector')
 export class ChannelSelector extends LitElement {
-  @property({ attribute: true, type: Boolean, reflect: true }) youtube = null;
+  @property({ attribute: true, type: Boolean, reflect: true }) youtube = false;
 
-  @property({ attribute: true, type: Boolean, reflect: true }) spotify = null;
+  @property({ attribute: true, type: Boolean, reflect: true }) spotify = false;
 
   @property({ attribute: true, type: Boolean, reflect: true }) continuousPlay =
-    null;
+    false;
 
   @property({ attribute: true, type: Boolean, reflect: true }) webamp = true;
 
-  @property({ attribute: true, type: Boolean, reflect: true }) samples = null;
+  @property({ attribute: true, type: Boolean, reflect: true }) samples = false;
 
   @property({ type: String }) selected: channelTypes = channelTypes.ia;
 
   @property({ type: String, reflect: true }) displayStyle: displayStyle =
-    'radio'; // for now
+    'radio';
 
   @property({ type: Boolean }) dropdownOpen = false;
 
-  @property({ attribute: false }) sharedRO = undefined;
-
-  updated(changed: PropertyValues) {
-    if (changed.has('sharedRO')) {
-      if (changed.get('sharedRO') !== this.sharedRO) {
-        this.setupSharedResizeObserver();
-      }
-    }
+  firstUpdated() {
+    this.dispatchEvent(
+      new CustomEvent(channelEvents.postInit, {
+        detail: { channel: this.selected as channelTypes },
+        composed: true,
+        bubbles: true,
+      })
+    );
   }
 
-  setupSharedResizeObserver() {}
-
-  emitChannelSelected(): void {
+  emitChannelChanged(): void {
     this.dispatchEvent(
-      new CustomEvent('channelSelected', {
+      new CustomEvent(channelEvents.channelChange, {
         detail: { channel: this.selected },
         composed: true,
         bubbles: true,
@@ -77,7 +72,7 @@ export class ChannelSelector extends LitElement {
     // set value
     this.selected = channelTypes.ia;
     // dispatch event
-    this.emitChannelSelected();
+    this.emitChannelChanged();
   }
 
   iaContinuousClicked() {
@@ -88,7 +83,7 @@ export class ChannelSelector extends LitElement {
     // set value
     this.selected = channelTypes.continuous;
     // dispatch event
-    this.emitChannelSelected();
+    this.emitChannelChanged();
   }
 
   spotifyClicked() {
@@ -99,7 +94,7 @@ export class ChannelSelector extends LitElement {
     // set value
     this.selected = channelTypes.spotify;
     // dispatch event
-    this.emitChannelSelected();
+    this.emitChannelChanged();
   }
 
   webampClicked() {
@@ -110,7 +105,7 @@ export class ChannelSelector extends LitElement {
     // set value
     this.selected = channelTypes.webamp;
     // dispatch event
-    this.emitChannelSelected();
+    this.emitChannelChanged();
   }
 
   youtubeClicked() {
@@ -121,7 +116,7 @@ export class ChannelSelector extends LitElement {
     // set value
     this.selected = channelTypes.youtube;
     // dispatch event
-    this.emitChannelSelected();
+    this.emitChannelChanged();
   }
 
   get iaLinkSelector(): TemplateResult {
@@ -181,7 +176,7 @@ export class ChannelSelector extends LitElement {
       this.selected === channelTypes.webamp ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${webampLink({
+        ${webampButton({
           href: window.location.href,
           selected: this.selected === channelTypes.webamp,
           onClick: () => this.webampClicked(),
@@ -221,9 +216,10 @@ export class ChannelSelector extends LitElement {
   }
 
   get properIaSelector() {
-    return this.selected === channelTypes.webamp
-      ? this.iaLinkSelector
-      : this.iaButtonSelector;
+    return this.iaButtonSelector;
+    // return this.selected === channelTypes.webamp
+    //   ? this.iaLinkSelector
+    //   : this.iaButtonSelector;
   }
 
   toggleDisplayStyle() {

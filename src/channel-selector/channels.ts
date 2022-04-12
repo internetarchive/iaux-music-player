@@ -101,11 +101,17 @@ export const spotifyButton = ({ onClick, selected }: channelSpecs) => {
 
 export const webampLink = ({ onClick, href, selected }: channelSpecs) => {
   const selectedClass = selected ? 'selected' : '';
-  const fullLink = `${href}?webamp=1`;
   return html`
-    <a href=${fullLink} @click=${() =>
+    <a href=${href} @click=${() =>
     onClick()} class="wa ${selectedClass}">${webampLabel}</button>
   `;
+};
+
+export const webampButton = ({ onClick, selected }: channelSpecs) => {
+  const selectedClass = selected ? 'selected' : '';
+  return html`<button @click=${() => onClick()} class="wa ${selectedClass}">
+    ${webampLabel}
+  </button>`;
 };
 
 export const youtubeButton = ({ onClick, selected }: channelSpecs) => {
