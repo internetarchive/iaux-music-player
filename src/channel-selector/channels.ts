@@ -53,7 +53,7 @@ export const youtubeLabel = html`
   <span class="channel-img youtube">
     <img src="/images/music-theater/youtube.svg" alt="youtube logo" />
   </span>
-  <span class="channel-name">Youtube</span>
+  <span class="channel-name">YouTube</span>
 `;
 
 /** IA <a> */
