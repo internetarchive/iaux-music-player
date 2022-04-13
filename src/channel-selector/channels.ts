@@ -64,9 +64,8 @@ export const iaLink = ({
   const label: playbackLabel = samples ? 'Samples' : 'Player';
   const selectedClass = selected ? 'selected' : '';
   return html`
-    <a href=${href} @click=${() => onClick()} class=${selectedClass}>${iaLabel(
-    label
-  )}</button>
+    <a href=${href} @click=${() =>
+    onClick()} class="ia ${selectedClass}">${iaLabel(label)}</button>
   `;
 };
 
@@ -101,8 +100,9 @@ export const spotifyButton = ({ onClick, selected }: channelSpecs) => {
 
 export const webampLink = ({ onClick, href, selected }: channelSpecs) => {
   const selectedClass = selected ? 'selected' : '';
+  const webampUrl = `${href}?webamp=default`;
   return html`
-    <a href=${href} @click=${() =>
+    <a href=${webampUrl} @click=${() =>
     onClick()} class="wa ${selectedClass}">${webampLabel}</button>
   `;
 };

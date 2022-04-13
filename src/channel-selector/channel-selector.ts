@@ -8,7 +8,7 @@ import {
   continuousPlayButton,
   youtubeButton,
   spotifyButton,
-  webampButton,
+  webampLink,
   iaLink,
   iaContinuousLabel,
   spotifyLabel,
@@ -43,6 +43,8 @@ export class ChannelSelector extends LitElement {
     'radio';
 
   @property({ type: Boolean }) dropdownOpen = false;
+
+  @property({ type: String }) url = '';
 
   firstUpdated() {
     this.dispatchEvent(
@@ -127,6 +129,7 @@ export class ChannelSelector extends LitElement {
           samples: this.samples,
           selected: this.selected === channelTypes.ia,
           onClick: () => this.webampClicked(),
+          href: this.url,
         })}
       </li>
     `;
@@ -176,7 +179,7 @@ export class ChannelSelector extends LitElement {
       this.selected === channelTypes.webamp ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${webampButton({
+        ${webampLink({
           href: window.location.href,
           selected: this.selected === channelTypes.webamp,
           onClick: () => this.webampClicked(),
@@ -216,10 +219,9 @@ export class ChannelSelector extends LitElement {
   }
 
   get properIaSelector() {
-    return this.iaButtonSelector;
-    // return this.selected === channelTypes.webamp
-    //   ? this.iaLinkSelector
-    //   : this.iaButtonSelector;
+    return this.selected === channelTypes.webamp
+      ? this.iaLinkSelector
+      : this.iaButtonSelector;
   }
 
   toggleDisplayStyle() {
@@ -305,15 +307,15 @@ export class ChannelSelector extends LitElement {
         cursor: pointer;
       }
 
-      li:hover a {
-        color: #222;
-      }
-
       ul,
       li {
         list-style-type: none;
         padding: 0;
         margin: 0;
+      }
+
+      li {
+        display: flex;
       }
 
       #dropdown .close,
@@ -337,6 +339,15 @@ export class ChannelSelector extends LitElement {
         filter: invert(1);
       }
 
+      li .ia.selected .channel-name,
+      li:hover .ia .channel-name {
+        color: #222;
+      }
+
+      li a.ia {
+        display: flex;
+      }
+
       li .wa .channel-img {
         filter: invert(1);
       }
@@ -344,6 +355,11 @@ export class ChannelSelector extends LitElement {
       li .wa.selected .channel-img,
       li:hover .wa .channel-img {
         filter: unset;
+      }
+
+      li .wa.selected .channel-name,
+      li:hover .wa .channel-name {
+        color: #222;
       }
 
       .channel-name {
