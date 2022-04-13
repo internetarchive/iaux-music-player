@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { html, css, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { channelTypes } from '../src/channel-selector/channels';
@@ -13,35 +14,42 @@ export class AppRoot extends LitElement {
 
   @property({ type: String }) selectedByRadioOnload: channelTypes | '' = '';
 
-  render() {
-    return html`
+  get startAtWebamp() {
+    const searchParams = new URLSearchParams(location.search.slice(1));
+    return searchParams.has('webamp');
+  }
 
+  render() {
+    const url = `${location.origin}/demo`;
+    return html`
       <br />
       <br />
       <channel-selector spotify youtube continuousPlay samples
-        selected=${channelTypes.continuous}
+        .selected=${
+          this.startAtWebamp ? channelTypes.webamp : channelTypes.continuous
+        }
         @postInit=${(e: CustomEvent) => {
           this.selectedByRadioOnload = e.detail.channel as channelTypes;
         }}
         @channelChange=${(e: CustomEvent) => {
           this.selectedByRadio = e.detail.channel as channelTypes;
         }}
+        .url=${url}
       >
       </channel-selector>
-      <br />
-      <br />
+
       <section class='details'>
         <h2>Selected by radio</2>
         <h2>on first load: ${this.selectedByRadioOnload}</h2>
         <h2>on change: ${this.selectedByRadio}</h2>
       </section>
-      <br />
-      <br />
+
       <channel-selector
       spotify
       youtube
       continuousPlay
       .displayStyle=${'dropdown'}
+      .url=${url}
       @postInit=${(e: CustomEvent) => {
         this.selectedByDropdownOnload = e.detail.channel as channelTypes;
       }}
@@ -66,7 +74,8 @@ export class AppRoot extends LitElement {
     }
 
     .details {
-      margin: 20px;
+      margin: 30px auto;
+      padding: 10px;
     }
   `;
 }
