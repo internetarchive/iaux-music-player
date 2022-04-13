@@ -11,8 +11,8 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds --debug\"",
-    "build": "tsc && cp -R ./assets/ ./dist/assets",
+    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "build": "tsc && cp -R ./images/ ./dist/images",
     "prepare": "yarn run build && husky install",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
@@ -30,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
     "@web/dev-server": "^0.1.28",
+    "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.22",
     "concurrently": "^6.3.0",
     "eslint": "^8.2.0",
