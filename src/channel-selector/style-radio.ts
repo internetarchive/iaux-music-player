@@ -18,13 +18,16 @@ export const channelSelectorRadio = css`
   }
 
   #radio ul {
-    border: 1px solid;
     border-radius: 50px;
     display: inline-flex;
     align-content: flex-start;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
+  }
+
+  #radio li {
+    border: 1px solid #fff;
   }
 
   #radio li:first-child {
@@ -40,7 +43,7 @@ export const channelSelectorRadio = css`
   }
 
   #radio li:not(:last-child) {
-    border-right: 1px solid;
+    border-right: none;
   }
 
   @media (max-width: 600px) {

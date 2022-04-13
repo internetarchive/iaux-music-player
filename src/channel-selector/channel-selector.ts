@@ -286,6 +286,7 @@ export class ChannelSelector extends LitElement {
         font: inherit;
         cursor: pointer;
         outline: inherit;
+        margin: 0;
       }
 
       li > *,
