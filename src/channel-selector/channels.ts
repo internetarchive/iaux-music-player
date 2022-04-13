@@ -19,7 +19,9 @@ type playbackLabel = 'Samples' | 'Player';
 
 export const iaLabel = (label: playbackLabel) => html`
   <span class="channel-img ia"
-    ><img src="/images/internet-archive.svg" alt="internet archive logo"
+    ><img
+      src="/images/music-theater/internet-archive.svg"
+      alt="internet archive logo"
   /></span>
   <span class="channel-name">Internet Archive ${label}</span>
 `;
@@ -27,7 +29,7 @@ export const iaLabel = (label: playbackLabel) => html`
 export const iaContinuousLabel = html`
   <span class="channel-img ia-continuous"
     ><img
-      src="/images/continuous-play.svg"
+      src="/images/music-theater/continuous-play.svg"
       alt="internet archive continuous play logo"
   /></span>
   <span class="channel-name">Continuous Play (beta)</span>
@@ -35,21 +37,21 @@ export const iaContinuousLabel = html`
 
 export const spotifyLabel = html`
   <span class="channel-img spotify"
-    ><img src="/images/spotify.svg" alt="spotify logo"
+    ><img src="/images/music-theater/spotify.svg" alt="spotify logo"
   /></span>
   <span class="channel-name">Spotify</span>
 `;
 
 export const webampLabel = html`
   <span class="channel-img webamp"
-    ><img src="/images/webamp.svg" alt="webamp logo"
+    ><img src="/images/music-theater/webamp.svg" alt="webamp logo"
   /></span>
   <span class="channel-name">Webamp</span>
 `;
 
 export const youtubeLabel = html`
   <span class="channel-img youtube">
-    <img src="/images/youtube.svg" alt="youtube logo" />
+    <img src="/images/music-theater/youtube.svg" alt="youtube logo" />
   </span>
   <span class="channel-name">Youtube</span>
 `;
