@@ -46,6 +46,16 @@ export const channelSelectorRadio = css`
     border-right: none;
   }
 
+  /* Demarcate when hovering next to selected channel */
+  #radio li.selected + li:hover {
+    border-left: 1px solid black !important;
+  }
+
+  #radio li:not(:last-child):hover + li.selected {
+    border-left: 1px solid black !important;
+  }
+  /* End demarcation */
+
   @media (max-width: 600px) {
     #radio .channel-name {
       display: none;
