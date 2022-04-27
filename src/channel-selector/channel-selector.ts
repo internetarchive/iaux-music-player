@@ -5,12 +5,12 @@ import { channelSelectorRadio } from './style-radio';
 import {
   channelTypes,
   iaButton,
-  continuousPlayButton,
+  streamingButton,
   youtubeButton,
   spotifyButton,
   webampLink,
   iaLink,
-  iaContinuousLabel,
+  iaStreamingLabel,
   spotifyLabel,
   webampLabel,
   youtubeLabel,
@@ -30,7 +30,7 @@ export class ChannelSelector extends LitElement {
 
   @property({ attribute: true, type: Boolean, reflect: true }) spotify = false;
 
-  @property({ attribute: true, type: Boolean, reflect: true }) continuousPlay =
+  @property({ attribute: true, type: Boolean, reflect: true }) streaming =
     false;
 
   @property({ attribute: true, type: Boolean, reflect: true }) webamp = true;
@@ -77,13 +77,13 @@ export class ChannelSelector extends LitElement {
     this.emitChannelChanged();
   }
 
-  iaContinuousClicked() {
-    if (this.selected === channelTypes.continuous) {
+  iaStreamingClicked() {
+    if (this.selected === channelTypes.streaming) {
       return;
     }
     // send analytic
     // set value
-    this.selected = channelTypes.continuous;
+    this.selected = channelTypes.streaming;
     // dispatch event
     this.emitChannelChanged();
   }
@@ -150,12 +150,12 @@ export class ChannelSelector extends LitElement {
 
   get contPlaySelector(): TemplateResult {
     const selectedClass =
-      this.selected === channelTypes.continuous ? 'selected' : '';
+      this.selected === channelTypes.streaming ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${continuousPlayButton({
-          selected: this.selected === channelTypes.continuous,
-          onClick: () => this.iaContinuousClicked(),
+        ${streamingButton({
+          selected: this.selected === channelTypes.streaming,
+          onClick: () => this.iaStreamingClicked(),
         })}
       </li>
     `;
@@ -203,8 +203,8 @@ export class ChannelSelector extends LitElement {
 
   get selectedLabel() {
     switch (this.selected) {
-      case channelTypes.continuous:
-        return iaContinuousLabel;
+      case channelTypes.streaming:
+        return iaStreamingLabel;
       case channelTypes.spotify:
         return spotifyLabel;
       case channelTypes.webamp:
@@ -254,7 +254,7 @@ export class ChannelSelector extends LitElement {
           </button>
           <ul class=${dropdownState}>
             ${this.properIaSelector}
-            ${this.continuousPlay ? this.contPlaySelector : nothing}
+            ${this.streaming ? this.contPlaySelector : nothing}
             ${this.youtube ? this.youtubeSelector : nothing}
             ${this.spotify ? this.spotifySelector : nothing}
             ${this.webamp ? this.webampSelector : nothing}

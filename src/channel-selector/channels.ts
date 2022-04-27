@@ -2,7 +2,7 @@ import { html, TemplateResult } from 'lit';
 
 export enum channelTypes {
   ia = 'ia',
-  continuous = 'continuous',
+  streaming = 'streaming',
   youtube = 'youtube',
   spotify = 'spotify',
   webamp = 'webamp',
@@ -26,13 +26,13 @@ export const iaLabel = (label: playbackLabel) => html`
   <span class="channel-name">Internet Archive ${label}</span>
 `;
 
-export const iaContinuousLabel = html`
-  <span class="channel-img ia-continuous"
+export const iaStreamingLabel = html`
+  <span class="channel-img ia-streaming"
     ><img
-      src="/images/music-theater/continuous-play.svg"
-      alt="internet archive continuous play logo"
+      src="/images/music-theater/streaming.svg"
+      alt="internet archive streaming play logo"
   /></span>
-  <span class="channel-name">Continuous Play (beta)</span>
+  <span class="channel-name">Streaming (beta)</span>
 `;
 
 export const spotifyLabel = html`
@@ -86,10 +86,13 @@ export const iaButton = ({
   `;
 };
 
-export const continuousPlayButton = ({ onClick, selected }: channelSpecs) => {
+export const streamingButton = ({ onClick, selected }: channelSpecs) => {
   const selectedClass = selected ? 'selected' : '';
-  return html`<button @click=${() => onClick()} class="ia-c ${selectedClass}">
-    ${iaContinuousLabel}
+  return html`<button
+    @click=${() => onClick()}
+    class="ia-stream ${selectedClass}"
+  >
+    ${iaStreamingLabel}
   </button>`;
 };
 

@@ -24,9 +24,9 @@ export class AppRoot extends LitElement {
     return html`
       <br />
       <br />
-      <channel-selector spotify youtube continuousPlay samples
+      <channel-selector spotify youtube streaming samples
         .selected=${
-          this.startAtWebamp ? channelTypes.webamp : channelTypes.continuous
+          this.startAtWebamp ? channelTypes.webamp : channelTypes.streaming
         }
         @postInit=${(e: CustomEvent) => {
           this.selectedByRadioOnload = e.detail.channel as channelTypes;
@@ -47,7 +47,7 @@ export class AppRoot extends LitElement {
       <channel-selector
       spotify
       youtube
-      continuousPlay
+      streaming
       .displayStyle=${'dropdown'}
       .url=${url}
       @postInit=${(e: CustomEvent) => {

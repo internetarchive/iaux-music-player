@@ -95,18 +95,18 @@ describe('`<channel-selector>`', () => {
   it('can select any channel at creation', async () => {
     const el = await fixture<ChannelSelector>(
       html`<channel-selector
-        continuousPlay
-        .selected=${channelTypes.continuous}
+        streaming
+        .selected=${channelTypes.streaming}
       ></channel-selector>`
     );
 
-    const continuousPlaySelectedAtStart = el
+    const streamingSelectedAtStart = el
       .shadowRoot!.querySelector('li.selected')!
-      .querySelector('.ia-c.selected');
-    await expect(continuousPlaySelectedAtStart).to.exist;
+      .querySelector('.ia-stream.selected');
+    await expect(streamingSelectedAtStart).to.exist;
     await expect(
-      continuousPlaySelectedAtStart!.querySelector('.channel-name')?.innerHTML
-    ).to.equal('Continuous Play (beta)');
+      streamingSelectedAtStart!.querySelector('.channel-name')?.innerHTML
+    ).to.equal('Streaming (beta)');
   });
 
   it('updates IA label when playing samples', async () => {
@@ -126,18 +126,18 @@ describe('`<channel-selector>`', () => {
     ).to.contain('Samples');
   });
 
-  it('displays CONTINOUS PLAY with `continuousPlay` attribute', async () => {
+  it('displays CONTINOUS PLAY with `streaming` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector continuousPlay></channel-selector>`
+      html`<channel-selector streaming></channel-selector>`
     );
 
-    const continuousPlayChannel = el.shadowRoot!.querySelector('.ia-c');
+    const streamingChannel = el.shadowRoot!.querySelector('.ia-stream');
 
-    await expect(continuousPlayChannel).to.exist;
+    await expect(streamingChannel).to.exist;
     await expect(
-      continuousPlayChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Continuous Play (beta)');
-    await expect(el.getAttribute('continuousPlay')).to.exist;
+      streamingChannel!.querySelector('.channel-name')?.innerHTML
+    ).to.contain('streaming Play (beta)');
+    await expect(el.getAttribute('streaming')).to.exist;
   });
 
   it('displays SPOTIFY with `spotify` attribute', async () => {
