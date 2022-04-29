@@ -5,6 +5,10 @@
 A music player made for archive.org detail pages to help unlock and surface what's contained in the music item.
 One can play songs, read liner notes, and see the audio fingerprinting found across various music providers.
 
+### CSS Variables
+`--channel-selector-text-color`
+`--channel-selector-title-color`
+
 ### 🚧 in development
 
 Currently, we are developing the individual components to compose the main player.
