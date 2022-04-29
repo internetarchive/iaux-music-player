@@ -126,7 +126,7 @@ describe('`<channel-selector>`', () => {
     ).to.contain('Samples');
   });
 
-  it('displays CONTINOUS PLAY with `streaming` attribute', async () => {
+  it('displays Streaming (beta) with `streaming` attribute', async () => {
     const el = await fixture<ChannelSelector>(
       html`<channel-selector streaming></channel-selector>`
     );
@@ -136,7 +136,7 @@ describe('`<channel-selector>`', () => {
     await expect(streamingChannel).to.exist;
     await expect(
       streamingChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('streaming Play (beta)');
+    ).to.contain('Streaming (beta)');
     await expect(el.getAttribute('streaming')).to.exist;
   });
 
