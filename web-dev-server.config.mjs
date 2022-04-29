@@ -1,4 +1,5 @@
 // import { hmrPlugin, presets } from '@open-wc/dev-server-hmr';
+import { importMapsPlugin } from '@web/dev-server-import-maps';
 
 /** Use Hot Module replacement by adding --hmr to the start command */
 const hmr = process.argv.includes('--hmr');
@@ -7,7 +8,7 @@ export default /** @type {import('@web/dev-server').DevServerConfig} */ ({
   nodeResolve: true,
   open: '/demo/',
   watch: !hmr,
-
+  debug: true,
   /** Compile JS for older browsers. Requires @web/dev-server-esbuild plugin */
   // esbuildTarget: 'auto'
 
@@ -20,6 +21,15 @@ export default /** @type {import('@web/dev-server').DevServerConfig} */ ({
   // },
 
   plugins: [
+    importMapsPlugin({
+      inject: {
+        importMap: {
+          imports: {
+            "/images/": "/images/",
+          },
+        },
+      },
+    }),
     /** Use Hot Module Replacement by uncommenting. Requires @open-wc/dev-server-hmr plugin */
     // hmr && hmrPlugin({ exclude: ['**/*/node_modules/**/*'], presets: [presets.litElement] }),
   ],

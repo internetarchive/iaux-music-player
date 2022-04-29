@@ -1,9 +1,9 @@
 {
-  "name": "@internetarchive/your-webcomponent",
-  "description": "The Internet Archive Typescript WebComponent template. It is based on the @open-wc template.",
+  "name": "@internetarchive/ia-music-player",
+  "description": "An Internet Archive music player for archive.org items.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/internetarchive/iaux-your-webcomponent.git"
+    "url": "git+https://github.com/internetarchive/iaux-music-player.git"
   },
   "license": "AGPL-3.0-only",
   "author": "Internet Archive",
@@ -11,14 +11,14 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
-    "build": "tsc",
-    "prepare": "tsc && husky install",
+    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "build": "tsc && cp -R ./images/ ./dist/images",
+    "prepare": "yarn run build && husky install",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "circular": "madge --circular --extensions ts .",
-    "test": "tsc && yarn run lint && yarn run circular && wtr --coverage",
-    "test:watch": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
+    "test": "yarn run build && yarn run lint && yarn run circular && wtr --coverage",
+    "test:watch": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\""
   },
   "types": "dist/index.d.ts",
   "dependencies": {
@@ -30,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
     "@web/dev-server": "^0.1.28",
+    "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.22",
     "concurrently": "^6.3.0",
     "eslint": "^8.2.0",

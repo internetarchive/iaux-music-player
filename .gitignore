@@ -20,4 +20,6 @@
 /dist/
 /out-tsc/
 
+package-lock.json
+
 storybook-static
