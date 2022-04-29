@@ -48,11 +48,11 @@ export const channelSelectorRadio = css`
 
   /* Demarcate when hovering next to selected channel */
   #radio li.selected + li:hover {
-    border-left: 1px solid black !important;
+    border-left: 1px solid #2c2c2c !important;
   }
 
   #radio li:not(:last-child):hover + li.selected {
-    border-left: 1px solid black !important;
+    border-left: 1px solid #2c2c2c !important;
   }
   /* End demarcation */
 `;

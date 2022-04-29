@@ -236,8 +236,15 @@ export class ChannelSelector extends LitElement {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  isSelected(channelType: channelTypes): boolean {
-    return this.selected === channelType;
+  shouldShowChannelType(channelType: channelTypes): boolean {
+    const channelSelected = this.selected === channelType;
+    if (this.displayStyle === 'radio') {
+      return true;
+    }
+    if (this.displayStyle === 'dropdown' && channelSelected) {
+      return false;
+    }
+    return true;
   }
 
   render(): TemplateResult {
@@ -257,19 +264,20 @@ export class ChannelSelector extends LitElement {
             ${this.selectedLabel}
           </button>
           <ul class=${dropdownState}>
-            ${!this.isSelected(channelTypes.ia)
+            ${this.shouldShowChannelType(channelTypes.ia)
               ? this.properIaSelector
               : nothing}
-            ${this.streaming && !this.isSelected(channelTypes.streaming)
+            ${this.streaming &&
+            this.shouldShowChannelType(channelTypes.streaming)
               ? this.contPlaySelector
               : nothing}
-            ${this.youtube && !this.isSelected(channelTypes.youtube)
+            ${this.youtube && this.shouldShowChannelType(channelTypes.youtube)
               ? this.youtubeSelector
               : nothing}
-            ${this.spotify && !this.isSelected(channelTypes.spotify)
+            ${this.spotify && this.shouldShowChannelType(channelTypes.spotify)
               ? this.spotifySelector
               : nothing}
-            ${this.webamp && !this.isSelected(channelTypes.webamp)
+            ${this.webamp && this.shouldShowChannelType(channelTypes.webamp)
               ? this.webampSelector
               : nothing}
           </ul>
@@ -285,16 +293,22 @@ export class ChannelSelector extends LitElement {
         color: var(--channel-selector-text-color, #fff);
       }
 
+      #selector-title,
+      .selected-option {
+        color: var(--channel-selector-title-color, #fff);
+      }
+
       a:link,
       a:visited,
-      a:active {
-        color: var(--channel-selector-text-color, #fff);
+      a:active,
+      a {
+        color: inherit;
         text-decoration: none;
       }
 
       button {
-        background: none;
         color: inherit;
+        background: none;
         border: none;
         padding: 0;
         font: inherit;
@@ -318,7 +332,7 @@ export class ChannelSelector extends LitElement {
       li:hover,
       li.selected {
         background-color: #fff;
-        color: #222;
+        color: #2c2c2c;
         cursor: pointer;
       }
 
@@ -331,6 +345,8 @@ export class ChannelSelector extends LitElement {
 
       li {
         display: flex;
+        height: 36px;
+        background-color: #222;
       }
 
       #dropdown .close,
@@ -349,14 +365,8 @@ export class ChannelSelector extends LitElement {
         display: none;
       }
 
-      li .ia.selected .channel-img,
       li:hover .ia .channel-img {
         filter: invert(1);
-      }
-
-      li .ia.selected .channel-name,
-      li:hover .ia .channel-name {
-        color: #222;
       }
 
       li a.ia {
@@ -370,11 +380,6 @@ export class ChannelSelector extends LitElement {
       li .wa.selected .channel-img,
       li:hover .wa .channel-img {
         filter: unset;
-      }
-
-      li .wa.selected .channel-name,
-      li:hover .wa .channel-name {
-        color: #222;
       }
 
       .channel-name {

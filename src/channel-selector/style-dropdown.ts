@@ -15,20 +15,4 @@ export const channelSelectorDropDown = css`
   #dropdown section > div {
     width: 100%;
   }
-
-  #dropdown li:hover {
-    pointer: cursor;
-    background-color: #fff;
-    color: #2c2c2c;
-  }
-
-  #dropdown .selected-option:hover {
-    pointer: cursor;
-  }
-
-  #dropdown li {
-    height: 36px;
-    width: 100%;
-    background-color: #222;
-  }
 `;
