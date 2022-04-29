@@ -18,18 +18,17 @@ export const channelSelectorDropDown = css`
 
   #dropdown li:hover {
     pointer: cursor;
-    background-color: red;
+    background-color: #fff;
+    color: #2c2c2c;
   }
 
   #dropdown .selected-option:hover {
     pointer: cursor;
-    background-color: rebeccapurple;
   }
 
-  #dropdown li,
-  #dropdown .selected-option {
+  #dropdown li {
     height: 36px;
-    border: 1px dotted aliceblue;
     width: 100%;
+    background-color: #222;
   }
 `;
