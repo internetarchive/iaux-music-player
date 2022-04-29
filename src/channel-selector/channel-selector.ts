@@ -236,6 +236,10 @@ export class ChannelSelector extends LitElement {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
+  isSelected(channelType: channelTypes): boolean {
+    return this.selected === channelType;
+  }
+
   render(): TemplateResult {
     const dropdownState =
       this.displayStyle === 'dropdown' && this.dropdownOpen ? '' : 'close';
@@ -253,11 +257,21 @@ export class ChannelSelector extends LitElement {
             ${this.selectedLabel}
           </button>
           <ul class=${dropdownState}>
-            ${this.properIaSelector}
-            ${this.streaming ? this.contPlaySelector : nothing}
-            ${this.youtube ? this.youtubeSelector : nothing}
-            ${this.spotify ? this.spotifySelector : nothing}
-            ${this.webamp ? this.webampSelector : nothing}
+            ${!this.isSelected(channelTypes.ia)
+              ? this.properIaSelector
+              : nothing}
+            ${this.streaming && !this.isSelected(channelTypes.streaming)
+              ? this.contPlaySelector
+              : nothing}
+            ${this.youtube && !this.isSelected(channelTypes.youtube)
+              ? this.youtubeSelector
+              : nothing}
+            ${this.spotify && !this.isSelected(channelTypes.spotify)
+              ? this.spotifySelector
+              : nothing}
+            ${this.webamp && !this.isSelected(channelTypes.webamp)
+              ? this.webampSelector
+              : nothing}
           </ul>
         </div>
       </section>
