@@ -55,16 +55,4 @@ export const channelSelectorRadio = css`
     border-left: 1px solid black !important;
   }
   /* End demarcation */
-
-  @media (max-width: 600px) {
-    #radio .channel-name {
-      display: none;
-    }
-  }
-
-  @media (min-width: 768px) and (max-width: 1200px) {
-    #radio .channel-name {
-      display: none;
-    }
-  }
 `;
