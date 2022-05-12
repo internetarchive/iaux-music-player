@@ -365,7 +365,8 @@ export class ChannelSelector extends LitElement {
         display: none;
       }
 
-      li:hover .ia .channel-img {
+      li:hover .ia .channel-img,
+      li .ia.selected .channel-img {
         filter: invert(1);
       }
 
