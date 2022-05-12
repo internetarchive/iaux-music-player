@@ -148,7 +148,7 @@ export class ChannelSelector extends LitElement {
     `;
   }
 
-  get contPlaySelector(): TemplateResult {
+  get streamingSelector(): TemplateResult {
     const selectedClass =
       this.selected === channelTypes.streaming ? 'selected' : '';
     return html`
@@ -269,7 +269,7 @@ export class ChannelSelector extends LitElement {
               : nothing}
             ${this.streaming &&
             this.shouldShowChannelType(channelTypes.streaming)
-              ? this.contPlaySelector
+              ? this.streamingSelector
               : nothing}
             ${this.youtube && this.shouldShowChannelType(channelTypes.youtube)
               ? this.youtubeSelector
