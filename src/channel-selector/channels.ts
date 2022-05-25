@@ -1,4 +1,7 @@
 import { html, TemplateResult } from 'lit';
+import { optionInterface } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
+import '@internetarchive/ia-dropdown/dist/src/ia-icon-label';
+import { styleMap } from 'lit/directives/style-map.js';
 
 export enum channelTypes {
   ia = 'ia',
@@ -8,6 +11,15 @@ export enum channelTypes {
   webamp = 'webamp',
 }
 
+enum channelLabels {
+  iaSamples = 'Internet Archive Samples',
+  iaPlayer = 'Internet Archive Player',
+  iaStreaming = 'Streaming (beta)',
+  spotify = 'Spotify',
+  webamp = 'Webamp',
+  youtube = 'YouTube',
+}
+
 export type channelSpecs = {
   onClick: Function;
   selected: boolean;
@@ -15,45 +27,87 @@ export type channelSpecs = {
   href?: string | undefined;
 };
 
-type playbackLabel = 'Samples' | 'Player';
+export type optionOnClickCallback =
+  | Event
+  | CustomEvent
+  | optionInterface
+  | undefined;
 
-export const iaLabel = (label: playbackLabel) => html`
-  <span class="channel-img ia"
-    ><img
-      src="/images/music-theater/internet-archive.svg"
-      alt="internet archive logo"
-  /></span>
-  <span class="channel-name">Internet Archive ${label}</span>
-`;
+export const iaLabel = (
+  label:
+    | channelLabels.iaPlayer
+    | channelLabels.iaSamples = channelLabels.iaPlayer,
+  selected: boolean
+) => {
+  const filter = selected ? 'invert(1)' : 'invert(0)';
+  const styles = styleMap({ filter });
+  return html`
+    <ia-icon-label class="invert-icon-at-hover ${selected ? 'selected' : ''}">
+      <img
+        slot="icon"
+        class="ia"
+        src="/images/music-theater/internet-archive.svg"
+        alt="internet archive logo"
+        style=${styles}
+      />
+      <span>${label}</span>
+    </ia-icon-label>
+  `;
+};
 
-export const iaStreamingLabel = html`
-  <span class="channel-img ia-streaming"
-    ><img
+export const iaStreamingLabel = (selected: boolean) => html`
+  <ia-icon-label class="${selected ? 'selected' : ''}">
+    <img
+      slot="icon"
+      class="ia-streaming"
       src="/images/music-theater/streaming.svg"
       alt="internet archive streaming play logo"
-  /></span>
-  <span class="channel-name">Streaming (beta)</span>
+    />
+    <span>${channelLabels.iaStreaming}</span>
+  </ia-icon-label>
 `;
 
-export const spotifyLabel = html`
-  <span class="channel-img spotify"
-    ><img src="/images/music-theater/spotify.svg" alt="spotify logo"
-  /></span>
-  <span class="channel-name">Spotify</span>
+export const spotifyLabel = (selected: boolean) => html`
+  <ia-icon-label class="${selected ? 'selected' : ''}">
+    <img
+      slot="icon"
+      class="spotify"
+      src="/images/music-theater/spotify.svg"
+      alt="spotify logo"
+    />
+    <span>${channelLabels.spotify}</span>
+  </ia-icon-label>
 `;
 
-export const webampLabel = html`
-  <span class="channel-img webamp"
-    ><img src="/images/music-theater/webamp.svg" alt="webamp logo"
-  /></span>
-  <span class="channel-name">Webamp</span>
-`;
+export const webampLabel = (selected: boolean) => {
+  const filter = selected ? 'invert(1)' : 'invert(0)';
+  const styles = styleMap({ width: '20px', filter });
+  return html`
+    <ia-icon-label class="invert-icon-at-hover ${selected ? 'selected' : ''}">
+      <img
+        slot="icon"
+        class="icon"
+        src="/images/music-theater/webamp.svg"
+        alt="webamp logo"
+        style=${styles}
+        ;
+      />
+      <span>Webamp</span>
+    </ia-icon-label>
+  `;
+};
 
-export const youtubeLabel = html`
-  <span class="channel-img youtube">
-    <img src="/images/music-theater/youtube.svg" alt="youtube logo" />
-  </span>
-  <span class="channel-name">YouTube</span>
+export const youtubeLabel = (selected: boolean) => html`
+  <ia-icon-label class="${selected ? 'selected' : ''}">
+    <img
+      slot="icon"
+      class="youtube"
+      src="/images/music-theater/youtube.svg"
+      alt="youtube logo"
+      style="${styleMap({ width: '20px' })}"
+    />
+    <span>${channelLabels.youtube}</span>
+  </ia-icon-label>
 `;
 
 /** IA <a> */
@@ -63,11 +117,12 @@ export const iaLink = ({
   href,
   selected,
 }: channelSpecs): TemplateResult => {
-  const label: playbackLabel = samples ? 'Samples' : 'Player';
-  const selectedClass = selected ? 'selected' : '';
+  const label = samples ? channelLabels.iaSamples : channelLabels.iaPlayer;
   return html`
-    <a href=${href} @click=${() =>
-    onClick()} class="ia ${selectedClass}">${iaLabel(label)}</button>
+    <a href=${href} @click=${() => onClick()}>${iaLabel(
+    label,
+    selected
+  )}</button>
   `;
 };
 
@@ -77,51 +132,170 @@ export const iaButton = ({
   onClick,
   selected,
 }: channelSpecs): TemplateResult => {
-  const label: playbackLabel = samples ? 'Samples' : 'Player';
-  const selectedClass = selected ? 'selected' : '';
+  const label = samples ? channelLabels.iaSamples : channelLabels.iaPlayer;
   return html`
-    <button @click=${() => onClick()} class="ia ${selectedClass}">
-      ${iaLabel(label)}
+    <button @click=${(x: optionOnClickCallback) => onClick(x)} class="ia">
+      ${iaLabel(label, selected)}
     </button>
   `;
 };
 
-export const streamingButton = ({ onClick, selected }: channelSpecs) => {
-  const selectedClass = selected ? 'selected' : '';
-  return html`<button
-    @click=${() => onClick()}
-    class="ia-stream ${selectedClass}"
-  >
-    ${iaStreamingLabel}
-  </button>`;
-};
+export const streamingButton = ({
+  onClick,
+  selected,
+}: channelSpecs) => html`<button
+  @click=${(x: optionOnClickCallback) => onClick(x)}
+  class="ia-stream"
+>
+  ${iaStreamingLabel(selected)}
+</button>`;
 
-export const spotifyButton = ({ onClick, selected }: channelSpecs) => {
-  const selectedClass = selected ? 'selected' : '';
-  return html`<button @click=${() => onClick()} class="sp ${selectedClass}">
-    ${spotifyLabel}
-  </button>`;
-};
+export const spotifyButton = ({
+  onClick,
+  selected,
+}: channelSpecs) => html`<button
+  @click=${(x: optionOnClickCallback) => onClick(x)}
+  class="sp"
+>
+  ${spotifyLabel(selected)}
+</button>`;
 
 export const webampLink = ({ onClick, href, selected }: channelSpecs) => {
-  const selectedClass = selected ? 'selected' : '';
   const webampUrl = `${href}?webamp=default`;
   return html`
-    <a href=${webampUrl} @click=${() =>
-    onClick()} class="wa ${selectedClass}">${webampLabel}</button>
+    <a href=${webampUrl} @click=${(x: optionOnClickCallback) =>
+    onClick(x)} class="wa">${webampLabel(selected)}</button>
   `;
 };
 
-export const webampButton = ({ onClick, selected }: channelSpecs) => {
-  const selectedClass = selected ? 'selected' : '';
-  return html`<button @click=${() => onClick()} class="wa ${selectedClass}">
-    ${webampLabel}
-  </button>`;
+export const youtubeButton = ({
+  onClick,
+  selected,
+}: channelSpecs) => html`<button
+  @click=${(x: optionOnClickCallback) => onClick(x)}
+  class="yt"
+>
+  ${youtubeLabel(selected)}
+</button>`;
+
+/** Dropdown options */
+export interface dropdownOptionsInterface extends channelSpecs {
+  spotify: boolean;
+  streaming: boolean;
+  webamp: boolean;
+  youtube: boolean;
+  selectedOption: channelTypes;
+}
+
+export const iaLinkDropdownOption = ({
+  samples,
+  onClick,
+  href,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    url: href,
+    selectedHandler,
+    label: iaLabel(
+      samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
+      selectedOption === channelTypes.ia
+    ),
+    id: channelTypes.ia,
+  };
 };
 
-export const youtubeButton = ({ onClick, selected }: channelSpecs) => {
-  const selectedClass = selected ? 'selected' : '';
-  return html`<button @click=${() => onClick()} class="yt ${selectedClass}">
-    ${youtubeLabel}
-  </button>`;
+export const iaButtonDropdownOption = ({
+  samples,
+  onClick,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    selectedHandler,
+    label: iaLabel(
+      samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
+      selectedOption === channelTypes.ia
+    ),
+    id: channelTypes.ia,
+  };
+};
+
+export const iaStreamingDropdownOption = ({
+  onClick,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    selectedHandler,
+    label: iaStreamingLabel(selectedOption === channelTypes.streaming),
+    id: channelTypes.streaming,
+  };
+};
+
+export const spotifyDropdownOption = ({
+  onClick,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    selectedHandler,
+    label: spotifyLabel(selectedOption === channelTypes.spotify),
+    id: channelTypes.spotify,
+  };
+};
+
+export const webampDropdownOption = ({
+  href,
+  onClick,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    url: href,
+    selectedHandler,
+    label: webampLabel(selectedOption === channelTypes.webamp),
+    id: channelTypes.webamp,
+  };
+};
+
+export const youtubeDropdownOption = ({
+  onClick,
+  selectedOption,
+}: dropdownOptionsInterface): optionInterface => {
+  const selectedHandler = (x: optionOnClickCallback) => {
+    onClick(x);
+  };
+  return {
+    selectedHandler,
+    label: youtubeLabel(selectedOption === channelTypes.youtube),
+    id: channelTypes.youtube,
+  };
+};
+
+export const createDropdownOptions = (
+  ddOptions: dropdownOptionsInterface
+): any[] => {
+  const { spotify, streaming, youtube, selectedOption } = ddOptions;
+
+  const webampSelected = selectedOption === channelTypes.webamp;
+  return [
+    webampSelected
+      ? iaLinkDropdownOption(ddOptions)
+      : iaButtonDropdownOption(ddOptions),
+    streaming ? iaStreamingDropdownOption(ddOptions) : null,
+    spotify ? spotifyDropdownOption(ddOptions) : null,
+    youtube ? youtubeDropdownOption(ddOptions) : null,
+    webampDropdownOption(ddOptions),
+  ].filter(Boolean) as any[];
 };

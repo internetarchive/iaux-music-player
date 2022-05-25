@@ -35,15 +35,23 @@ export const channelSelectorRadio = css`
     border-bottom-left-radius: 50px;
     padding-left: 5px;
   }
+  #radio li:first-child :only-child {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+  }
 
   #radio li:last-child {
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
     padding-right: 10px;
+    padding-left: 5px;
   }
 
   #radio li:not(:last-child) {
     border-right: none;
+    padding-right: 5px;
+    padding-left: 5px;
+    @internetarchive /ia-dropdown@0.0.1-a2;
   }
 
   /* Demarcate when hovering next to selected channel */
@@ -53,6 +61,12 @@ export const channelSelectorRadio = css`
 
   #radio li:not(:last-child):hover + li.selected {
     border-left: 1px solid #2c2c2c !important;
+  }
+
+  #radio li > ia-icon-label {
+    height: 30px;
+    padding: 5px;
+    box-sizing: border-box;
   }
   /* End demarcation */
 `;
