@@ -5,7 +5,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 
 export enum channelTypes {
   ia = 'ia',
-  streaming = 'streaming',
+  beta = 'beta',
   youtube = 'youtube',
   spotify = 'spotify',
   webamp = 'webamp',
@@ -14,7 +14,7 @@ export enum channelTypes {
 enum channelLabels {
   iaSamples = 'Internet Archive Samples',
   iaPlayer = 'Internet Archive Player',
-  iaStreaming = 'Streaming (beta)',
+  beta = 'Beta',
   spotify = 'Spotify',
   webamp = 'Webamp',
   youtube = 'YouTube',
@@ -55,15 +55,15 @@ export const iaLabel = (
   `;
 };
 
-export const iaStreamingLabel = (selected: boolean) => html`
+export const betaLabel = (selected: boolean) => html`
   <ia-icon-label class="${selected ? 'selected' : ''}">
     <img
       slot="icon"
-      class="ia-streaming"
+      class="ia-beta"
       src="/images/music-theater/streaming.svg"
-      alt="internet archive streaming play logo"
+      alt="internet archive beta player logo"
     />
-    <span>${channelLabels.iaStreaming}</span>
+    <span>${channelLabels.beta}</span>
   </ia-icon-label>
 `;
 
@@ -140,14 +140,14 @@ export const iaButton = ({
   `;
 };
 
-export const streamingButton = ({
+export const iaBetaButton = ({
   onClick,
   selected,
 }: channelSpecs) => html`<button
   @click=${(x: optionOnClickCallback) => onClick(x)}
-  class="ia-stream"
+  class="ia-beta"
 >
-  ${iaStreamingLabel(selected)}
+  ${betaLabel(selected)}
 </button>`;
 
 export const spotifyButton = ({
@@ -181,7 +181,7 @@ export const youtubeButton = ({
 /** Dropdown options */
 export interface dropdownOptionsInterface extends channelSpecs {
   spotify: boolean;
-  streaming: boolean;
+  beta: boolean;
   webamp: boolean;
   youtube: boolean;
   selectedOption: channelTypes;
@@ -225,7 +225,7 @@ export const iaButtonDropdownOption = ({
   };
 };
 
-export const iaStreamingDropdownOption = ({
+export const betaDropdownOption = ({
   onClick,
   selectedOption,
 }: dropdownOptionsInterface): optionInterface => {
@@ -234,8 +234,8 @@ export const iaStreamingDropdownOption = ({
   };
   return {
     selectedHandler,
-    label: iaStreamingLabel(selectedOption === channelTypes.streaming),
-    id: channelTypes.streaming,
+    label: betaLabel(selectedOption === channelTypes.beta),
+    id: channelTypes.beta,
   };
 };
 
@@ -286,14 +286,14 @@ export const youtubeDropdownOption = ({
 export const createDropdownOptions = (
   ddOptions: dropdownOptionsInterface
 ): any[] => {
-  const { spotify, streaming, youtube, selectedOption } = ddOptions;
+  const { spotify, beta, youtube, selectedOption } = ddOptions;
 
   const webampSelected = selectedOption === channelTypes.webamp;
   return [
     webampSelected
       ? iaLinkDropdownOption(ddOptions)
       : iaButtonDropdownOption(ddOptions),
-    streaming ? iaStreamingDropdownOption(ddOptions) : null,
+    beta ? betaDropdownOption(ddOptions) : null,
     spotify ? spotifyDropdownOption(ddOptions) : null,
     youtube ? youtubeDropdownOption(ddOptions) : null,
     webampDropdownOption(ddOptions),

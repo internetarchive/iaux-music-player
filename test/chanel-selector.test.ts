@@ -87,19 +87,17 @@ describe('`<channel-selector>`', () => {
   it('can select any channel at creation', async () => {
     const el = await fixture<ChannelSelector>(
       html`<channel-selector
-        streaming
-        .selected=${channelTypes.streaming}
+        beta
+        .selected=${channelTypes.beta}
       ></channel-selector>`
     );
 
     const streamingSelectedAtStart = el.shadowRoot!.querySelector(
-      'li.selected .ia-stream'
+      'li.selected .ia-beta'
     );
 
     await expect(streamingSelectedAtStart).to.exist;
-    await expect(streamingSelectedAtStart?.innerHTML).to.contain(
-      `Streaming (beta)`
-    );
+    await expect(streamingSelectedAtStart?.innerHTML).to.contain('Beta');
   });
 
   it('updates IA label when playing samples', async () => {
@@ -113,16 +111,16 @@ describe('`<channel-selector>`', () => {
     await expect(iaChannel?.innerHTML).to.contain('Samples');
   });
 
-  it('displays Streaming (beta) with `streaming` attribute', async () => {
+  it('displays Beta with `beta` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector streaming></channel-selector>`
+      html`<channel-selector beta></channel-selector>`
     );
 
-    const streamingChannel = el.shadowRoot!.querySelector('.ia-stream');
+    const streamingChannel = el.shadowRoot!.querySelector('.ia-beta');
 
     await expect(streamingChannel).to.exist;
-    await expect(streamingChannel?.innerHTML).to.contain('Streaming (beta)');
-    await expect(el.getAttribute('streaming')).to.exist;
+    await expect(streamingChannel?.innerHTML).to.contain('Beta');
+    await expect(el.getAttribute('beta')).to.exist;
   });
 
   it('displays SPOTIFY with `spotify` attribute', async () => {

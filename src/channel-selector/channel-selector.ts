@@ -3,13 +3,13 @@ import { property, customElement } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 
 import type { optionInterface } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
-import '@internetarchive/ia-dropdown';
+import '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
 
 import { channelSelectorRadio } from './style-radio';
 import {
   channelTypes,
   iaButton,
-  streamingButton,
+  iaBetaButton,
   youtubeButton,
   spotifyButton,
   webampLink,
@@ -31,14 +31,14 @@ export class ChannelSelector extends LitElement {
 
   @property({ attribute: true, type: Boolean, reflect: true }) spotify = false;
 
-  @property({ attribute: true, type: Boolean, reflect: true }) streaming =
-    false;
+  @property({ attribute: true, type: Boolean, reflect: true }) beta = false;
 
   @property({ attribute: true, type: Boolean, reflect: true }) webamp = true;
 
   @property({ attribute: true, type: Boolean, reflect: true }) samples = false;
 
-  @property({ type: String }) selected: channelTypes = channelTypes.ia;
+  @property({ type: String, reflect: true }) selected: channelTypes =
+    channelTypes.ia;
 
   @property({ type: String, reflect: true }) displayStyle: displayStyle =
     'radio';
@@ -76,13 +76,13 @@ export class ChannelSelector extends LitElement {
     this.emitChannelChanged();
   }
 
-  iaStreamingClicked() {
-    if (this.selected === channelTypes.streaming) {
+  betaClicked() {
+    if (this.selected === channelTypes.beta) {
       return;
     }
     // send analytic
     // set value
-    this.selected = channelTypes.streaming;
+    this.selected = channelTypes.beta;
     // dispatch event
     this.emitChannelChanged();
   }
@@ -155,14 +155,13 @@ export class ChannelSelector extends LitElement {
     `;
   }
 
-  get streamingSelector(): TemplateResult {
-    const selectedClass =
-      this.selected === channelTypes.streaming ? 'selected' : '';
+  get iaBetaSelector(): TemplateResult {
+    const selectedClass = this.selected === channelTypes.beta ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${streamingButton({
-          selected: this.selected === channelTypes.streaming,
-          onClick: () => this.iaStreamingClicked(),
+        ${iaBetaButton({
+          selected: this.selected === channelTypes.beta,
+          onClick: () => this.betaClicked(),
         })}
       </li>
     `;
@@ -233,12 +232,11 @@ export class ChannelSelector extends LitElement {
   }
 
   get dropdownOptions() {
-    const { samples, streaming, spotify, webamp, youtube, url, selected } =
-      this;
+    const { samples, beta, spotify, webamp, youtube, url, selected } = this;
     return createDropdownOptions({
       selectedOption: selected,
       samples: !!samples,
-      streaming,
+      beta,
       spotify,
       webamp,
       youtube,
@@ -277,8 +275,7 @@ export class ChannelSelector extends LitElement {
       <div id="selector-title"><h4>Play from:</h4></div>
       <div>
         <ul>
-          ${this.properIaSelector}
-          ${this.streaming ? this.streamingSelector : nothing}
+          ${this.properIaSelector} ${this.beta ? this.iaBetaSelector : nothing}
           ${this.youtube ? this.youtubeSelector : nothing}
           ${this.spotify ? this.spotifySelector : nothing}
           ${this.webamp ? this.webampSelector : nothing}
