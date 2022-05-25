@@ -262,7 +262,7 @@ export const webampDropdownOption = ({
     onClick(x);
   };
   return {
-    url: href,
+    url: `${href}?webamp=default`,
     selectedHandler,
     label: webampLabel(selectedOption === channelTypes.webamp),
     id: channelTypes.webamp,

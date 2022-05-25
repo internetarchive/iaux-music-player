@@ -186,7 +186,7 @@ export class ChannelSelector extends LitElement {
     return html`
       <li class=${selectedClass}>
         ${webampLink({
-          href: window.location.href,
+          href: this.url || window.location.href,
           selected: this.selected === channelTypes.webamp,
           onClick: () => this.webampClicked(),
         })}
