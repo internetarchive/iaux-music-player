@@ -295,6 +295,13 @@
   "resolved" "https://registry.npmjs.org/@import-maps/resolve/-/resolve-1.0.1.tgz"
   "version" "1.0.1"
 
+"@internetarchive/ia-dropdown@^0.0.1-a3":
+  "integrity" "sha512-VXPcBbNxhvQCfi7pUAzLnbMQ+URB0Bcyg2nnO4Pfqa3keY2j5g0NkvMXkkK3DnVPeKp+Sf7PriezPHc38ZJ0Rg=="
+  "resolved" "https://registry.npmjs.org/@internetarchive/ia-dropdown/-/ia-dropdown-0.0.1-a3.tgz"
+  "version" "0.0.1-a3"
+  dependencies:
+    "lit" "^2.0.2"
+
 "@jridgewell/resolve-uri@^3.0.3":
   "integrity" "sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew=="
   "resolved" "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.0.5.tgz"
