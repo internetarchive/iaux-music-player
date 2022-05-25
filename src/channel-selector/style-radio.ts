@@ -51,7 +51,6 @@ export const channelSelectorRadio = css`
     border-right: none;
     padding-right: 5px;
     padding-left: 5px;
-    @internetarchive /ia-dropdown@0.0.1-a2;
   }
 
   /* Demarcate when hovering next to selected channel */
