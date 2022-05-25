@@ -11,9 +11,7 @@ describe('`<channel-selector>`', () => {
         html`<channel-selector></channel-selector>`
       );
 
-      const iaChannelSelected = el
-        .shadowRoot!.querySelector('li.selected')!
-        .querySelector('.ia.selected');
+      const iaChannelSelected = el.shadowRoot!.querySelector('li.selected .ia');
 
       await expect(iaChannelSelected).to.exist;
       await expect(el.selected).to.equal('ia');
@@ -23,15 +21,11 @@ describe('`<channel-selector>`', () => {
         html`<channel-selector></channel-selector>`
       );
 
-      const iaChannel = el.shadowRoot!.querySelector('.ia.selected');
+      const iaChannel = el.shadowRoot!.querySelector('.selected .ia');
 
       await expect(iaChannel).to.exist;
-      await expect(
-        iaChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Internet Archive');
-      await expect(
-        iaChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Player');
+      await expect(iaChannel?.innerHTML).to.contain('Internet Archive');
+      await expect(iaChannel?.innerHTML).to.contain('Player');
     });
     it('displays WEBAMP by default', async () => {
       const el = await fixture<ChannelSelector>(
@@ -41,9 +35,7 @@ describe('`<channel-selector>`', () => {
       const webampChannel = el.shadowRoot!.querySelector('.wa');
 
       await expect(webampChannel).to.exist;
-      await expect(
-        webampChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Webamp');
+      await expect(webampChannel?.innerHTML).to.contain('Webamp');
       await expect(el.getAttribute('webamp')).to.exist;
     });
     it('displays RADIO style by default', async () => {
@@ -100,13 +92,14 @@ describe('`<channel-selector>`', () => {
       ></channel-selector>`
     );
 
-    const streamingSelectedAtStart = el
-      .shadowRoot!.querySelector('li.selected')!
-      .querySelector('.ia-stream.selected');
+    const streamingSelectedAtStart = el.shadowRoot!.querySelector(
+      'li.selected .ia-stream'
+    );
+
     await expect(streamingSelectedAtStart).to.exist;
-    await expect(
-      streamingSelectedAtStart!.querySelector('.channel-name')?.innerHTML
-    ).to.equal('Streaming (beta)');
+    await expect(streamingSelectedAtStart?.innerHTML).to.contain(
+      `Streaming (beta)`
+    );
   });
 
   it('updates IA label when playing samples', async () => {
@@ -114,16 +107,10 @@ describe('`<channel-selector>`', () => {
       html`<channel-selector samples></channel-selector>`
     );
 
-    const iaChannel = el
-      .shadowRoot!.querySelector('li.selected')!
-      .querySelector('.ia.selected');
+    const iaChannel = el.shadowRoot!.querySelector('li.selected .ia');
 
-    await expect(
-      iaChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Internet Archive');
-    await expect(
-      iaChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Samples');
+    await expect(iaChannel?.innerHTML).to.contain('Internet Archive');
+    await expect(iaChannel?.innerHTML).to.contain('Samples');
   });
 
   it('displays Streaming (beta) with `streaming` attribute', async () => {
@@ -134,9 +121,7 @@ describe('`<channel-selector>`', () => {
     const streamingChannel = el.shadowRoot!.querySelector('.ia-stream');
 
     await expect(streamingChannel).to.exist;
-    await expect(
-      streamingChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Streaming (beta)');
+    await expect(streamingChannel?.innerHTML).to.contain('Streaming (beta)');
     await expect(el.getAttribute('streaming')).to.exist;
   });
 
@@ -148,9 +133,7 @@ describe('`<channel-selector>`', () => {
     const spotifyChannel = el.shadowRoot!.querySelector('.sp');
 
     await expect(spotifyChannel).to.exist;
-    await expect(
-      spotifyChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Spotify');
+    await expect(spotifyChannel?.innerHTML).to.contain('Spotify');
     await expect(el.getAttribute('spotify')).to.exist;
   });
 
@@ -162,9 +145,7 @@ describe('`<channel-selector>`', () => {
     const youtubeChannel = el.shadowRoot!.querySelector('.yt');
 
     await expect(youtubeChannel).to.exist;
-    await expect(
-      youtubeChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('YouTube');
+    await expect(youtubeChannel?.innerHTML).to.contain('YouTube');
     await expect(el.getAttribute('youtube')).to.exist;
   });
 
