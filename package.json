@@ -22,7 +22,7 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@internetarchive/ia-dropdown": "^0.0.1-a3",
+    "@internetarchive/ia-dropdown": "0.0.1",
     "lit": "^2.0.2"
   },
   "devDependencies": {
