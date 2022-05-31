@@ -2,7 +2,7 @@ import { html, fixture, expect } from '@open-wc/testing';
 
 import type { ChannelSelector } from '../src/channel-selector/channel-selector';
 import '../src/channel-selector/channel-selector';
-import { channelTypes } from '../src/channel-selector/channels';
+import { channelTypes, channelIcons } from '../src/channel-selector/channels';
 
 describe('`<channel-selector>`', () => {
   describe('Defaults', () => {
@@ -44,6 +44,38 @@ describe('`<channel-selector>`', () => {
       );
 
       await expect(el.getAttribute('displayStyle')).to.equal('radio');
+    });
+    describe('Dropdown view', () => {
+      it('shows selected icon at toggle button', async () => {
+        const el = await fixture<ChannelSelector>(
+          html`<channel-selector
+            displaystyle="dropdown"
+            selected=${channelTypes.beta}
+          ></channel-selector>`
+        );
+
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.beta);
+
+        const dropdown = el.shadowRoot?.querySelector('ia-dropdown');
+        await expect(dropdown).to.exist;
+        await expect(dropdown?.querySelector('img.ia-beta')).to.exist;
+
+        el.selected = channelTypes.ia;
+        await el.updateComplete;
+        await expect(dropdown?.querySelector('img.ia')).to.exist;
+
+        el.selected = channelTypes.spotify;
+        await el.updateComplete;
+        await expect(dropdown?.querySelector('img.spotify')).to.exist;
+
+        el.selected = channelTypes.youtube;
+        await el.updateComplete;
+        await expect(dropdown?.querySelector('img.youtube')).to.exist;
+
+        el.selected = channelTypes.webamp;
+        await el.updateComplete;
+        await expect(dropdown?.querySelector('img.webamp')).to.exist;
+      });
     });
     describe('Events', () => {
       it('emits `postInit` on firstUpdate', async () => {

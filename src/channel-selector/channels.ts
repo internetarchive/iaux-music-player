@@ -46,7 +46,6 @@ export const channelIcons: iconInterface = {
     style="height: 20px; width: 20px;"
   />`,
   beta: html`<img
-    slot="icon"
     class="ia-beta"
     src="/images/music-theater/streaming.svg"
     alt="internet archive beta player logo"
@@ -58,7 +57,7 @@ export const channelIcons: iconInterface = {
     alt="spotify logo"
   />`,
   webamp: html`<img
-    class="icon"
+    class="webamp"
     src="/images/music-theater/webamp.svg"
     alt="webamp logo"
     style="height: 20px;"
