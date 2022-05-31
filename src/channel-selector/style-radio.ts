@@ -35,9 +35,8 @@ export const channelSelectorRadio = css`
     border-bottom-left-radius: 50px;
     padding-left: 5px;
   }
-  #radio li:first-child :only-child {
-    border-top-left-radius: 50px;
-    border-bottom-left-radius: 50px;
+  #radio li:first-child ia-icon-label {
+    margin-left: 5px;
   }
 
   #radio li:last-child {
@@ -45,6 +44,10 @@ export const channelSelectorRadio = css`
     border-bottom-right-radius: 50px;
     padding-right: 10px;
     padding-left: 5px;
+  }
+
+  #radio li:last-child ia-icon-label {
+    margin-right: 5px;
   }
 
   #radio li:not(:last-child) {

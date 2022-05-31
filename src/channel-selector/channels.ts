@@ -33,6 +33,44 @@ export type optionOnClickCallback =
   | optionInterface
   | undefined;
 
+// type iconMaker = (styles: typeof styleMap) => TemplateResult;
+type iconInterface = {
+  [key in channelTypes]: TemplateResult;
+};
+
+export const channelIcons: iconInterface = {
+  ia: html`<img
+    class="ia"
+    src="/images/music-theater/internet-archive.svg"
+    alt="internet archive logo"
+    style="height: 20px; width: 20px;"
+  />`,
+  beta: html`<img
+    slot="icon"
+    class="ia-beta"
+    src="/images/music-theater/streaming.svg"
+    alt="internet archive beta player logo"
+    style="height: 20px; width: 20px;"
+  />`,
+  spotify: html`<img
+    class="spotify"
+    src="/images/music-theater/spotify.svg"
+    alt="spotify logo"
+  />`,
+  webamp: html`<img
+    class="icon"
+    src="/images/music-theater/webamp.svg"
+    alt="webamp logo"
+    style="height: 20px;"
+  />`,
+  youtube: html`<img
+    class="youtube"
+    src="/images/music-theater/youtube.svg"
+    alt="youtube logo"
+    style="height: 20px;"
+  />`,
+};
+
 export const iaLabel = (
   label:
     | channelLabels.iaPlayer
@@ -42,39 +80,27 @@ export const iaLabel = (
   const filter = selected ? 'invert(1)' : 'invert(0)';
   const styles = styleMap({ filter });
   return html`
-    <ia-icon-label class="invert-icon-at-hover ${selected ? 'selected' : ''}">
-      <img
-        slot="icon"
-        class="ia"
-        src="/images/music-theater/internet-archive.svg"
-        alt="internet archive logo"
-        style=${styles}
-      />
+    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+      <span slot="icon" style=${styles}>${channelIcons.ia}</span>
       <span>${label}</span>
     </ia-icon-label>
   `;
 };
 
-export const betaLabel = (selected: boolean) => html`
-  <ia-icon-label class="${selected ? 'selected' : ''}">
-    <img
-      slot="icon"
-      class="ia-beta"
-      src="/images/music-theater/streaming.svg"
-      alt="internet archive beta player logo"
-    />
-    <span>${channelLabels.beta}</span>
-  </ia-icon-label>
-`;
+export const betaLabel = (selected: boolean) => {
+  const filter = selected ? 'invert(1)' : 'invert(0)';
+  const styles = styleMap({ filter });
+  return html`
+    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+      <span slot="icon" style=${styles}>${channelIcons.beta}</span>
+      <span>${channelLabels.beta}</span>
+    </ia-icon-label>
+  `;
+};
 
 export const spotifyLabel = (selected: boolean) => html`
   <ia-icon-label class="${selected ? 'selected' : ''}">
-    <img
-      slot="icon"
-      class="spotify"
-      src="/images/music-theater/spotify.svg"
-      alt="spotify logo"
-    />
+    <span slot="icon">${channelIcons.spotify}</span>
     <span>${channelLabels.spotify}</span>
   </ia-icon-label>
 `;
@@ -83,15 +109,8 @@ export const webampLabel = (selected: boolean) => {
   const filter = selected ? 'invert(1)' : 'invert(0)';
   const styles = styleMap({ width: '20px', filter });
   return html`
-    <ia-icon-label class="invert-icon-at-hover ${selected ? 'selected' : ''}">
-      <img
-        slot="icon"
-        class="icon"
-        src="/images/music-theater/webamp.svg"
-        alt="webamp logo"
-        style=${styles}
-        ;
-      />
+    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+      <span slot="icon" style=${styles}>${channelIcons.webamp}</span>
       <span>Webamp</span>
     </ia-icon-label>
   `;
@@ -99,13 +118,7 @@ export const webampLabel = (selected: boolean) => {
 
 export const youtubeLabel = (selected: boolean) => html`
   <ia-icon-label class="${selected ? 'selected' : ''}">
-    <img
-      slot="icon"
-      class="youtube"
-      src="/images/music-theater/youtube.svg"
-      alt="youtube logo"
-      style="${styleMap({ width: '20px' })}"
-    />
+    <span slot="icon">${channelIcons.youtube}</span>
     <span>${channelLabels.youtube}</span>
   </ia-icon-label>
 `;
