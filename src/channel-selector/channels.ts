@@ -33,7 +33,6 @@ export type optionOnClickCallback =
   | optionInterface
   | undefined;
 
-// type iconMaker = (styles: typeof styleMap) => TemplateResult;
 type iconInterface = {
   [key in channelTypes]: TemplateResult;
 };

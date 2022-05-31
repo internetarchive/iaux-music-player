@@ -62,18 +62,22 @@ describe('`<channel-selector>`', () => {
 
         el.selected = channelTypes.ia;
         await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.ia);
         await expect(dropdown?.querySelector('img.ia')).to.exist;
 
         el.selected = channelTypes.spotify;
         await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.spotify);
         await expect(dropdown?.querySelector('img.spotify')).to.exist;
 
         el.selected = channelTypes.youtube;
         await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.youtube);
         await expect(dropdown?.querySelector('img.youtube')).to.exist;
 
         el.selected = channelTypes.webamp;
         await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.webamp);
         await expect(dropdown?.querySelector('img.webamp')).to.exist;
       });
     });
