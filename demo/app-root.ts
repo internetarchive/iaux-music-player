@@ -56,6 +56,7 @@ export class AppRoot extends LitElement {
       @channelChange=${(e: CustomEvent) => {
         this.selectedByDropdown = e.detail.channel as channelTypes;
       }}
+      .selected=${this.startAtWebamp ? channelTypes.webamp : ''}
     >
     </channel-selector>
     <section class='details'>
