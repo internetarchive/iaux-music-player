@@ -295,10 +295,10 @@
   "resolved" "https://registry.npmjs.org/@import-maps/resolve/-/resolve-1.0.1.tgz"
   "version" "1.0.1"
 
-"@internetarchive/ia-dropdown@0.0.1":
-  "integrity" "sha512-2EZtaZ/8W5KhTcPjvziyVrCYpXq7ajfNaiuLht0WpVzfOSAVl1v7nNBSdrG4TVhjyW+BMIXYbBN+VYRLgxrT6Q=="
-  "resolved" "https://registry.npmjs.org/@internetarchive/ia-dropdown/-/ia-dropdown-0.0.1.tgz"
-  "version" "0.0.1"
+"@internetarchive/ia-dropdown@^1.0.0":
+  "integrity" "sha512-rYOp205ayqOxdEgLUrQSV6gNnWPfjGivkYTcXCo1qEhV5EyZ4fN/qoL+iuPqQuQ1cjLWRyQhYmXT+Q3vXvwDMQ=="
+  "resolved" "https://registry.npmjs.org/@internetarchive/ia-dropdown/-/ia-dropdown-1.0.0.tgz"
+  "version" "1.0.0"
   dependencies:
     "lit" "^2.0.2"
 
