@@ -1,8 +1,14 @@
 import { html, fixture, expect } from '@open-wc/testing';
+import sinon from 'sinon';
 
 import type { ChannelSelector } from '../src/channel-selector/channel-selector';
 import '../src/channel-selector/channel-selector';
-import { channelTypes, channelIcons } from '../src/channel-selector/channels';
+import {
+  channelTypes,
+  channelIcons,
+  createDropdownOptions,
+  channelSpecs,
+} from '../src/channel-selector/channels';
 
 describe('`<channel-selector>`', () => {
   describe('Defaults', () => {
@@ -79,6 +85,77 @@ describe('`<channel-selector>`', () => {
         await el.updateComplete;
         await expect(el.currentlySelectedIcon).to.equal(channelIcons.webamp);
         await expect(dropdown?.querySelector('img.webamp')).to.exist;
+      });
+
+      it('calls for dropdown options before draw', async () => {
+        const el = await fixture<ChannelSelector>(
+          html`<channel-selector
+            selected=${channelTypes.beta}
+          ></channel-selector>`
+        );
+
+        const spy = sinon.spy(el, 'dropdownOptions', ['get']);
+        el.displayStyle = 'dropdown';
+        await el.updateComplete;
+        expect(spy.get.called).to.be.true;
+      });
+
+      it('`createDropdownOptions` creates array of possible options', async () => {
+        const onClick = sinon.stub();
+        const baseConfig: channelSpecs = {
+          onClick,
+          selected: true,
+          samples: true,
+        };
+        let options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.ia,
+          spotify: true,
+          youtube: true,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(5);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: true,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(4);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(3);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(3);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: false,
+        });
+        expect(options).to.have.lengthOf(2);
       });
     });
     describe('Events', () => {
