@@ -268,7 +268,7 @@ export class ChannelSelector extends LitElement {
         .options=${this.dropdownOptions}
         .selectedOption=${this.selected}
       >
-        <p slot="dropdown-label">${this.currentlySelectedIcon}</p>
+        <span slot="dropdown-label">${this.currentlySelectedIcon}</span>
       </ia-dropdown>
     `;
   }

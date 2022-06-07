@@ -2,6 +2,7 @@ import { html, TemplateResult } from 'lit';
 import { optionInterface } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
 import '@internetarchive/ia-dropdown/dist/src/ia-icon-label';
 import { styleMap } from 'lit/directives/style-map.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 export enum channelTypes {
   ia = 'ia',
@@ -65,7 +66,7 @@ export const channelIcons: iconInterface = {
     class="youtube"
     src="/images/music-theater/youtube.svg"
     alt="youtube logo"
-    style="height: 20px;"
+    style="height: 20px; width: 20px;"
   />`,
 };
 
@@ -76,9 +77,19 @@ export const iaLabel = (
   selected: boolean
 ) => {
   const filter = selected ? 'invert(1)' : 'invert(0)';
-  const styles = styleMap({ filter });
+  const styles = styleMap({
+    filter,
+    height: '20px',
+    width: '20px',
+  });
+  const classes = classMap({
+    selected,
+    'invert-icon-at-hover': !selected,
+    'invert-icon-at-hover-selected': selected,
+  });
+
   return html`
-    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+    <ia-icon-label class=${classes}>
       <span slot="icon" style=${styles}>${channelIcons.ia}</span>
       <span>${label}</span>
     </ia-icon-label>
@@ -87,9 +98,19 @@ export const iaLabel = (
 
 export const betaLabel = (selected: boolean) => {
   const filter = selected ? 'invert(1)' : 'invert(0)';
-  const styles = styleMap({ filter });
+  const styles = styleMap({
+    filter,
+    height: '20px',
+    width: '20px',
+  });
+  const classes = classMap({
+    selected,
+    'invert-icon-at-hover': !selected,
+    'invert-icon-at-hover-selected': selected,
+  });
+
   return html`
-    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+    <ia-icon-label class=${classes}>
       <span slot="icon" style=${styles}>${channelIcons.beta}</span>
       <span>${channelLabels.beta}</span>
     </ia-icon-label>
@@ -105,9 +126,19 @@ export const spotifyLabel = (selected: boolean) => html`
 
 export const webampLabel = (selected: boolean) => {
   const filter = selected ? 'invert(1)' : 'invert(0)';
-  const styles = styleMap({ width: '20px', filter });
+  const styles = styleMap({
+    filter,
+    height: '20px',
+    width: '20px',
+  });
+  const classes = classMap({
+    selected,
+    'invert-icon-at-hover': !selected,
+    'invert-icon-at-hover-selected': selected,
+  });
+
   return html`
-    <ia-icon-label class=${selected ? 'selected' : 'invert-icon-at-hover'}>
+    <ia-icon-label class=${classes}>
       <span slot="icon" style=${styles}>${channelIcons.webamp}</span>
       <span>Webamp</span>
     </ia-icon-label>
