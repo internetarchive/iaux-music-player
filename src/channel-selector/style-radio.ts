@@ -4,8 +4,6 @@ export const channelSelectorRadio = css`
   section#radio {
     display: flex;
     flex-direction: row;
-    align-content: center;
-    justify-content: center;
     align-items: center;
   }
 
