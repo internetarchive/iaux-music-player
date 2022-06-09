@@ -377,9 +377,10 @@ export class ChannelSelector extends LitElement {
         display: flex;
       }
 
-      .dropdown-label {
-        height: 30px;
-        width: 30px;
+      *[slot='dropdown-label'] img {
+        height: 30px !important;
+        width: 30px !important;
+        display: block;
       }
 
       ia-icon-label {
