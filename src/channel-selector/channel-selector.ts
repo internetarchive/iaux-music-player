@@ -307,6 +307,10 @@ export class ChannelSelector extends LitElement {
         color: var(--channel-selector-title-color, #fff);
       }
 
+      h4 {
+        margin: 0;
+      }
+
       a:link,
       a:visited,
       a:active,
