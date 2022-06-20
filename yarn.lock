@@ -115,10 +115,10 @@
   resolved "https://registry.npmjs.org/@import-maps/resolve/-/resolve-1.0.1.tgz"
   integrity sha512-tWZNBIS1CoekcwlMuyG2mr0a1Wo5lb5lEHwwWvZo+5GLgr3e9LLDTtmgtCWEwBpXMkxn9D+2W9j2FY6eZQq0tA==
 
-"@internetarchive/ia-dropdown@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@internetarchive/ia-dropdown/-/ia-dropdown-1.0.1.tgz#1d59f6589e43ed281d83c36392c088e65c0c1c69"
-  integrity sha512-ixaZH8ZykW6HQtfOF3l8TGZG0AYEqL4l4JTUzfz6sTC850tGjb396hima03gnXfzbR7vbNGF6bFwg0xXEUqECA==
+"@internetarchive/ia-dropdown@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@internetarchive/ia-dropdown/-/ia-dropdown-1.0.2.tgz#6c0f2e0a556cd0bc643fdcbd614c40dfbc40712a"
+  integrity sha512-Kn+E9KzUURogSShiHGixXiKPG4G6D/fZat2o4sTa+Pb8/yPTrv0/l2ZUNeuC8Lxr6V2CUEXaOqIz4dyzzetI4w==
   dependencies:
     lit "^2.0.2"
 
