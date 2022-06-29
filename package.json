@@ -7,7 +7,7 @@
   },
   "license": "AGPL-3.0-only",
   "author": "Internet Archive",
-  "version": "0.0.3",
+  "version": "0.0.10",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@internetarchive/ia-dropdown": "^1.0.3",
     "lit": "^2.0.2"
   },
   "devDependencies": {

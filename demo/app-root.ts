@@ -24,9 +24,9 @@ export class AppRoot extends LitElement {
     return html`
       <br />
       <br />
-      <channel-selector spotify youtube streaming samples
+      <channel-selector spotify youtube beta samples
         .selected=${
-          this.startAtWebamp ? channelTypes.webamp : channelTypes.streaming
+          this.startAtWebamp ? channelTypes.webamp : channelTypes.beta
         }
         @postInit=${(e: CustomEvent) => {
           this.selectedByRadioOnload = e.detail.channel as channelTypes;
@@ -47,7 +47,7 @@ export class AppRoot extends LitElement {
       <channel-selector
       spotify
       youtube
-      streaming
+      beta
       .displayStyle=${'dropdown'}
       .url=${url}
       @postInit=${(e: CustomEvent) => {
@@ -56,10 +56,13 @@ export class AppRoot extends LitElement {
       @channelChange=${(e: CustomEvent) => {
         this.selectedByDropdown = e.detail.channel as channelTypes;
       }}
+      .selected=${
+        this.startAtWebamp ? channelTypes.webamp : this.selectedByDropdown
+      }
     >
     </channel-selector>
     <section class='details'>
-    <h2>Selected by dropdown</2>
+    <h2>Selected by dropdown</h2>
     <h2>on first load: ${this.selectedByDropdownOnload}</h2>
     <h2>on change: ${this.selectedByDropdown}</h2>
     </section>

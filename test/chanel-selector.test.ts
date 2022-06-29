@@ -1,8 +1,14 @@
 import { html, fixture, expect } from '@open-wc/testing';
+import sinon from 'sinon';
 
 import type { ChannelSelector } from '../src/channel-selector/channel-selector';
 import '../src/channel-selector/channel-selector';
-import { channelTypes } from '../src/channel-selector/channels';
+import {
+  channelTypes,
+  channelIcons,
+  createDropdownOptions,
+  channelSpecs,
+} from '../src/channel-selector/channels';
 
 describe('`<channel-selector>`', () => {
   describe('Defaults', () => {
@@ -11,9 +17,7 @@ describe('`<channel-selector>`', () => {
         html`<channel-selector></channel-selector>`
       );
 
-      const iaChannelSelected = el
-        .shadowRoot!.querySelector('li.selected')!
-        .querySelector('.ia.selected');
+      const iaChannelSelected = el.shadowRoot!.querySelector('li.selected .ia');
 
       await expect(iaChannelSelected).to.exist;
       await expect(el.selected).to.equal('ia');
@@ -23,15 +27,11 @@ describe('`<channel-selector>`', () => {
         html`<channel-selector></channel-selector>`
       );
 
-      const iaChannel = el.shadowRoot!.querySelector('.ia.selected');
+      const iaChannel = el.shadowRoot!.querySelector('.selected .ia');
 
       await expect(iaChannel).to.exist;
-      await expect(
-        iaChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Internet Archive');
-      await expect(
-        iaChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Player');
+      await expect(iaChannel?.innerHTML).to.contain('Internet Archive');
+      await expect(iaChannel?.innerHTML).to.contain('Player');
     });
     it('displays WEBAMP by default', async () => {
       const el = await fixture<ChannelSelector>(
@@ -41,9 +41,7 @@ describe('`<channel-selector>`', () => {
       const webampChannel = el.shadowRoot!.querySelector('.wa');
 
       await expect(webampChannel).to.exist;
-      await expect(
-        webampChannel!.querySelector('.channel-name')?.innerHTML
-      ).to.contain('Webamp');
+      await expect(webampChannel?.innerHTML).to.contain('Webamp');
       await expect(el.getAttribute('webamp')).to.exist;
     });
     it('displays RADIO style by default', async () => {
@@ -52,6 +50,113 @@ describe('`<channel-selector>`', () => {
       );
 
       await expect(el.getAttribute('displayStyle')).to.equal('radio');
+    });
+    describe('Dropdown view', () => {
+      it('shows selected icon at toggle button', async () => {
+        const el = await fixture<ChannelSelector>(
+          html`<channel-selector
+            displaystyle="dropdown"
+            selected=${channelTypes.beta}
+          ></channel-selector>`
+        );
+
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.beta);
+
+        const dropdown = el.shadowRoot?.querySelector('ia-dropdown');
+        await expect(dropdown).to.exist;
+        await expect(dropdown?.querySelector('img.ia-beta')).to.exist;
+
+        el.selected = channelTypes.ia;
+        await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.ia);
+        await expect(dropdown?.querySelector('img.ia')).to.exist;
+
+        el.selected = channelTypes.spotify;
+        await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.spotify);
+        await expect(dropdown?.querySelector('img.spotify')).to.exist;
+
+        el.selected = channelTypes.youtube;
+        await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.youtube);
+        await expect(dropdown?.querySelector('img.youtube')).to.exist;
+
+        el.selected = channelTypes.webamp;
+        await el.updateComplete;
+        await expect(el.currentlySelectedIcon).to.equal(channelIcons.webamp);
+        await expect(dropdown?.querySelector('img.webamp')).to.exist;
+      });
+
+      it('calls for dropdown options before draw', async () => {
+        const el = await fixture<ChannelSelector>(
+          html`<channel-selector
+            selected=${channelTypes.beta}
+          ></channel-selector>`
+        );
+
+        const spy = sinon.spy(el, 'dropdownOptions', ['get']);
+        el.displayStyle = 'dropdown';
+        await el.updateComplete;
+        expect(spy.get.called).to.be.true;
+      });
+
+      it('`createDropdownOptions` creates array of possible options', async () => {
+        const onClick = sinon.stub();
+        const baseConfig: channelSpecs = {
+          onClick,
+          selected: true,
+          samples: true,
+        };
+        let options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.ia,
+          spotify: true,
+          youtube: true,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(5);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: true,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(4);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(3);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: true,
+        });
+        expect(options).to.have.lengthOf(3);
+
+        options = createDropdownOptions({
+          ...baseConfig,
+          selectedOption: channelTypes.webamp,
+          spotify: false,
+          youtube: false,
+          webamp: true,
+          beta: false,
+        });
+        expect(options).to.have.lengthOf(2);
+      });
     });
     describe('Events', () => {
       it('emits `postInit` on firstUpdate', async () => {
@@ -95,18 +200,17 @@ describe('`<channel-selector>`', () => {
   it('can select any channel at creation', async () => {
     const el = await fixture<ChannelSelector>(
       html`<channel-selector
-        streaming
-        .selected=${channelTypes.streaming}
+        beta
+        .selected=${channelTypes.beta}
       ></channel-selector>`
     );
 
-    const streamingSelectedAtStart = el
-      .shadowRoot!.querySelector('li.selected')!
-      .querySelector('.ia-stream.selected');
+    const streamingSelectedAtStart = el.shadowRoot!.querySelector(
+      'li.selected .ia-beta'
+    );
+
     await expect(streamingSelectedAtStart).to.exist;
-    await expect(
-      streamingSelectedAtStart!.querySelector('.channel-name')?.innerHTML
-    ).to.equal('Streaming (beta)');
+    await expect(streamingSelectedAtStart?.innerHTML).to.contain('Beta');
   });
 
   it('updates IA label when playing samples', async () => {
@@ -114,30 +218,22 @@ describe('`<channel-selector>`', () => {
       html`<channel-selector samples></channel-selector>`
     );
 
-    const iaChannel = el
-      .shadowRoot!.querySelector('li.selected')!
-      .querySelector('.ia.selected');
+    const iaChannel = el.shadowRoot!.querySelector('li.selected .ia');
 
-    await expect(
-      iaChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Internet Archive');
-    await expect(
-      iaChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Samples');
+    await expect(iaChannel?.innerHTML).to.contain('Internet Archive');
+    await expect(iaChannel?.innerHTML).to.contain('Samples');
   });
 
-  it('displays Streaming (beta) with `streaming` attribute', async () => {
+  it('displays Beta with `beta` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector streaming></channel-selector>`
+      html`<channel-selector beta></channel-selector>`
     );
 
-    const streamingChannel = el.shadowRoot!.querySelector('.ia-stream');
+    const streamingChannel = el.shadowRoot!.querySelector('.ia-beta');
 
     await expect(streamingChannel).to.exist;
-    await expect(
-      streamingChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Streaming (beta)');
-    await expect(el.getAttribute('streaming')).to.exist;
+    await expect(streamingChannel?.innerHTML).to.contain('Beta');
+    await expect(el.getAttribute('beta')).to.exist;
   });
 
   it('displays SPOTIFY with `spotify` attribute', async () => {
@@ -148,9 +244,7 @@ describe('`<channel-selector>`', () => {
     const spotifyChannel = el.shadowRoot!.querySelector('.sp');
 
     await expect(spotifyChannel).to.exist;
-    await expect(
-      spotifyChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('Spotify');
+    await expect(spotifyChannel?.innerHTML).to.contain('Spotify');
     await expect(el.getAttribute('spotify')).to.exist;
   });
 
@@ -162,9 +256,7 @@ describe('`<channel-selector>`', () => {
     const youtubeChannel = el.shadowRoot!.querySelector('.yt');
 
     await expect(youtubeChannel).to.exist;
-    await expect(
-      youtubeChannel!.querySelector('.channel-name')?.innerHTML
-    ).to.contain('YouTube');
+    await expect(youtubeChannel?.innerHTML).to.contain('YouTube');
     await expect(el.getAttribute('youtube')).to.exist;
   });
 

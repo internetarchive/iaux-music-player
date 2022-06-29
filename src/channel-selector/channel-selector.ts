@@ -1,20 +1,22 @@
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { channelSelectorDropDown } from './style-dropdown';
+import { cache } from 'lit/directives/cache.js';
+
+import type { optionInterface } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
+import '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
+
 import { channelSelectorRadio } from './style-radio';
 import {
   channelTypes,
   iaButton,
-  streamingButton,
+  iaBetaButton,
   youtubeButton,
   spotifyButton,
   webampLink,
   iaLink,
-  iaStreamingLabel,
-  spotifyLabel,
-  webampLabel,
-  youtubeLabel,
-  iaLabel,
+  createDropdownOptions,
+  dropdownOptionsInterface,
+  channelIcons,
 } from './channels';
 
 export type displayStyle = 'dropdown' | 'radio';
@@ -30,19 +32,17 @@ export class ChannelSelector extends LitElement {
 
   @property({ attribute: true, type: Boolean, reflect: true }) spotify = false;
 
-  @property({ attribute: true, type: Boolean, reflect: true }) streaming =
-    false;
+  @property({ attribute: true, type: Boolean, reflect: true }) beta = false;
 
   @property({ attribute: true, type: Boolean, reflect: true }) webamp = true;
 
   @property({ attribute: true, type: Boolean, reflect: true }) samples = false;
 
-  @property({ type: String }) selected: channelTypes = channelTypes.ia;
+  @property({ type: String, reflect: true }) selected: channelTypes =
+    channelTypes.ia;
 
   @property({ type: String, reflect: true }) displayStyle: displayStyle =
     'radio';
-
-  @property({ type: Boolean }) dropdownOpen = false;
 
   @property({ type: String }) url = '';
 
@@ -77,13 +77,13 @@ export class ChannelSelector extends LitElement {
     this.emitChannelChanged();
   }
 
-  iaStreamingClicked() {
-    if (this.selected === channelTypes.streaming) {
+  betaClicked() {
+    if (this.selected === channelTypes.beta) {
       return;
     }
     // send analytic
     // set value
-    this.selected = channelTypes.streaming;
+    this.selected = channelTypes.beta;
     // dispatch event
     this.emitChannelChanged();
   }
@@ -121,6 +121,14 @@ export class ChannelSelector extends LitElement {
     this.emitChannelChanged();
   }
 
+  dropdownOptionSelected(selectedOption: optionInterface): void {
+    // send analytic
+    // set value
+    this.selected = selectedOption.id as channelTypes;
+    // dispatch event
+    this.emitChannelChanged();
+  }
+
   get iaLinkSelector(): TemplateResult {
     const selectedClass = this.selected === channelTypes.ia ? 'selected' : '';
     return html`
@@ -128,7 +136,7 @@ export class ChannelSelector extends LitElement {
         ${iaLink({
           samples: this.samples,
           selected: this.selected === channelTypes.ia,
-          onClick: () => this.webampClicked(),
+          onClick: () => this.iaClicked(),
           href: this.url,
         })}
       </li>
@@ -148,14 +156,13 @@ export class ChannelSelector extends LitElement {
     `;
   }
 
-  get streamingSelector(): TemplateResult {
-    const selectedClass =
-      this.selected === channelTypes.streaming ? 'selected' : '';
+  get iaBetaSelector(): TemplateResult {
+    const selectedClass = this.selected === channelTypes.beta ? 'selected' : '';
     return html`
       <li class=${selectedClass}>
-        ${streamingButton({
-          selected: this.selected === channelTypes.streaming,
-          onClick: () => this.iaStreamingClicked(),
+        ${iaBetaButton({
+          selected: this.selected === channelTypes.beta,
+          onClick: () => this.betaClicked(),
         })}
       </li>
     `;
@@ -180,7 +187,7 @@ export class ChannelSelector extends LitElement {
     return html`
       <li class=${selectedClass}>
         ${webampLink({
-          href: window.location.href,
+          href: this.url || window.location.href,
           selected: this.selected === channelTypes.webamp,
           onClick: () => this.webampClicked(),
         })}
@@ -201,23 +208,6 @@ export class ChannelSelector extends LitElement {
     `;
   }
 
-  get selectedLabel() {
-    switch (this.selected) {
-      case channelTypes.streaming:
-        return iaStreamingLabel;
-      case channelTypes.spotify:
-        return spotifyLabel;
-      case channelTypes.webamp:
-        return webampLabel;
-      case channelTypes.youtube:
-        return youtubeLabel;
-      default: {
-        const labelType = this.samples ? 'Samples' : 'Player';
-        return iaLabel(labelType);
-      }
-    }
-  }
-
   get properIaSelector() {
     return this.selected === channelTypes.webamp
       ? this.iaLinkSelector
@@ -229,11 +219,6 @@ export class ChannelSelector extends LitElement {
       this.displayStyle === 'dropdown' ? 'radio' : 'dropdown';
 
     this.displayStyle = nextDisplayStyle;
-    this.dropdownOpen = false;
-  }
-
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
   }
 
   shouldShowChannelType(channelType: channelTypes): boolean {
@@ -247,41 +232,65 @@ export class ChannelSelector extends LitElement {
     return true;
   }
 
-  render(): TemplateResult {
-    const dropdownState =
-      this.displayStyle === 'dropdown' && this.dropdownOpen ? '' : 'close';
-    const playFromLabel =
-      this.displayStyle === 'radio'
-        ? html` <div id="selector-title"><h4>Play from:</h4></div>`
-        : nothing;
+  get dropdownOptions() {
+    const { samples, beta, spotify, webamp, youtube, url, selected } = this;
+    return createDropdownOptions({
+      selectedOption: selected,
+      samples: !!samples,
+      beta,
+      spotify,
+      webamp,
+      youtube,
+      href: url,
+      onClick: this.dropdownOptionSelected.bind(this),
+    } as unknown as dropdownOptionsInterface);
+  }
 
+  get currentlySelectedIcon(): TemplateResult {
+    switch (this.selected) {
+      case channelTypes.beta:
+        return channelIcons.beta;
+      case channelTypes.spotify:
+        return channelIcons.spotify;
+      case channelTypes.youtube:
+        return channelIcons.youtube;
+      case channelTypes.webamp:
+        return channelIcons.webamp;
+      default:
+        return channelIcons.ia;
+    }
+  }
+
+  get dropdown(): TemplateResult {
+    return html`
+      <ia-dropdown
+        displayCaret
+        .options=${this.dropdownOptions}
+        .selectedOption=${this.selected}
+      >
+        <span slot="dropdown-label">${this.currentlySelectedIcon}</span>
+      </ia-dropdown>
+    `;
+  }
+
+  get radioView(): TemplateResult {
+    return html`
+      <div id="selector-title"><h4>Play from:</h4></div>
+      <div>
+        <ul>
+          ${this.properIaSelector} ${this.beta ? this.iaBetaSelector : nothing}
+          ${this.youtube ? this.youtubeSelector : nothing}
+          ${this.spotify ? this.spotifySelector : nothing}
+          ${this.webamp ? this.webampSelector : nothing}
+        </ul>
+      </div>
+    `;
+  }
+
+  render(): TemplateResult {
     return html`
       <section id=${this.displayStyle} class=${this.displayStyle}>
-        ${playFromLabel}
-        <div>
-          <button class="selected-option" @click=${() => this.toggleDropdown()}>
-            <span class="sr-only">Current channel: </span>
-            ${this.selectedLabel}
-          </button>
-          <ul class=${dropdownState}>
-            ${this.shouldShowChannelType(channelTypes.ia)
-              ? this.properIaSelector
-              : nothing}
-            ${this.streaming &&
-            this.shouldShowChannelType(channelTypes.streaming)
-              ? this.streamingSelector
-              : nothing}
-            ${this.youtube && this.shouldShowChannelType(channelTypes.youtube)
-              ? this.youtubeSelector
-              : nothing}
-            ${this.spotify && this.shouldShowChannelType(channelTypes.spotify)
-              ? this.spotifySelector
-              : nothing}
-            ${this.webamp && this.shouldShowChannelType(channelTypes.webamp)
-              ? this.webampSelector
-              : nothing}
-          </ul>
-        </div>
+        ${cache(this.displayStyle === 'radio' ? this.radioView : this.dropdown)}
       </section>
     `;
   }
@@ -296,6 +305,10 @@ export class ChannelSelector extends LitElement {
       #selector-title,
       .selected-option {
         color: var(--channel-selector-title-color, #fff);
+      }
+
+      h4 {
+        margin: 0;
       }
 
       a:link,
@@ -325,7 +338,6 @@ export class ChannelSelector extends LitElement {
         align-content: center;
         justify-content: center;
         align-items: center;
-        padding: 5px;
         width: 100%;
       }
 
@@ -345,7 +357,7 @@ export class ChannelSelector extends LitElement {
 
       li {
         display: flex;
-        height: 36px;
+        height: 30px;
         background-color: #222;
       }
 
@@ -365,33 +377,21 @@ export class ChannelSelector extends LitElement {
         display: none;
       }
 
-      li:hover .ia .channel-img,
-      li .ia.selected .channel-img {
-        filter: invert(1);
-      }
-
       li a.ia {
         display: flex;
       }
 
-      li .wa .channel-img {
-        filter: invert(1);
+      *[slot='dropdown-label'] img {
+        height: 30px !important;
+        width: 30px !important;
+        display: block;
       }
 
-      li .wa.selected .channel-img,
-      li:hover .wa .channel-img {
-        filter: unset;
-      }
-
-      .channel-name {
-        margin-left: 5px;
-      }
-
-      .channel-img img {
-        height: 20px;
+      ia-icon-label {
+        --selectedBgColor: transparent;
+        --hoverBgColor: transparent;
       }
     `,
-    channelSelectorDropDown,
     channelSelectorRadio,
   ];
 }
