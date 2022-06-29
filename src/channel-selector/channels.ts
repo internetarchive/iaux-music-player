@@ -13,8 +13,8 @@ export enum channelTypes {
 }
 
 enum channelLabels {
-  iaSamples = 'Internet Archive Samples',
-  iaPlayer = 'Internet Archive Player',
+  iaSamples = 'Samples',
+  iaPlayer = 'Player',
   beta = 'Beta',
   spotify = 'Spotify',
   webamp = 'Webamp',
@@ -55,6 +55,7 @@ export const channelIcons: iconInterface = {
     class="spotify"
     src="/images/music-theater/spotify.svg"
     alt="spotify logo"
+    style="display: block;"
   />`,
   webamp: html`<img
     class="webamp"
@@ -66,7 +67,7 @@ export const channelIcons: iconInterface = {
     class="youtube"
     src="/images/music-theater/youtube.svg"
     alt="youtube logo"
-    style="height: 20px; width: 20px;"
+    style="height: 20px; width: 20px; display: block;"
   />`,
 };
 
@@ -84,7 +85,6 @@ export const iaLabel = (
   });
   const classes = classMap({
     selected,
-    'invert-icon-at-hover': !selected,
     'invert-icon-at-hover-selected': selected,
   });
 
@@ -105,7 +105,6 @@ export const betaLabel = (selected: boolean) => {
   });
   const classes = classMap({
     selected,
-    'invert-icon-at-hover': !selected,
     'invert-icon-at-hover-selected': selected,
   });
 
@@ -133,7 +132,6 @@ export const webampLabel = (selected: boolean) => {
   });
   const classes = classMap({
     selected,
-    'invert-icon-at-hover': !selected,
     'invert-icon-at-hover-selected': selected,
   });
 
