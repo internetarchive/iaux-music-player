@@ -344,7 +344,7 @@ export class ChannelSelector extends LitElement {
       li:hover {
         background-color: var(
           --channel-selector-hover-bg-color,
-          rgba(255, 255, 255, 0.2)
+          rgba(255, 255, 255, 0.3)
         );
       }
 
