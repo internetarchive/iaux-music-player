@@ -308,6 +308,11 @@ export class ChannelSelector extends LitElement {
         color: var(--channel-selector-text-color, #fff);
       }
 
+      ia-dropdown {
+        --dropdownBgColor: #333;
+        --dropdownHoverBgColor: #474747;
+      }
+
       #selector-title,
       .selected-option {
         color: var(--channel-selector-title-color, #fff);
@@ -348,10 +353,7 @@ export class ChannelSelector extends LitElement {
       }
 
       li:hover {
-        background-color: var(
-          --channel-selector-hover-bg-color,
-          rgba(255, 255, 255, 0.3)
-        );
+        background-color: var(--channel-selector-hover-bg-color, #474747);
       }
 
       li.selected {
@@ -369,7 +371,7 @@ export class ChannelSelector extends LitElement {
       li {
         display: flex;
         height: 30px;
-        background-color: #222;
+        background-color: #333;
       }
 
       #dropdown .close,
