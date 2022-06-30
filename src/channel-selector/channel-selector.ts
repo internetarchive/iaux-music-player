@@ -1,8 +1,10 @@
+/* eslint-disable import/no-duplicates */
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property, customElement, query } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 
 import type { optionInterface } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
+import type { IaDropdown } from '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
 import '@internetarchive/ia-dropdown/dist/src/ia-dropdown';
 
 import { channelSelectorRadio } from './style-radio';
@@ -45,6 +47,8 @@ export class ChannelSelector extends LitElement {
     'radio';
 
   @property({ type: String }) url = '';
+
+  @query('ia-dropdown') iaDropdown!: IaDropdown;
 
   firstUpdated() {
     this.dispatchEvent(
@@ -127,6 +131,8 @@ export class ChannelSelector extends LitElement {
     this.selected = selectedOption.id as channelTypes;
     // dispatch event
     this.emitChannelChanged();
+    // close dropdown
+    this.iaDropdown.open = false;
   }
 
   get iaLinkSelector(): TemplateResult {
