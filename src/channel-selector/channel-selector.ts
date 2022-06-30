@@ -344,7 +344,7 @@ export class ChannelSelector extends LitElement {
       li:hover {
         background-color: var(
           --channel-selector-hover-bg-color,
-          rgba(255, 255, 255, 0.1)
+          rgba(255, 255, 255, 0.2)
         );
       }
 
@@ -390,12 +390,6 @@ export class ChannelSelector extends LitElement {
         height: 30px !important;
         width: 30px !important;
         display: block;
-      }
-
-      ia-icon-label {
-        --selectedBgColor: transparent;
-        --hoverBGColor: transparent;
-        --hoverTextColor: #fff;
       }
     `,
     channelSelectorRadio,
