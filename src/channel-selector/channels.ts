@@ -54,7 +54,7 @@ export const channelIcons: iconInterface = {
   spotify: html`<img
     class="spotify"
     src="/images/music-theater/spotify.svg"
-    alt="spotify logo"
+    alt="Spotify logo"
     style="display: block;"
   />`,
   webamp: html`<img
