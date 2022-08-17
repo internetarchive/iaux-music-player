@@ -42,13 +42,13 @@ export const channelIcons: iconInterface = {
   ia: html`<img
     class="ia"
     src="/images/music-theater/internet-archive.svg"
-    alt="internet archive logo"
+    alt="Internet Archive logo"
     style="height: 20px; width: 20px;"
   />`,
   beta: html`<img
     class="ia-beta"
     src="/images/music-theater/streaming.svg"
-    alt="internet archive beta player logo"
+    alt="Internet Archive beta player logo"
     style="height: 20px; width: 20px;"
   />`,
   spotify: html`<img
