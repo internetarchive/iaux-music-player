@@ -12,7 +12,7 @@ describe('`<youtube-player>`', () => {
       const iframe = el.shadowRoot?.querySelector('iframe');
       expect(iframe).to.exist;
       expect(iframe?.getAttribute('width')).to.equal('100%');
-      expect(iframe?.getAttribute('height')).to.equal('200');
+      expect(iframe?.getAttribute('height')).to.equal('180');
       expect(iframe?.getAttribute('src')).to.equal(el.youTubeUrl);
       expect(el.baseHost).to.equal('https://archive.org');
     });
