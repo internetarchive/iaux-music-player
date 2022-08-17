@@ -4,6 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
+import '../src/players/youtube-player';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -29,8 +30,9 @@ export class AppRoot extends LitElement {
     }
 
     if (this.selectedByRadio === channelTypes.youtube) {
-      return html`<h2>YouTube Player goes here</h2>
-        >`;
+      return html`<youtube-player
+        iaYouTubeUrn="urn:youtube:p3o5PzqmYik"
+      ></youtube-player>`;
     }
 
     return html`<h2>Player type: ${this.selectedByRadio}</h2>`;
@@ -44,8 +46,9 @@ export class AppRoot extends LitElement {
     }
 
     if (this.selectedByDropdown === channelTypes.youtube) {
-      return html`<h2>YouTube Player goes here</h2>
-        >`;
+      return html`<youtube-player
+        iaYouTubeUrn="urn:youtube:p3o5PzqmYik"
+      ></youtube-player>`;
     }
 
     return html`<h2>Player type: ${this.selectedByDropdown}</h2>`;
@@ -54,8 +57,6 @@ export class AppRoot extends LitElement {
   render() {
     const url = `${location.origin}/demo`;
     return html`
-      <br />
-
       <br />
       <channel-selector
         spotify
