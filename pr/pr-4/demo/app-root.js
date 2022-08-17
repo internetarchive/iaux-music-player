@@ -612,7 +612,7 @@ PERFORMANCE OF THIS SOFTWARE.
         id="embed-iframe"
         src="${t}"
         width="100%"
-        height="200"
+        height="180"
         frameborder="0"
         allowtransparency="true"
         allow="encrypted-media"
