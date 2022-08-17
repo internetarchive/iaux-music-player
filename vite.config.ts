@@ -15,7 +15,7 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'demo/index.html'),
+        main: resolve(__dirname, 'index.html'),
       },
       output: {
         entryFileNames: 'app-root.js',
