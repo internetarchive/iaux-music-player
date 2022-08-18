@@ -41,31 +41,31 @@ type iconInterface = {
 export const channelIcons: iconInterface = {
   ia: html`<img
     class="ia"
-    src="/images/music-theater/internet-archive.svg"
+    src="https://archive.org/images/music-theater/internet-archive.svg"
     alt="Internet Archive logo"
     style="height: 20px; width: 20px;"
   />`,
   beta: html`<img
     class="ia-beta"
-    src="/images/music-theater/streaming.svg"
+    src="https://archive.org/images/music-theater/streaming.svg"
     alt="Internet Archive beta player logo"
     style="height: 20px; width: 20px;"
   />`,
   spotify: html`<img
     class="spotify"
-    src="/images/music-theater/spotify.svg"
-    alt="spotify logo"
+    src="https://archive.org/images/music-theater/spotify.svg"
+    alt="Spotify logo"
     style="display: block;"
   />`,
   webamp: html`<img
     class="webamp"
-    src="/images/music-theater/webamp.svg"
+    src="https://archive.org/images/music-theater/webamp.svg"
     alt="webamp logo"
     style="height: 20px;"
   />`,
   youtube: html`<img
     class="youtube"
-    src="/images/music-theater/youtube.svg"
+    src="https://archive.org/images/music-theater/youtube.svg"
     alt="youtube logo"
     style="height: 20px; width: 20px; display: block;"
   />`,
