@@ -103,27 +103,27 @@ PERFORMANCE OF THIS SOFTWARE.
  * SPDX-License-Identifier: BSD-3-Clause
  */const at=rt(class extends nt{constructor(o){var t;if(super(o),o.type!==Nt.ATTRIBUTE||o.name!=="class"||((t=o.strings)===null||t===void 0?void 0:t.length)>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(o){return" "+Object.keys(o).filter(t=>o[t]).join(" ")+" "}update(o,[t]){var e,i;if(this.st===void 0){this.st=new Set,o.strings!==void 0&&(this.et=new Set(o.strings.join(" ").split(/\s/).filter(r=>r!=="")));for(const r in t)t[r]&&!(!((e=this.et)===null||e===void 0)&&e.has(r))&&this.st.add(r);return this.render(t)}const s=o.element.classList;this.st.forEach(r=>{r in t||(s.remove(r),this.st.delete(r))});for(const r in t){const n=!!t[r];n===this.st.has(r)||((i=this.et)===null||i===void 0?void 0:i.has(r))||(n?(s.add(r),this.st.add(r)):(s.remove(r),this.st.delete(r)))}return S}});var l;(function(o){o.ia="ia",o.beta="beta",o.youtube="youtube",o.spotify="spotify",o.webamp="webamp"})(l||(l={}));var v;(function(o){o.iaSamples="Samples",o.iaPlayer="Player",o.beta="Beta",o.spotify="Spotify",o.webamp="Webamp",o.youtube="YouTube"})(v||(v={}));const w={ia:c`<img
     class="ia"
-    src="/images/music-theater/internet-archive.svg"
+    src="https://archive.org/images/music-theater/internet-archive.svg"
     alt="Internet Archive logo"
     style="height: 20px; width: 20px;"
   />`,beta:c`<img
     class="ia-beta"
-    src="/images/music-theater/streaming.svg"
+    src="https://archive.org/images/music-theater/streaming.svg"
     alt="Internet Archive beta player logo"
     style="height: 20px; width: 20px;"
   />`,spotify:c`<img
     class="spotify"
-    src="/images/music-theater/spotify.svg"
+    src="https://archive.org/images/music-theater/spotify.svg"
     alt="Spotify logo"
     style="display: block;"
   />`,webamp:c`<img
     class="webamp"
-    src="/images/music-theater/webamp.svg"
+    src="https://archive.org/images/music-theater/webamp.svg"
     alt="webamp logo"
     style="height: 20px;"
   />`,youtube:c`<img
     class="youtube"
-    src="/images/music-theater/youtube.svg"
+    src="https://archive.org/images/music-theater/youtube.svg"
     alt="youtube logo"
     style="height: 20px; width: 20px; display: block;"
   />`},K=(o=v.iaPlayer,t)=>{const i=lt({filter:t?"invert(1)":"invert(0)",height:"20px",width:"20px"}),s=at({selected:t,"invert-icon-at-hover-selected":t});return c`
