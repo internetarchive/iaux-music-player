@@ -4,7 +4,7 @@ import { resolve } from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
-  root: resolve(__dirname, './'),
+  root: resolve(__dirname, './demo'),
   build: {
     /**
      * This is the directory where the built files will be placed
