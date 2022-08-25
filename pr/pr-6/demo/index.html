@@ -8,9 +8,15 @@
       font-family: Helvetica, sans-serif;
     }
 
-    body {
+    body[components] {
       background: black;
       --channel-selector-text-color: #fff;
+      color: #fff;
+    }
+
+    body[data] {
+      background: darkolivegreen;
+      color: black;
     }
   </style>
   <script type="module" crossorigin src="./app-root.js"></script>
