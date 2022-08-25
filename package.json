@@ -27,7 +27,9 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@internetarchive/ia-dropdown": "1.0.5",
-    "lit": "^2.0.2"
+    "@internetarchive/search-service": "0.3.5-a1",
+    "lit": "^2.3.0",
+    "typescript-memoize": "^1.1.0"
   },
   "devDependencies": {
     "@open-wc/eslint-config": "^7.0.0",
