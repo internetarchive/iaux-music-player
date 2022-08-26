@@ -243,6 +243,16 @@ export class AppRoot extends LitElement {
         <h2>Stats</h2>
         <dl>
           <dr
+            ><dt>
+              <img
+                class="album-image"
+                src=${this.album.albumImage}
+                alt="item img"
+              />
+            </dt>
+            <dd>Image: ${this.album.albumImage}</dd></dr
+          >
+          <dr
             ><dt>Title</dt>
             <dd>${this.album.title}</dd></dr
           >
@@ -254,7 +264,10 @@ export class AppRoot extends LitElement {
             ><dt>Liner Notes?</dt>
             <dd>${this.album.linerNotes.length}</dd></dr
           >
-
+          <dr
+            ><dt>Images?</dt>
+            <dd>${this.album.images.length}</dd></dr
+          >
           <dr
             ><dt>/services/playlist Count</dt>
             <dd>${this.album.rawPlaylistTracks.length}</dd></dr
@@ -443,6 +456,8 @@ export class AppRoot extends LitElement {
       display: flex;
       font-size: 20px;
       border-bottom: 1px solid;
+      padding: 5px;
+      align-items: center;
     }
 
     dl dr dt {
@@ -455,7 +470,7 @@ export class AppRoot extends LitElement {
     }
 
     #demo-clicks {
-      border: 1px solid green;
+      border: 3px solid green;
       padding: 5px;
       max-height: 200px;
       overflow-y: auto;
@@ -478,6 +493,11 @@ export class AppRoot extends LitElement {
     .demo-go {
       display: block;
       width: 100%;
+    }
+
+    .album-image {
+      height: 200px;
+      border: 1px solid;
     }
   `;
 }
