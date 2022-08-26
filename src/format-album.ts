@@ -2,7 +2,6 @@
 /* eslint-disable max-classes-per-file */
 import {
   File,
-  Metadata,
   MetadataResponse,
   StringField,
 } from '@internetarchive/search-service';
@@ -32,11 +31,11 @@ interface Spectrogram extends File {
 }
 
 interface TrackDetails {
-  primary: Track;
+  primary: File;
   spectrogram: Spectrogram;
   related: File[];
-  sampleMp3?: Track;
-  fullMp3?: Track;
+  sampleMp3?: File;
+  fullMp3?: File;
 }
 
 interface PlaylistSource {
@@ -46,17 +45,15 @@ interface PlaylistSource {
   width: string;
 }
 
-interface PlaylistTrack {
+export interface PlaylistTrack extends Track {
   title: string;
   orig: File['name'];
   image: File['name'];
-  duation: number;
+  duration: number;
   sources: PlaylistSource[];
 }
 
-export class Track extends File {
-  playlistTrack?: PlaylistTrack;
-
+export class Track extends File implements PlaylistTrack {
   baseHost: string;
 
   isSegmented: boolean = false;
@@ -69,17 +66,25 @@ export class Track extends File {
 
   fullMp3?: Track;
 
-  relatedFiles: File[] = [];
+  details: TrackDetails | null = null;
+
+  orig: string = '';
+
+  image: string = '';
+
+  duration: number = 0;
+
+  sources: PlaylistSource[] = [];
+
+  private _playlistTrack: PlaylistTrack | null = null;
 
   constructor(
-    file: File,
-    playlistTrack: PlaylistTrack | undefined,
-    baseHost: string
+    trackDetails: Record<string, any>,
+    baseHost: string = 'archive.org'
   ) {
-    super(file);
+    super(trackDetails);
 
-    this.playlistTrack = playlistTrack;
-    this.private = this.rawValue.private || false;
+    this.details = trackDetails.details;
     this.baseHost = baseHost;
   }
 
@@ -88,11 +93,15 @@ export class Track extends File {
   }
 
   override get title(): string {
-    return this.playlistTrack?.title || this.name;
+    return this._playlistTrack?.title || this?.title || this.name;
   }
 
   get youtubeId(): string {
-    return this.externalIds.find((e: string) => e.match(/youtube/gi)) || '';
+    return (
+      (this.externalIds as unknown as string[]).find((e: string) =>
+        e.match(/youtube/gi)
+      ) || ''
+    );
   }
 
   get spotifyId(): string {
@@ -100,93 +109,159 @@ export class Track extends File {
   }
 
   get externalIds(): string[] {
-    return Array.isArray(this.external_identifier)
-      ? this.external_identifier
-      : [this.external_identifier || ''];
+    return Array.isArray(this.rawValue['external-identifier'])
+      ? this.rawValue['external-identifier']
+      : [this.rawValue['external-identifier'] || ''];
+  }
+
+  setPlaylistInfo(track: PlaylistTrack): void {
+    this._playlistTrack = track;
+    this.orig = track.orig;
+    this.image = track.image;
+    this.duration = track.duration;
+    this.sources = track.sources;
   }
 }
 
 export class Album {
-  metadata: Metadata;
-
-  tracks: Track[] = [];
-
-  tracklist: PlaylistTrack[] = [];
+  tracks: PlaylistTrack[] = [];
 
   images: File[] = [];
 
   linerNotes: File[] = [];
 
-  creator: StringField | string = '';
-
   tracksAreSegmented: boolean = false;
-
-  itemMD: MetadataResponse;
 
   baseHost: string = 'archive.org';
 
-  constructor(item: Record<string, any>, tracklist: PlaylistTrack[]) {
-    this.itemMD = new MetadataResponse(item);
-    this.metadata = this.itemMD.metadata;
-    this.creator = this.albumCreator(this.metadata);
-    this.filterFiles(item.files as File[]);
-    this.tracklist = tracklist || [];
+  relatedFiles: File[] = [];
 
-    this.groupTrackInfo();
+  rawPlaylistTracks: PlaylistTrack[] = [];
+
+  item: MetadataResponse;
+
+  constructor(item: MetadataResponse, tracks: PlaylistTrack[]) {
+    this.item = item;
+    this.rawPlaylistTracks = tracks;
+    this.tracks = tracks;
+    this.filterFiles(this.item.files as File[]);
   }
 
-  get spotifyTracks(): Track[] {
-    return this.tracks.filter((tr: Track) => !!tr.spotifyId);
+  get title(): string {
+    return (this.item.metadata?.title?.values.join('; ') as string) || '';
+  }
+
+  get youtubeId(): string {
+    return (
+      (this.externalIds as string[]).find((e: string) =>
+        e.match(/youtube/gi)
+      ) || ''
+    );
+  }
+
+  get spotifyId(): string {
+    return (
+      (this.externalIds as string[]).find((e: string) =>
+        e.match(/spotify/gi)
+      ) || ''
+    );
+  }
+
+  get externalIds(): string[] {
+    if (!this.item.metadata.rawMetadata) {
+      return [''];
+    }
+
+    const exId = this.item.metadata['external-identifier'] as StringField;
+    return exId?.values?.length ? exId.values : [exId?.value || ''];
   }
 
   get youtubeTracks(): Track[] {
-    return this.tracks.find(
-      (tr: Track) => !!tr.youtubeId
-    ) as unknown as Track[];
+    const availableTracks = this.tracks.filter((tr: Track) => tr.youtubeId);
+
+    if (this.albumTrackOption('yt') !== undefined) {
+      availableTracks.unshift(this.albumTrackOption('yt') as PlaylistTrack);
+    }
+    return availableTracks;
+  }
+
+  get spotifyTracks(): Track[] {
+    const availableTracks = this.tracks.filter((tr: Track) => tr.spotifyId);
+
+    if (this.albumTrackOption('sp') !== undefined) {
+      availableTracks.unshift(this.albumTrackOption('sp') as PlaylistTrack);
+    }
+    return availableTracks;
+  }
+
+  albumTrackOption(playerType: 'yt' | 'sp'): Track | undefined {
+    const base = {
+      title: 'Full Album',
+      orig: '',
+      image: '',
+      duration: '-- : --',
+      track: '0',
+      sources: [],
+    };
+
+    if (playerType === 'yt' && this.youtubeId) {
+      return { ...base, youtubeId: this.youtubeId } as unknown as Track;
+    }
+
+    if (playerType === 'sp' && this.spotifyId) {
+      return { ...base, spotifyId: this.spotifyId } as unknown as Track;
+    }
+
+    return undefined;
+  }
+
+  isAlbumRelatedFile(file: File): boolean {
+    return (
+      !!file.name.match(/.(ffp|md5)$/g)?.length &&
+      !!file.original?.length &&
+      file.source === 'derivative'
+    );
   }
 
   isValidAudioFile(trackName: string = ''): boolean {
     return !!trackName.match(
-      /(mp3|ogg|flac|m4a|wma|aiff|aac|aa|ra|ram|shn|wav|wave|opus)$/g
-    );
+      /(mp3|ogg|flac|m4a|wma|aiff|aac|aa|ra|ram|shn|wav|wave|opus)$/gi
+    )?.length;
   }
 
   isValidImageFile(imageName: string = ''): boolean {
-    return !!imageName.match(/(png|jpg|jpeg)$/gi);
+    return !!imageName.match(/.(png|jpg|jpeg)$/gi)?.length;
   }
 
   isValidSegmentFile(fileOrigin: string = ''): boolean {
-    return !!fileOrigin.match(/_segments.(json|xml)$/gi);
+    return !!fileOrigin.match(/_segments.(json|xml)$/gi)?.length;
   }
 
   isSpectrogram(fileName: string = ''): boolean {
-    return !!fileName.match(/spectrogram/gi);
+    return !!fileName.match(/spectrogram/gi)?.length;
   }
 
   isSampleMP3(fileName: string = ''): boolean {
-    return !!fileName.match(/_sample\.mp3$/gi);
+    return !!fileName.match(/_sample\.mp3$/gi)?.length;
   }
 
   hasScannedLinerNotes(fileName: string = ''): boolean {
-    return !!fileName.match(/_jp2.(zip|tar)/gi);
+    return !!fileName.match(/_jp2.(zip|tar)/gi)?.length;
   }
 
-  albumCreator(md: Metadata): StringField | string {
-    if (md.creator) {
-      return md.creator;
+  get creator(): StringField | string {
+    if (this.item.metadata?.creator?.values) {
+      return this.item.metadata?.creator?.values.join('; ');
     }
-    if (md.rawMetadata?.artist) {
-      return md.rawMetadata?.artist;
+
+    if (this.item.metadata.rawMetadata?.artist) {
+      return this.item.metadata.rawMetadata?.artist;
     }
     return '';
   }
 
-  groupTrackInfo(): void {
-    // return a.name.localeCompare(b.name);
-  }
-
-  tracklistEntry(file: File): PlaylistTrack | undefined {
-    return this.tracklist.find(tr => {
+  tracksEntry(file: File): PlaylistTrack | undefined {
+    return this.tracks.find(tr => {
       if (file.original) {
         // segmented track
         return tr.orig === file.original;
@@ -199,16 +274,49 @@ export class Album {
   /**
    * Fills sorted track list properties.
    */
-  filterFiles(files: File[]) {
+  filterFiles(files: File[]): void {
     const images: File[] = [];
     const topLevelTracks = {} as Record<string, TrackDetails>;
 
-    files.forEach((f: File): void => {
+    files.forEach((file: File): void => {
       /* pre-checks before discarding non-audio/image files */
+      const f = file.rawValue as File;
+      const isAudioFile = this.isValidAudioFile(f.name);
+
+      if (this.isAlbumRelatedFile(f)) {
+        this.relatedFiles.push(f);
+        return;
+      }
 
       if (this.isValidSegmentFile(f.name)) {
         // check for segmentation - a sign for LPs, 78s
         this.tracksAreSegmented = true;
+        this.relatedFiles.push(f);
+
+        // set pointer
+        if (
+          f.original &&
+          this.isValidAudioFile(f.name) &&
+          !topLevelTracks[f.original]
+        ) {
+          topLevelTracks[f.original] = {
+            primary: undefined,
+            spectrogram: undefined,
+            related: [],
+            sampleMp3: undefined,
+            fullMp3: undefined,
+          } as unknown as TrackDetails;
+        }
+      }
+
+      if (f.source === 'original' && !topLevelTracks[f.name] && isAudioFile) {
+        topLevelTracks[f.name] = {
+          primary: undefined,
+          spectrogram: undefined,
+          related: [],
+          sampleMp3: undefined,
+          fullMp3: undefined,
+        } as unknown as TrackDetails;
       }
 
       if (
@@ -233,7 +341,7 @@ export class Album {
       if (this.isValidImageFile(f.name)) {
         // grab spectorgrams, they are always derivatives
         // so they will always have an `original` field
-        if (this.isSpectrogram(f.name) && f.original) {
+        if (f.original && this.isValidAudioFile(f.original)) {
           topLevelTracks[f.original].spectrogram = f as Spectrogram;
         } else {
           // find all album images
@@ -252,67 +360,66 @@ export class Album {
         return;
       }
 
-      if (!this.isValidAudioFile(f.name) || !this.isValidImageFile(f.name)) {
+      if (
+        !this.isValidAudioFile(f.name) ||
+        (!this.isValidImageFile(f.name) && !this.isValidAudioFile(f.name))
+      ) {
         // discard non-audio/image files
         return;
       }
 
-      const tracklistEntry = this.tracklistEntry(f);
       /** All audio from here */
-      const track = new Track(f, tracklistEntry, this.baseHost);
 
       // Identify top level track and set it
       const segmentedTrack =
-        this.isValidSegmentFile(track.original) &&
-        this.isValidAudioFile(track.name);
-
-      const primaryTrack = track.source === 'original';
+        this.isValidSegmentFile(f.original) && this.isValidAudioFile(f.name);
+      const primaryTrack =
+        f.source === 'original' && this.isValidAudioFile(f.name);
 
       if (primaryTrack || segmentedTrack) {
         // pin top track file
-        topLevelTracks[track.name].primary = track;
+        topLevelTracks[f.name].primary = f;
         return;
       }
 
-      if (track.name.match(/_sample\.mp3$/) && track.original) {
+      if (f.name.match(/_sample\.mp3$/)?.length && f.original) {
         // get samples
-        topLevelTracks[track.original].sampleMp3 = track;
+        topLevelTracks[f.original].sampleMp3 = new File(f);
         return;
       }
 
       if (
-        !this.isValidAudioFile(track.name) &&
-        !this.isSampleMP3(track.name) &&
-        this.isValidAudioFile(track.original) &&
-        track.original
+        this.isValidAudioFile(f.name) &&
+        !this.isSampleMP3(f.name) &&
+        this.isValidAudioFile(f.original) &&
+        f.original
       ) {
         // if not sample but is mp3 & has original reference
         // that is the full MP3
-        topLevelTracks[track.original].fullMp3 = track;
+        if (f.name.match(/.mp3$/)?.length) {
+          topLevelTracks[f.original].fullMp3 = f;
+        } else {
+          topLevelTracks[f.original].related.push(f);
+        }
       }
     }); // end files walk
 
-    const primaryTracks = Object.values(topLevelTracks);
-
-    // let's update the original track list with enriched Tracks
-    console.log('**********************************');
-    console.log('primaryTracks', primaryTracks);
-
+    // grab images
     this.images = images;
-    console.log('****** this.images ---- ', this.images);
 
-    this.tracklist.forEach((tr: PlaylistTrack, i) => {
-      const primaryTrack = topLevelTracks[tr.orig].primary as Track;
-      primaryTrack.playlistTrack = tr;
-      primaryTrack.spectrogram = topLevelTracks[tr.orig].spectrogram;
-      primaryTrack.relatedFiles = topLevelTracks[tr.orig].related;
-      primaryTrack.sampleMp3 = topLevelTracks[tr.orig].sampleMp3;
-      primaryTrack.fullMp3 = topLevelTracks[tr.orig].fullMp3;
+    // grab detailed tracks
+    const allTracks: PlaylistTrack[] = [];
+    this.tracks.forEach((tr: PlaylistTrack, i) => {
+      const primaryTrack = topLevelTracks[tr.orig].primary;
 
-      this.tracks[i] = primaryTrack;
-      console.log('#####');
-      console.log('primaryTrack', primaryTrack);
-      console.log('this.tracks', this.tracks.length, this.tracks);
+      const detailedTrackInfo = new Track(
+        { ...tr, ...primaryTrack, details: topLevelTracks[tr.orig] },
+        'archive.org'
+      ) as PlaylistTrack;
+      detailedTrackInfo.setPlaylistInfo(tr);
+
+      allTracks[i] = detailedTrackInfo;
     });
+    this.tracks = allTracks;
   }
 }
