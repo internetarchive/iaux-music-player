@@ -5,124 +5,14 @@ import {
   MetadataResponse,
   StringField,
 } from '@internetarchive/search-service';
+import { PlaylistTrack, Spectrogram, Track, TrackDetails } from './track';
 
-/*
-Sort audio tracks & group their derivatives;
-
-- original audio (~FLAC)
-  - derived (full) MP3s
-  - derived (sample) MP3s
-  - youtube id
-  - spotify id
-  - spectrogram
-
-LPs
-- derived segmented tracks
-  - derived (sample) MP3s
-  - spectrogram
-  - youtube id
-  - spotify id
-*/
-interface Spectrogram extends File {
-  original: string;
-  name: string;
-  source: string;
-  format: 'Spectrogram';
-}
-
-interface TrackDetails {
-  primary: File;
-  spectrogram: Spectrogram;
-  related: File[];
-  sampleMp3?: File;
-  fullMp3?: File;
-}
-
-interface PlaylistSource {
-  file: File['name'];
-  type: string;
-  height: string;
-  width: string;
-}
-
-export interface PlaylistTrack extends Track {
-  title: string;
-  orig: File['name'];
-  image: File['name'];
-  duration: number;
-  sources: PlaylistSource[];
-}
-
-export class Track extends File implements PlaylistTrack {
-  baseHost: string;
-
-  isSegmented: boolean = false;
-
-  private: boolean = false;
-
-  spectrogram?: Spectrogram;
-
-  sampleMp3?: Track;
-
-  fullMp3?: Track;
-
-  details: TrackDetails | null = null;
-
-  orig: string = '';
-
-  image: string = '';
-
-  duration: number = 0;
-
-  sources: PlaylistSource[] = [];
-
-  private _playlistTrack: PlaylistTrack | null = null;
-
-  constructor(
-    trackDetails: Record<string, any>,
-    baseHost: string = 'archive.org'
-  ) {
-    super(trackDetails);
-
-    this.details = trackDetails.details;
-    this.baseHost = baseHost;
-  }
-
-  get url(): string {
-    return `https://${this.baseHost}/${this.name}`;
-  }
-
-  override get title(): string {
-    return this._playlistTrack?.title || this?.title || this.name;
-  }
-
-  get youtubeId(): string {
-    return (
-      (this.externalIds as unknown as string[]).find((e: string) =>
-        e.match(/youtube/gi)
-      ) || ''
-    );
-  }
-
-  get spotifyId(): string {
-    return this.externalIds.find((e: string) => e.match(/spotify/gi)) || '';
-  }
-
-  get externalIds(): string[] {
-    return Array.isArray(this.rawValue['external-identifier'])
-      ? this.rawValue['external-identifier']
-      : [this.rawValue['external-identifier'] || ''];
-  }
-
-  setPlaylistInfo(track: PlaylistTrack): void {
-    this._playlistTrack = track;
-    this.orig = track.orig;
-    this.image = track.image;
-    this.duration = track.duration;
-    this.sources = track.sources;
-  }
-}
-
+/**
+ * An Album on the Internet Archive
+ *
+ * Takes a MetadataResponse & PlaylistTrack[]
+ * to create an Album
+ * */
 export class Album {
   tracks: PlaylistTrack[] = [];
 
@@ -151,6 +41,17 @@ export class Album {
     return (this.item.metadata?.title?.values.join('; ') as string) || '';
   }
 
+  get creator(): StringField | string {
+    if (this.item.metadata?.creator?.values) {
+      return this.item.metadata?.creator?.values.join('; ');
+    }
+
+    if (this.item.metadata.rawMetadata?.artist) {
+      return this.item.metadata.rawMetadata?.artist;
+    }
+    return '';
+  }
+
   get youtubeId(): string {
     return (
       (this.externalIds as string[]).find((e: string) =>
@@ -165,29 +66,6 @@ export class Album {
         e.match(/spotify/gi)
       ) || ''
     );
-  }
-
-  get albumImage(): string {
-    // #1 - default Item Image
-    const itemImage = this.images.find(
-      (img: File) => img.format === 'Item Image'
-    );
-    const urlBase = `https://${this.baseHost}/download/${this.item.metadata.identifier}/`;
-    if (itemImage) {
-      return `${urlBase}${itemImage.name}`;
-    }
-
-    // #2 - originally uploaded image
-    const originalImages = this.images.find((img: File) => {
-      const invalidFormats = ['Item Image', 'JPEG Thumb'];
-      return img.source === 'original' && !invalidFormats.includes(img.format);
-    });
-    if (originalImages) {
-      return `${urlBase}${originalImages.name}`;
-    }
-
-    // #3 - thumbnail
-    return `${urlBase}__ia_thumb.jpg`;
   }
 
   get externalIds(): string[] {
@@ -215,6 +93,29 @@ export class Album {
       availableTracks.unshift(this.albumTrackOption('sp') as PlaylistTrack);
     }
     return availableTracks;
+  }
+
+  get albumImage(): string {
+    // #1 - default Item Image
+    const itemImage = this.images.find(
+      (img: File) => img.format === 'Item Image'
+    );
+    const urlBase = `https://${this.baseHost}/download/${this.item.metadata.identifier}/`;
+    if (itemImage) {
+      return `${urlBase}${itemImage.name}`;
+    }
+
+    // #2 - originally uploaded image
+    const originalImages = this.images.find((img: File) => {
+      const invalidFormats = ['Item Image', 'JPEG Thumb'];
+      return img.source === 'original' && !invalidFormats.includes(img.format);
+    });
+    if (originalImages) {
+      return `${urlBase}${originalImages.name}`;
+    }
+
+    // #3 - thumbnail
+    return `${urlBase}__ia_thumb.jpg`;
   }
 
   albumTrackOption(playerType: 'yt' | 'sp'): Track | undefined {
@@ -276,30 +177,21 @@ export class Album {
     return !!fileName.match(/_jp2.(zip|tar)/gi)?.length;
   }
 
-  get creator(): StringField | string {
-    if (this.item.metadata?.creator?.values) {
-      return this.item.metadata?.creator?.values.join('; ');
-    }
-
-    if (this.item.metadata.rawMetadata?.artist) {
-      return this.item.metadata.rawMetadata?.artist;
-    }
-    return '';
-  }
-
-  tracksEntry(file: File): PlaylistTrack | undefined {
-    return this.tracks.find(tr => {
-      if (file.original) {
-        // segmented track
-        return tr.orig === file.original;
-      }
-      // original audio track
-      return tr.orig === file.name;
-    });
-  }
+  // tracksEntry(file: File): PlaylistTrack | undefined {
+  //   return this.tracks.find(tr => {
+  //     if (file.original) {
+  //       // segmented track
+  //       return tr.orig === file.original;
+  //     }
+  //     // original audio track
+  //     return tr.orig === file.name;
+  //   });
+  // }
 
   /**
    * Fills sorted track list properties.
+   * During `MetadataResponse.files` walk, we identify TrackDetails
+   * to enrich track information received from `PlaylistTrack[]`
    */
   filterFiles(files: File[]): void {
     const images: File[] = [];
@@ -459,3 +351,26 @@ export class Album {
     this.tracks = allTracks;
   }
 }
+
+/*
+Noes on the two primary ways we archive audio items:
+
+File relationships:
+
+### Primary - Scanned CDs, Audio Uploads
+1 album = N audo files, 1 song = 1 track
+  - derived (full) MP3s
+  - derived (sample) MP3s
+  - youtube id
+  - spotify id
+  - spectrogram
+
+### Segmented - Scanned LPs, Scanned 78s
+Original audio is Long Play, must be segmented to retrieve tracks.
+1 album file = 1 audio file => post processed to retrieve many tracks
+- derived segmented tracks (MP3s)
+  - derived (sample) MP3s
+  - spectrogram
+  - youtube id
+  - spotify id
+*/

@@ -7,7 +7,8 @@ import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
 import '../src/players/youtube-player';
-import { Album, PlaylistTrack } from '../src/format-album';
+import { Album } from '../src/models/album';
+import { PlaylistTrack } from '../src/models/track';
 
 const albumList = [
   {
