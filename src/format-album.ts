@@ -404,6 +404,15 @@ export class Album {
         f.source === 'original' && this.isValidAudioFile(f.name);
 
       if (primaryTrack || segmentedTrack) {
+        if (!topLevelTracks[f.name]) {
+          topLevelTracks[f.name] = {
+            primary: undefined,
+            spectrogram: undefined,
+            related: [],
+            sampleMp3: undefined,
+            fullMp3: undefined,
+          } as unknown as TrackDetails;
+        }
         // pin top track file
         topLevelTracks[f.name].primary = f;
         return;
