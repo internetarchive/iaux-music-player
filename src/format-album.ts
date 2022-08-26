@@ -167,6 +167,29 @@ export class Album {
     );
   }
 
+  get albumImage(): string {
+    // #1 - default Item Image
+    const itemImage = this.images.find(
+      (img: File) => img.format === 'Item Image'
+    );
+    const urlBase = `https://${this.baseHost}/download/${this.item.metadata.identifier}/`;
+    if (itemImage) {
+      return `${urlBase}${itemImage.name}`;
+    }
+
+    // #2 - originally uploaded image
+    const originalImages = this.images.find((img: File) => {
+      const invalidFormats = ['Item Image', 'JPEG Thumb'];
+      return img.source === 'original' && !invalidFormats.includes(img.format);
+    });
+    if (originalImages) {
+      return `${urlBase}${originalImages.name}`;
+    }
+
+    // #3 - thumbnail
+    return `${urlBase}__ia_thumb.jpg`;
+  }
+
   get externalIds(): string[] {
     if (!this.item.metadata.rawMetadata) {
       return [''];
@@ -231,6 +254,10 @@ export class Album {
 
   isValidImageFile(imageName: string = ''): boolean {
     return !!imageName.match(/.(png|jpg|jpeg)$/gi)?.length;
+  }
+
+  isValidImageFileFormat(imageFormat: string = ''): boolean {
+    return !!imageFormat.match(/(png|jpg|jpeg)/gi)?.length;
   }
 
   isValidSegmentFile(fileOrigin: string = ''): boolean {
