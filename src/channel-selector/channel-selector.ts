@@ -308,6 +308,10 @@ export class ChannelSelector extends LitElement {
         color: var(--channel-selector-text-color, #fff);
       }
 
+      :host(:focus) {
+        outline: none;
+      }
+
       ia-dropdown {
         --dropdownBgColor: #333;
         --dropdownHoverBgColor: #474747;
