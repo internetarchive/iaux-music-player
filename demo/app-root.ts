@@ -371,7 +371,7 @@ export class AppRoot extends LitElement {
     return html`
       <section id="components">
         <channel-selector
-          .dropdownLabelTheme=${this.bgColor}
+          .backgroundTheme=${this.bgColor}
           spotify
           youtube
           beta
@@ -413,7 +413,7 @@ export class AppRoot extends LitElement {
           <hr />
         </div>
         <channel-selector
-          .dropdownLabelTheme=${this.bgColor}
+          .backgroundTheme=${this.bgColor}
           spotify
           youtube
           beta

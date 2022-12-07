@@ -41,7 +41,7 @@ export class ChannelSelector extends LitElement {
   @property({ attribute: true, type: Boolean, reflect: true }) samples = false;
 
   @property({ attribute: true, type: String, reflect: true })
-  dropdownLabelTheme: 'light' | 'dark' = 'dark';
+  backgroundTheme: 'light' | 'dark' = 'dark';
 
   @property({ type: String, reflect: true }) selected: channelTypes =
     channelTypes.ia;
@@ -276,7 +276,7 @@ export class ChannelSelector extends LitElement {
         displayCaret
         .options=${this.dropdownOptions}
         .selectedOption=${this.selected}
-        class=${this.dropdownLabelTheme}
+        class=${this.backgroundTheme}
       >
         <span slot="dropdown-label">${this.currentlySelectedIcon}</span>
       </ia-dropdown>
@@ -301,7 +301,7 @@ export class ChannelSelector extends LitElement {
     return html`
       <section
         id=${this.displayStyle}
-        class="${this.displayStyle} ${this.dropdownLabelTheme}"
+        class="${this.displayStyle} ${this.backgroundTheme}"
       >
         ${cache(this.displayStyle === 'radio' ? this.radioView : this.dropdown)}
       </section>
