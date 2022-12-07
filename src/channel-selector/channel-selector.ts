@@ -312,11 +312,14 @@ export class ChannelSelector extends LitElement {
     css`
       :host {
         display: block;
-        color: var(--channel-selector-title-color, #fff);
       }
 
       :host(:focus) {
         outline: none;
+      }
+
+      section.radio ul {
+        color: #fff;
       }
 
       section.radio.light h4 {
@@ -340,11 +343,6 @@ export class ChannelSelector extends LitElement {
       ia-dropdown.light img.ia-beta,
       ia-dropdown.light img.webamp {
         filter: invert(1);
-      }
-
-      #selector-title,
-      .selected-option {
-        color: var(--channel-selector-title-color, #fff);
       }
 
       h4 {
