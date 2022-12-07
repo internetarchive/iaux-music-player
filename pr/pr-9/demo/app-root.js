@@ -455,7 +455,7 @@ PERFORMANCE OF THIS SOFTWARE.
     box-sizing: border-box;
   }
   /* End demarcation */
-`;var le;(function(r){r.postInit="postInit",r.channelChange="channelChange"})(le||(le={}));let S=class extends C{constructor(){super(...arguments),this.youtube=!1,this.spotify=!1,this.beta=!1,this.webamp=!0,this.samples=!1,this.dropdownLabelTheme="dark",this.selected=h.ia,this.displayStyle="radio",this.url=""}firstUpdated(){this.dispatchEvent(new CustomEvent(le.postInit,{detail:{channel:this.selected},composed:!0,bubbles:!0}))}emitChannelChanged(){this.dispatchEvent(new CustomEvent(le.channelChange,{detail:{channel:this.selected},composed:!0,bubbles:!0}))}iaClicked(){this.selected!==h.ia&&(this.selected=h.ia,this.emitChannelChanged())}betaClicked(){this.selected!==h.beta&&(this.selected=h.beta,this.emitChannelChanged())}spotifyClicked(){this.selected!==h.spotify&&(this.selected=h.spotify,this.emitChannelChanged())}webampClicked(){this.selected!==h.webamp&&(this.selected=h.webamp,this.emitChannelChanged())}youtubeClicked(){this.selected!==h.youtube&&(this.selected=h.youtube,this.emitChannelChanged())}dropdownOptionSelected(e){this.selected=e.id,this.emitChannelChanged(),this.iaDropdown.open=!1}get iaLinkSelector(){const e=this.selected===h.ia?"selected":"";return p`
+`;var le;(function(r){r.postInit="postInit",r.channelChange="channelChange"})(le||(le={}));let S=class extends C{constructor(){super(...arguments),this.youtube=!1,this.spotify=!1,this.beta=!1,this.webamp=!0,this.samples=!1,this.backgroundTheme="dark",this.selected=h.ia,this.displayStyle="radio",this.url=""}firstUpdated(){this.dispatchEvent(new CustomEvent(le.postInit,{detail:{channel:this.selected},composed:!0,bubbles:!0}))}emitChannelChanged(){this.dispatchEvent(new CustomEvent(le.channelChange,{detail:{channel:this.selected},composed:!0,bubbles:!0}))}iaClicked(){this.selected!==h.ia&&(this.selected=h.ia,this.emitChannelChanged())}betaClicked(){this.selected!==h.beta&&(this.selected=h.beta,this.emitChannelChanged())}spotifyClicked(){this.selected!==h.spotify&&(this.selected=h.spotify,this.emitChannelChanged())}webampClicked(){this.selected!==h.webamp&&(this.selected=h.webamp,this.emitChannelChanged())}youtubeClicked(){this.selected!==h.youtube&&(this.selected=h.youtube,this.emitChannelChanged())}dropdownOptionSelected(e){this.selected=e.id,this.emitChannelChanged(),this.iaDropdown.open=!1}get iaLinkSelector(){const e=this.selected===h.ia?"selected":"";return p`
       <li class=${e}>
         ${Rt({samples:this.samples,selected:this.selected===h.ia,onClick:()=>this.iaClicked(),href:this.url})}
       </li>
@@ -484,7 +484,7 @@ PERFORMANCE OF THIS SOFTWARE.
         displayCaret
         .options=${this.dropdownOptions}
         .selectedOption=${this.selected}
-        class=${this.dropdownLabelTheme}
+        class=${this.backgroundTheme}
       >
         <span slot="dropdown-label">${this.currentlySelectedIcon}</span>
       </ia-dropdown>
@@ -501,7 +501,7 @@ PERFORMANCE OF THIS SOFTWARE.
     `}render(){return p`
       <section
         id=${this.displayStyle}
-        class="${this.displayStyle} ${this.dropdownLabelTheme}"
+        class="${this.displayStyle} ${this.backgroundTheme}"
       >
         ${Xt(this.displayStyle==="radio"?this.radioView:this.dropdown)}
       </section>
@@ -622,7 +622,7 @@ PERFORMANCE OF THIS SOFTWARE.
         width: 30px !important;
         display: block;
       }
-    `,ei];l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"youtube",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"spotify",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"beta",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"webamp",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"samples",void 0);l([m({attribute:!0,type:String,reflect:!0})],S.prototype,"dropdownLabelTheme",void 0);l([m({type:String,reflect:!0})],S.prototype,"selected",void 0);l([m({type:String,reflect:!0})],S.prototype,"displayStyle",void 0);l([m({type:String})],S.prototype,"url",void 0);l([de("ia-dropdown")],S.prototype,"iaDropdown",void 0);S=l([q("channel-selector")],S);let G=class extends C{constructor(){super(...arguments),this.iaSpotifyUrn="",this.display=!1}get spotifyUrl(){return!this.iaSpotifyUrn||!this.iaSpotifyUrn.match(/urn:spotify:/g)?"":`https://open.spotify.com/embed/${this.iaSpotifyUrn.replace(/urn:spotify:/g,"").replace(/:/g,"/")}`}render(){const e=this.spotifyUrl;return e?p`
+    `,ei];l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"youtube",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"spotify",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"beta",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"webamp",void 0);l([m({attribute:!0,type:Boolean,reflect:!0})],S.prototype,"samples",void 0);l([m({attribute:!0,type:String,reflect:!0})],S.prototype,"backgroundTheme",void 0);l([m({type:String,reflect:!0})],S.prototype,"selected",void 0);l([m({type:String,reflect:!0})],S.prototype,"displayStyle",void 0);l([m({type:String})],S.prototype,"url",void 0);l([de("ia-dropdown")],S.prototype,"iaDropdown",void 0);S=l([q("channel-selector")],S);let G=class extends C{constructor(){super(...arguments),this.iaSpotifyUrn="",this.display=!1}get spotifyUrl(){return!this.iaSpotifyUrn||!this.iaSpotifyUrn.match(/urn:spotify:/g)?"":`https://open.spotify.com/embed/${this.iaSpotifyUrn.replace(/urn:spotify:/g,"").replace(/:/g,"/")}`}render(){const e=this.spotifyUrl;return e?p`
       <iframe
         id="embed-iframe"
         src="${e}"
@@ -793,7 +793,7 @@ PERFORMANCE OF THIS SOFTWARE.
     `}get componentsView(){const e=`${location.origin}/demo`;return p`
       <section id="components">
         <channel-selector
-          .dropdownLabelTheme=${this.bgColor}
+          .backgroundTheme=${this.bgColor}
           spotify
           youtube
           beta
@@ -821,7 +821,7 @@ PERFORMANCE OF THIS SOFTWARE.
           <hr />
         </div>
         <channel-selector
-          .dropdownLabelTheme=${this.bgColor}
+          .backgroundTheme=${this.bgColor}
           spotify
           youtube
           beta
