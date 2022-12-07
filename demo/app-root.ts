@@ -71,7 +71,7 @@ const albumList = [
 @customElement('app-root')
 export class AppRoot extends LitElement {
   @property({ type: String, reflect: true }) viewToShow: 'components' | 'data' =
-    'data';
+    'components';
 
   @property({ type: String }) selectedByDropdown: channelTypes =
     channelTypes.beta;
@@ -85,6 +85,8 @@ export class AppRoot extends LitElement {
   @property({ type: String }) selectedByRadioOnload: channelTypes | '' = '';
 
   @property({ type: String }) albumId: string = '';
+
+  @property({ type: String }) bgColor: 'light' | 'dark' = 'dark';
 
   @property({ type: Object, attribute: false }) albumMd: Record<
     string,
@@ -100,6 +102,12 @@ export class AppRoot extends LitElement {
 
   @query('input#md-search') input!: HTMLInputElement;
 
+  override firstUpdated() {
+    if (this.startAtWebamp) {
+      this.selectedByRadio = channelTypes.webamp;
+    }
+  }
+
   override updated(changed: Record<string, any>): void {
     if (changed.has('viewToShow')) {
       document
@@ -110,6 +118,14 @@ export class AppRoot extends LitElement {
 
     if (changed.has('albumId') && this.albumId) {
       this.albumInfo();
+    }
+
+    if (changed.has('bgColor')) {
+      if (this.bgColor === 'dark') {
+        document.querySelector('body')?.classList.remove('light');
+      } else {
+        document.querySelector('body')?.classList.add('light');
+      }
     }
   }
 
@@ -355,6 +371,7 @@ export class AppRoot extends LitElement {
     return html`
       <section id="components">
         <channel-selector
+          .dropdownLabelTheme=${this.bgColor}
           spotify
           youtube
           beta
@@ -378,8 +395,25 @@ export class AppRoot extends LitElement {
           <h2>on first load: ${this.selectedByRadioOnload}</h2>
           <h2>on change: ${this.selectedByRadio}</h2>
         </section>
-
+        <hr />
+        <div>
+          <button
+            @click=${() => {
+              if (this.bgColor === 'light') {
+                this.bgColor = 'dark';
+                return;
+              }
+              if (this.bgColor === 'dark') {
+                this.bgColor = 'light';
+              }
+            }}
+          >
+            Light / Dark Background - currently: ${this.bgColor}
+          </button>
+          <hr />
+        </div>
         <channel-selector
+          .dropdownLabelTheme=${this.bgColor}
           spotify
           youtube
           beta
