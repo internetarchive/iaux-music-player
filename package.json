@@ -27,7 +27,7 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@internetarchive/ia-dropdown": "1.0.5",
-    "@internetarchive/search-service": "0.3.5-a1",
+    "@internetarchive/search-service": "0.3.4",
     "lit": "^2.3.0",
     "typescript-memoize": "^1.1.0"
   },
