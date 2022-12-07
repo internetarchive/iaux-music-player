@@ -40,6 +40,9 @@ export class ChannelSelector extends LitElement {
 
   @property({ attribute: true, type: Boolean, reflect: true }) samples = false;
 
+  @property({ attribute: true, type: String, reflect: true })
+  backgroundTheme: 'light' | 'dark' = 'dark';
+
   @property({ type: String, reflect: true }) selected: channelTypes =
     channelTypes.ia;
 
@@ -273,6 +276,7 @@ export class ChannelSelector extends LitElement {
         displayCaret
         .options=${this.dropdownOptions}
         .selectedOption=${this.selected}
+        class=${this.backgroundTheme}
       >
         <span slot="dropdown-label">${this.currentlySelectedIcon}</span>
       </ia-dropdown>
@@ -295,7 +299,10 @@ export class ChannelSelector extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <section id=${this.displayStyle} class=${this.displayStyle}>
+      <section
+        id=${this.displayStyle}
+        class="${this.displayStyle} ${this.backgroundTheme}"
+      >
         ${cache(this.displayStyle === 'radio' ? this.radioView : this.dropdown)}
       </section>
     `;
@@ -305,21 +312,37 @@ export class ChannelSelector extends LitElement {
     css`
       :host {
         display: block;
-        color: var(--channel-selector-text-color, #fff);
       }
 
       :host(:focus) {
         outline: none;
       }
 
+      section.radio ul {
+        color: #fff;
+      }
+
+      section.radio.light h4 {
+        color: #222;
+      }
+
+      ia-dropdown.light {
+        --channel-selector-dropdown-text-color: #222;
+        color: var(--channel-selector-dropdown-text-color, #222);
+        --dropdownCaretColor: var(--channel-selector-dropdown-text-color, #222);
+      }
+
       ia-dropdown {
         --dropdownBgColor: #333;
         --dropdownHoverBgColor: #474747;
+        color: var(--channel-selector-dropdown-text-color, #fff);
+        --dropdownCaretColor: var(--channel-selector-dropdown-text-color, #fff);
       }
 
-      #selector-title,
-      .selected-option {
-        color: var(--channel-selector-title-color, #fff);
+      ia-dropdown.light img.ia,
+      ia-dropdown.light img.ia-beta,
+      ia-dropdown.light img.webamp {
+        filter: invert(1);
       }
 
       h4 {
