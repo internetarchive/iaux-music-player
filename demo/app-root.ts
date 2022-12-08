@@ -100,11 +100,15 @@ export class AppRoot extends LitElement {
 
   @property({ type: Object, attribute: false }) album: Album | null = null;
 
+  @property({ type: String }) componentToShow: 'channels' | 'photos' =
+    'channels';
+
   @query('input#md-search') input!: HTMLInputElement;
 
   override firstUpdated() {
     if (this.startAtWebamp) {
       this.selectedByRadio = channelTypes.webamp;
+      this.selectedByDropdown = channelTypes.webamp;
     }
   }
 
@@ -203,7 +207,6 @@ export class AppRoot extends LitElement {
         </h1>
         <hr />
         <hr />
-        <br /><br />
         ${this.viewToShow === 'components'
           ? this.componentsView
           : this.dataView}
@@ -366,7 +369,7 @@ export class AppRoot extends LitElement {
     `;
   }
 
-  get componentsView(): TemplateResult {
+  get channelSelectors(): TemplateResult {
     const url = `${location.origin}/demo`;
     return html`
       <section id="components">
@@ -396,22 +399,6 @@ export class AppRoot extends LitElement {
           <h2>on change: ${this.selectedByRadio}</h2>
         </section>
         <hr />
-        <div>
-          <button
-            @click=${() => {
-              if (this.bgColor === 'light') {
-                this.bgColor = 'dark';
-                return;
-              }
-              if (this.bgColor === 'dark') {
-                this.bgColor = 'light';
-              }
-            }}
-          >
-            Light / Dark Background - currently: ${this.bgColor}
-          </button>
-          <hr />
-        </div>
         <channel-selector
           .backgroundTheme=${this.bgColor}
           spotify
@@ -442,6 +429,38 @@ export class AppRoot extends LitElement {
           <h2>on change: ${this.selectedByDropdown}</h2>
         </section>
       </section>
+    `;
+  }
+
+  get componentsView(): TemplateResult {
+    return html`
+      <div id="menu">
+        <button
+          @click=${() => {
+            if (this.bgColor === 'light') {
+              this.bgColor = 'dark';
+              return;
+            }
+            if (this.bgColor === 'dark') {
+              this.bgColor = 'light';
+            }
+          }}
+        >
+          Change background theme - currently: ${this.bgColor}
+        </button>
+        <div id="components-menu">
+          <p>Show:</p>
+          <button
+            @click=${() => {
+              this.componentToShow = 'channels';
+            }}
+          >
+            Channel Selectors
+          </button>
+        </div>
+      </div>
+      <hr />
+      ${this.componentToShow === 'channels' ? this.channelSelectors : nothing}
     `;
   }
 
