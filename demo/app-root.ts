@@ -1,14 +1,35 @@
+/* eslint-disable import/first */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-restricted-globals */
+
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { MetadataResponse } from '@internetarchive/search-service';
+
+import '../src/ia-photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
 import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
+
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.url.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.autoplay.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.resume.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js';
+import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53';
+
+// const linerNotesUrl = 'https://ia800104.us.archive.org/BookReader/BookReaderJSIA.php?id=cd_dark-side-of-the-moon_pink-floyd&itemPath=/23/items/cd_dark-side-of-the-moon_pink-floyd&server=ia800104.us.archive.org&format=jsonp&subPrefix=cd_dark-side-of-the-moon_pink-floyd&audioLinerNotes=1';
+const defaultLinerNotesManifest = await fetch(
+  './liner-notes-manifest-demo.json'
+).then(res => res.json());
+console.log('*** defaultLinerNotesManifest', defaultLinerNotesManifest);
 
 const albumList = [
   {
@@ -68,6 +89,7 @@ const albumList = [
     desc: 'Has 3rd party "Full Album". Clicking on Full Album should highlight full album',
   },
 ];
+
 @customElement('app-root')
 export class AppRoot extends LitElement {
   @property({ type: String, reflect: true }) viewToShow: 'components' | 'data' =
@@ -100,12 +122,11 @@ export class AppRoot extends LitElement {
 
   @property({ type: Object, attribute: false }) album: Album | null = null;
 
-  @property({ type: String }) componentToShow: 'channels' | 'photos' =
-    'channels';
+  @property({ type: String }) componentToShow: 'channels' | 'photos' = 'photos';
 
   @query('input#md-search') input!: HTMLInputElement;
 
-  override firstUpdated() {
+  override firstUpdated(): void {
     if (this.startAtWebamp) {
       this.selectedByRadio = channelTypes.webamp;
       this.selectedByDropdown = channelTypes.webamp;
@@ -133,7 +154,7 @@ export class AppRoot extends LitElement {
     }
   }
 
-  get startAtWebamp() {
+  get startAtWebamp(): boolean {
     const searchParams = new URLSearchParams(location.search.slice(1));
     return searchParams.has('webamp');
   }
@@ -432,6 +453,20 @@ export class AppRoot extends LitElement {
     `;
   }
 
+  get photoViewer(): TemplateResult {
+    return html`
+      <section id="components">
+        <ia-photo-viewer
+          .linerNotesManifest=${defaultLinerNotesManifest}
+          .lightDomHook=${this}
+          ><div slot="main">
+            <slot name="main"><p>Placeholder text</p></slot>
+          </div></ia-photo-viewer
+        >
+      </section>
+    `;
+  }
+
   get componentsView(): TemplateResult {
     return html`
       <div id="menu">
@@ -457,10 +492,19 @@ export class AppRoot extends LitElement {
           >
             Channel Selectors
           </button>
+          <button
+            @click=${() => {
+              this.componentToShow = 'photos';
+            }}
+          >
+            Photos
+          </button>
         </div>
       </div>
       <hr />
       ${this.componentToShow === 'channels' ? this.channelSelectors : nothing}
+      ${this.componentToShow === 'photos' ? this.photoViewer : nothing}
+      <slot name="foo"></slot>
     `;
   }
 
@@ -552,6 +596,13 @@ export class AppRoot extends LitElement {
     .album-image {
       height: 200px;
       border: 1px solid;
+    }
+
+    ia-photo-viewer {
+      display: block;
+      border: 1px solid red;
+      width: 400px;
+      height: 400px;
     }
   `;
 }

@@ -11,15 +11,16 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "start": "yarn run build && yarn prep-demo && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
     "build": "tsc && cp -R ./images/ ./dist/images",
     "prepare": "yarn run build && husky install",
+    "prep-demo": "rm -rf ./bookreader && mkdir -p ./bookreader/BookReader/images && cp -R ./node_modules/@internetarchive/bookreader/BookReader/images/ ./bookreader/BookReader/images",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "circular": "madge --circular --extensions ts .",
     "test": "yarn run build && yarn run lint && yarn run circular && wtr --coverage",
     "test:watch": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\"",
-    "ghpages:build": "rimraf ghpages && yarn run prepare && vite build",
+    "ghpages:build": "rimraf ghpages && yarn run prepare && yarn run prep-demo && vite build",
     "ghpages:publish": "yarn run ghpages:prepare -e $(git branch --show-current)",
     "ghpages:prepare": "yarn run ghpages:build && touch ghpages/.nojekyll && yarn run ghpages:generate",
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
@@ -27,11 +28,14 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@internetarchive/ia-dropdown": "1.0.5",
+    "@internetarchive/icon-audio": "^1.3.2",
+    "@internetarchive/icon-texts": "^1.3.2",
     "@internetarchive/search-service": "0.3.4",
     "lit": "^2.3.0",
     "typescript-memoize": "^1.1.0"
   },
   "devDependencies": {
+    "@internetarchive/bookreader": "^5.0.0-53",
     "@open-wc/eslint-config": "^7.0.0",
     "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
@@ -51,6 +55,7 @@
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
     "sinon": "^12.0.1",
+    "ts-lit-plugin": "^1.2.1",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4",
     "vite": "^2.9.13"
