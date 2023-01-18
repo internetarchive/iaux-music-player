@@ -71,12 +71,13 @@ export const channelIcons: iconInterface = {
   />`,
 };
 
-export const iaLabel = (
-  label:
-    | channelLabels.iaPlayer
-    | channelLabels.iaSamples = channelLabels.iaPlayer,
-  selected: boolean
-) => {
+export const iaLabel = ({
+  label = channelLabels.iaPlayer,
+  selected,
+}: {
+  label: channelLabels.iaPlayer | channelLabels.iaSamples;
+  selected: boolean;
+}) => {
   const filter = selected ? 'invert(1)' : 'invert(0)';
   const styles = styleMap({
     filter,
@@ -159,10 +160,10 @@ export const iaLink = ({
 }: channelSpecs): TemplateResult => {
   const label = samples ? channelLabels.iaSamples : channelLabels.iaPlayer;
   return html`
-    <a href=${href} @click=${() => onClick()}>${iaLabel(
+    <a href=${href} @click=${() => onClick()}>${iaLabel({
     label,
-    selected
-  )}</button>
+    selected,
+  })}</button>
   `;
 };
 
@@ -175,7 +176,7 @@ export const iaButton = ({
   const label = samples ? channelLabels.iaSamples : channelLabels.iaPlayer;
   return html`
     <button @click=${(x: optionOnClickCallback) => onClick(x)} class="ia">
-      ${iaLabel(label, selected)}
+      ${iaLabel({ label, selected })}
     </button>
   `;
 };
@@ -239,10 +240,10 @@ export const iaLinkDropdownOption = ({
   return {
     url: href,
     selectedHandler,
-    label: iaLabel(
-      samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
-      selectedOption === channelTypes.ia
-    ),
+    label: iaLabel({
+      label: samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
+      selected: selectedOption === channelTypes.ia,
+    }),
     id: channelTypes.ia,
   };
 };
@@ -257,10 +258,10 @@ export const iaButtonDropdownOption = ({
   };
   return {
     selectedHandler,
-    label: iaLabel(
-      samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
-      selectedOption === channelTypes.ia
-    ),
+    label: iaLabel({
+      label: samples ? channelLabels.iaSamples : channelLabels.iaPlayer,
+      selected: selectedOption === channelTypes.ia,
+    }),
     id: channelTypes.ia,
   };
 };

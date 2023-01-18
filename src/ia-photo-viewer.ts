@@ -1,5 +1,7 @@
 /* global: BookReader */
 /* eslint-disable no-console */
+/* eslint-disable no-restricted-properties */
+/* eslint-disable prefer-exponentiation-operator */
 import { LitElement, html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 // import audioIcon from '@internetarchive/icon-audio/index.js';
@@ -209,7 +211,6 @@ export class IaPhotoViewer extends LitElement {
        */
       getPageURI: (index: number, reduce: number = 1, rotate: number = 0) => {
         // IA only supports power of 2 reduces
-        // eslint-disable-next-line no-restricted-properties
         const brReduce = Math.pow(
           2,
           Math.floor(Math.log2(Math.max(1, reduce)))
