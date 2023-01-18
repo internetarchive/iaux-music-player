@@ -160,7 +160,7 @@ PERFORMANCE OF THIS SOFTWARE.
     src="https://archive.org/images/music-theater/youtube.svg"
     alt="youtube logo"
     style="height: 20px; width: 20px; display: block;"
-  />`},pe=(r=$.iaPlayer,e)=>{const i=Be({filter:e?"invert(1)":"invert(0)",height:"20px",width:"20px"}),o=Re({selected:e,"invert-icon-at-hover-selected":e});return h`
+  />`},pe=({label:r=$.iaPlayer,selected:e})=>{const i=Be({filter:e?"invert(1)":"invert(0)",height:"20px",width:"20px"}),o=Re({selected:e,"invert-icon-at-hover-selected":e});return h`
     <ia-icon-label class=${o}>
       <span slot="icon" style=${i}>${C.ia}</span>
       <span>${r}</span>
@@ -186,10 +186,10 @@ PERFORMANCE OF THIS SOFTWARE.
     <span>${$.youtube}</span>
   </ia-icon-label>
 `,jt=({samples:r,onClick:e,href:t,selected:i})=>{const o=r?$.iaSamples:$.iaPlayer;return h`
-    <a href=${t} @click=${()=>e()}>${pe(o,i)}</button>
+    <a href=${t} @click=${()=>e()}>${pe({label:o,selected:i})}</button>
   `},qt=({samples:r,onClick:e,selected:t})=>{const i=r?$.iaSamples:$.iaPlayer;return h`
     <button @click=${o=>e(o)} class="ia">
-      ${pe(i,t)}
+      ${pe({label:i,selected:t})}
     </button>
   `},Wt=({onClick:r,selected:e})=>h`<button
   @click=${t=>r(t)}
@@ -208,7 +208,7 @@ PERFORMANCE OF THIS SOFTWARE.
   class="yt"
 >
   ${bt(e)}
-</button>`,Kt=({samples:r,onClick:e,href:t,selectedOption:i})=>({url:t,selectedHandler:s=>{e(s)},label:pe(r?$.iaSamples:$.iaPlayer,i===p.ia),id:p.ia}),Zt=({samples:r,onClick:e,selectedOption:t})=>({selectedHandler:o=>{e(o)},label:pe(r?$.iaSamples:$.iaPlayer,t===p.ia),id:p.ia}),Qt=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:gt(e===p.beta),id:p.beta}),Xt=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:yt(e===p.spotify),id:p.spotify}),ei=({href:r,onClick:e,selectedOption:t})=>{const i=o=>{e(o)};return{url:`${r}?webamp=default`,selectedHandler:i,label:wt(t===p.webamp),id:p.webamp}},ti=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:bt(e===p.youtube),id:p.youtube}),ii=r=>{const{spotify:e,beta:t,youtube:i,selectedOption:o}=r;return[o===p.webamp?Kt(r):Zt(r),t?Qt(r):null,e?Xt(r):null,i?ti(r):null,ei(r)].filter(Boolean)};/**
+</button>`,Kt=({samples:r,onClick:e,href:t,selectedOption:i})=>({url:t,selectedHandler:s=>{e(s)},label:pe({label:r?$.iaSamples:$.iaPlayer,selected:i===p.ia}),id:p.ia}),Zt=({samples:r,onClick:e,selectedOption:t})=>({selectedHandler:o=>{e(o)},label:pe({label:r?$.iaSamples:$.iaPlayer,selected:t===p.ia}),id:p.ia}),Qt=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:gt(e===p.beta),id:p.beta}),Xt=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:yt(e===p.spotify),id:p.spotify}),ei=({href:r,onClick:e,selectedOption:t})=>{const i=o=>{e(o)};return{url:`${r}?webamp=default`,selectedHandler:i,label:wt(t===p.webamp),id:p.webamp}},ti=({onClick:r,selectedOption:e})=>({selectedHandler:i=>{r(i)},label:bt(e===p.youtube),id:p.youtube}),ii=r=>{const{spotify:e,beta:t,youtube:i,selectedOption:o}=r;return[o===p.webamp?Kt(r):Zt(r),t?Qt(r):null,e?Xt(r):null,i?ti(r):null,ei(r)].filter(Boolean)};/**
  * @license
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
