@@ -11,16 +11,15 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "yarn prep-demo && yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "start": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
     "build": "tsc && cp -R ./images/ ./dist/images",
     "prepare": "yarn run build && husky install",
-    "prep-demo": "rm -rf ./bookreader && mkdir -p ./bookreader && cp -R ./node_modules/@internetarchive/bookreader/BookReader/ ./bookreader/BookReader && cp -R ./node_modules/@internetarchive/bookreader/src/ ./bookreader/src",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "circular": "madge --circular --extensions ts .",
     "test": "yarn run build && yarn run lint && yarn run circular && wtr --coverage",
     "test:watch": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\"",
-    "ghpages:build": "rimraf ghpages && yarn run prepare && yarn run prep-demo && vite build",
+    "ghpages:build": "rimraf ghpages && yarn run prepare && vite build",
     "ghpages:publish": "yarn run ghpages:prepare -e $(git branch --show-current)",
     "ghpages:prepare": "yarn run ghpages:build && touch ghpages/.nojekyll && yarn run ghpages:generate",
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
