@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <style>
+    html {
+      font-size: 10px; /* This is to match petabox's base font size */
+      font-family: Helvetica, sans-serif;
+    }
+
+    body[components] {
+      background: black;
+      color: #fff;
+    }
+
+    body[components].light {
+      background: cadetblue;
+      color: #222;
+    }
+
+    body[data] {
+      background: lightblue;
+      color: black;
+    }
+
+    modal-manager[mode="closed"] {
+      display: none;
+    }
+
+    #BookReader {
+      display: block;
+      height: 400px;
+      width: 400px;
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+  <link href="https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.css" rel="stylesheet" type="text/css">
+  <script type="module" crossorigin src="./app-root.js"></script>
+</head>
+<body>
+  <app-root></app-root>
+
+  
+</body>
+</html>
