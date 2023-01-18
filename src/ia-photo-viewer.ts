@@ -38,29 +38,26 @@ export class IaPhotoViewer extends LitElement {
   @property({ type: Object }) lightDomHook: HTMLElement | undefined = undefined;
 
   firstUpdated() {
+    window.addEventListener('BookReader:PostInit', e => {
+      // final instance - let's pin
+      this.bookreader = (e as CustomEvent)?.detail.props;
+      (window as any).br = this.bookreader;
+    });
+
     /* Listen for BookReader's web components load before initializing BR  */
-    const initializeBookReader = () => {
-      console.log('initializeBookReader', this.bookreader);
-      this.bookreader!.init();
-      // Q: DO WE NEED THIS?
+    const initializeBookReader = (e: any) => {
+      console.log('BookNav:PostInit initializeBookReader', e);
+      // this.bookreader = (e as CustomEvent)?.detail;
+      // (window as any).br = this.bookreader;
       setTimeout(() => {
         console.log(
           'initializeBookReader setTimeoutsetTimeout',
           this.bookreader
         );
-
-        this.bookreader?.resize();
-        this.bookreader?.jumpToIndex(0);
-      }, 1000); /* wait for bookreader & its main container styles to load */
+        this.bookreader?.init();
+      }, 0); /* wait for bookreader & its main container styles to load */
     };
-    window.addEventListener('BrBookNav:PostInit', () => initializeBookReader());
-
-    window.addEventListener('BookReader:PostInit', e => {
-      console.log(
-        'BookReader:PostInit from ia-photo-viewer',
-        (e as CustomEvent)?.detail
-      );
-    });
+    window.addEventListener('BrBookNav:PostInit', e => initializeBookReader(e));
   }
 
   updated(changed: PropertyValues<this>) {
@@ -103,7 +100,6 @@ export class IaPhotoViewer extends LitElement {
     };
     // new bookreader from window.BookReader
     this.bookreader = new (window as any).BookReader(fullOptions) as BookReader;
-    (window as any).br = this.bookreader;
     console.log('this.bookreader --- window.br:::::', this.bookreader);
     // bookreader will now load itself and we will initialize once its setup is complete `BookReader:PostInit && BookNav:PostInit`
   }
@@ -126,6 +122,14 @@ export class IaPhotoViewer extends LitElement {
     if (this.linerNotesManifest) {
       return html`
         <ia-bookreader
+          .item=${this.linerNotesManifest}
+          .baseHost=${'https://archive.org'}
+          ?signedIn=${false}
+          class="focus-on-child-only"
+          style="min-height: inherit;"
+          @fullscreenStateUpdated=${(e: any) => {
+            console.log('MANAGE FS', e);
+          }}
           ><div slot="main"><slot name="main"></slot></div
         ></ia-bookreader>
       `;
@@ -167,7 +171,6 @@ export class IaPhotoViewer extends LitElement {
         "subPrefix": "cd_taylor-swift_taylor-swift"
       },
       metadata,
-
     }
   }
    */
@@ -226,21 +229,16 @@ export class IaPhotoViewer extends LitElement {
 
   async loadBookReader(): Promise<void> {
     // fetch manifest
-    const brManifest: Record<any, any> = {};
-    const brOptions = this.book?.brOptions;
+    const brOptions = this.linerNotesManifest?.brOptions;
     // core BR must be already loaded
     const fullOptions = {
-      ...this.bookreaderDefaultOptions,
       ...brOptions,
+      ...this.bookreaderDefaultOptions,
     };
     console.log('~~~~ fullOptions', fullOptions);
     this.bookreader = new (window as any).BookReader(fullOptions);
-    (window as any).br = this.bookreader; // keep for legacy
 
-    //     // we expect this at the global level
-    // (window as any).BookReaderJSIAinit(brManifest.data, brOptions);
-
-    const { isRestricted } = brManifest.data;
+    const isRestricted = (this.linerNotesManifest?.data as any)?.isRestricted;
     window.dispatchEvent(
       new CustomEvent('contextmenu', { detail: { isRestricted } })
     );

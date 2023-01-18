@@ -13,27 +13,29 @@ import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
 
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js' as any
-);
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js' as any
-);
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js' as any
-);
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js' as any
-);
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js' as any
-);
-await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js' as any
-);
+await Promise.all([
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js' as any
+  ),
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js' as any
+  ),
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js' as any
+  ),
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js' as any
+  ),
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js' as any
+  ),
+  await import(
+    'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js' as any
+  ),
+]);
 
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/src/ia-bookreader/ia-bookreader.js' as any
 );
 
 // const linerNotesUrl = 'https://ia800104.us.archive.org/BookReader/BookReaderJSIA.php?id=cd_dark-side-of-the-moon_pink-floyd&itemPath=/23/items/cd_dark-side-of-the-moon_pink-floyd&server=ia800104.us.archive.org&format=jsonp&subPrefix=cd_dark-side-of-the-moon_pink-floyd&audioLinerNotes=1';
