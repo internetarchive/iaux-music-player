@@ -5,7 +5,6 @@
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { MetadataResponse } from '@internetarchive/search-service';
-
 import '../src/ia-photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
@@ -14,16 +13,28 @@ import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
 
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.url.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.autoplay.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.resume.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js';
-import 'https://esm.sh/@internetarchive/bookreader@5.0.0-53';
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js' as any
+);
+
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53' as any
+);
 
 // const linerNotesUrl = 'https://ia800104.us.archive.org/BookReader/BookReaderJSIA.php?id=cd_dark-side-of-the-moon_pink-floyd&itemPath=/23/items/cd_dark-side-of-the-moon_pink-floyd&server=ia800104.us.archive.org&format=jsonp&subPrefix=cd_dark-side-of-the-moon_pink-floyd&audioLinerNotes=1';
 const defaultLinerNotesManifest = await fetch(

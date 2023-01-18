@@ -40,21 +40,27 @@ export class IaPhotoViewer extends LitElement {
   firstUpdated() {
     /* Listen for BookReader's web components load before initializing BR  */
     const initializeBookReader = () => {
-      console.log('initializeBookReader FIRST UPDATED', this.bookreader);
-      this.bookreader?.init();
-
+      console.log('initializeBookReader', this.bookreader);
+      this.bookreader!.init();
       // Q: DO WE NEED THIS?
       setTimeout(() => {
         console.log(
-          'initializeBookReader setTimeoutsetTimeout FIRST UPDATED',
+          'initializeBookReader setTimeoutsetTimeout',
           this.bookreader
         );
 
         this.bookreader?.resize();
         this.bookreader?.jumpToIndex(0);
-      }, 500); /* wait for bookreader & its main container styles to load */
+      }, 1000); /* wait for bookreader & its main container styles to load */
     };
-    window.addEventListener('BrBookNav:PostInit', initializeBookReader);
+    window.addEventListener('BrBookNav:PostInit', () => initializeBookReader());
+
+    window.addEventListener('BookReader:PostInit', e => {
+      console.log(
+        'BookReader:PostInit from ia-photo-viewer',
+        (e as CustomEvent)?.detail
+      );
+    });
   }
 
   updated(changed: PropertyValues<this>) {
@@ -76,11 +82,7 @@ export class IaPhotoViewer extends LitElement {
   async loadImages(): Promise<void> {}
 
   async loadFreshBookReaderFromManifest(): Promise<void> {
-    // clear dom
-    //   <div id="IABookReaderWrapper" slot="main">
-    //     <div id="BookReader" class="BookReader <?= $br_dom_fs_class ?>"></div>
-    //   </div>
-
+    // add DOM to provided lightdom hook
     const bookreaderSlot = document.createElement('div');
     bookreaderSlot.setAttribute('slot', 'main');
 
@@ -90,9 +92,6 @@ export class IaPhotoViewer extends LitElement {
     bookreaderMain.classList.add('liner-notes');
     bookreaderSlot.append(bookreaderMain);
     this.lightDomHook?.append(bookreaderSlot);
-
-    // this!.querySelector('slot')!.innerHTML =
-    //   '<div slot="main" id="BookReader"><slot></slot></div>';
 
     // gather BR Options
     const brOptions = this.linerNotesManifest?.brOptions;
@@ -105,9 +104,8 @@ export class IaPhotoViewer extends LitElement {
     // new bookreader from window.BookReader
     this.bookreader = new (window as any).BookReader(fullOptions) as BookReader;
     (window as any).br = this.bookreader;
-    // load bookreader
-    this.bookreader.init();
-    //
+    console.log('this.bookreader --- window.br:::::', this.bookreader);
+    // bookreader will now load itself and we will initialize once its setup is complete `BookReader:PostInit && BookNav:PostInit`
   }
 
   get photoCover(): TemplateResult {
@@ -231,57 +229,8 @@ export class IaPhotoViewer extends LitElement {
     const brManifest: Record<any, any> = {};
     const brOptions = this.book?.brOptions;
     // core BR must be already loaded
-    const originalGetPageURI = (window as any).BookReader.prototype.getPageURI;
-
-    const defaultOptions = {
-      // "ppi": "600",
-      el: '#BookReader',
-      showToolbar: false,
-      onePage: { autofit: 'height' }, // options: auto, width, height
-      enableFSLogoShortcut: true,
-      enableBookmarks: true,
-      enablePageResume: false,
-      enableTtsPlugin: false,
-      enableUrlPlugin: false,
-      defaults: 'mode/1up',
-      enableSearch: true,
-      searchInsideUrl: '/fulltext/inside.php',
-      initialSearchTerm: null,
-      imagesBaseURL: '/bookreader/BookReader/images/',
-      defaultStartLeaf: 0,
-      titleLeaf: 0,
-      controls: {
-        twoPage: { visible: false },
-        viewmode: { visible: false },
-      },
-      bookType: 'linerNotes', // bookType: linerNotes, book
-      /**
-       * Needed bypass to generate Image URL with scale factor.
-       * We must eliminate sooner than later to allow BookReader full image fetching control
-       * @param {Number} index - page index
-       * @param {Number} reduce - image size scale factor
-       * @param {Number} rotate - degrees of rotation
-       */
-      getPageURI: (index: number, reduce: number = 1, rotate: number = 0) => {
-        // IA only supports power of 2 reduces
-        // eslint-disable-next-line no-restricted-properties
-        const brReduce = Math.pow(
-          2,
-          Math.floor(Math.log2(Math.max(1, reduce)))
-        );
-        let uri = originalGetPageURI.call(
-          (this as any).bookreader,
-          index,
-          brReduce,
-          rotate
-        );
-        uri += uri.indexOf('?') > -1 ? '&' : '?';
-        uri = `${uri}scale=${brReduce}&rotate=${rotate}`;
-        return uri;
-      },
-    };
     const fullOptions = {
-      ...defaultOptions,
+      ...this.bookreaderDefaultOptions,
       ...brOptions,
     };
     console.log('~~~~ fullOptions', fullOptions);

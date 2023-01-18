@@ -11,10 +11,10 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "scripts": {
-    "start": "yarn run build && yarn prep-demo && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "start": "yarn prep-demo && yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
     "build": "tsc && cp -R ./images/ ./dist/images",
     "prepare": "yarn run build && husky install",
-    "prep-demo": "rm -rf ./bookreader && mkdir -p ./bookreader/BookReader/images && cp -R ./node_modules/@internetarchive/bookreader/BookReader/images/ ./bookreader/BookReader/images",
+    "prep-demo": "rm -rf ./bookreader && mkdir -p ./bookreader && cp -R ./node_modules/@internetarchive/bookreader/BookReader/ ./bookreader/BookReader && cp -R ./node_modules/@internetarchive/bookreader/src/ ./bookreader/src",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "circular": "madge --circular --extensions ts .",
