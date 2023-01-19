@@ -5,7 +5,7 @@
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { MetadataResponse } from '@internetarchive/search-service';
-import '../src/ia-photo-viewer';
+import '../src/photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
@@ -138,6 +138,8 @@ export class AppRoot extends LitElement {
   @property({ type: String }) componentToShow: 'channels' | 'photos' = 'photos';
 
   @query('input#md-search') input!: HTMLInputElement;
+
+  @property({ type: Boolean }) signedIn = false; // shows bookmarks view
 
   override firstUpdated(): void {
     if (this.startAtWebamp) {
@@ -469,12 +471,18 @@ export class AppRoot extends LitElement {
   get photoViewer(): TemplateResult {
     return html`
       <section id="components">
-        <ia-photo-viewer
+        <iaux-photo-viewer
           .linerNotesManifest=${defaultLinerNotesManifest}
           .lightDomHook=${this}
+          baseHost="archive.org"
+          .itemIdentifier=${defaultLinerNotesManifest?.metadata?.identifier}
+          .itemMD=${defaultLinerNotesManifest?.metadata}
+          ?signedIn=${this.signedIn}
+          .linerNotesManifest=${defaultLinerNotesManifest}
+          .looseImages=${[]}
           ><div slot="main">
             <slot name="main"><p>Placeholder text</p></slot>
-          </div></ia-photo-viewer
+          </div></iaux-photo-viewer
         >
       </section>
     `;
@@ -611,7 +619,7 @@ export class AppRoot extends LitElement {
       border: 1px solid;
     }
 
-    ia-photo-viewer {
+    iaux-photo-viewer {
       display: block;
       border: 1px solid red;
       width: 400px;

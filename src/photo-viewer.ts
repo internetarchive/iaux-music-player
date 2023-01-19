@@ -19,27 +19,29 @@ interface BookReader {
   jumpToIndex: (index: number) => void;
 }
 
-console.log('@@@@@@@@@@@@');
-
-@customElement('ia-photo-viewer')
+@customElement('iaux-photo-viewer')
 export class IaPhotoViewer extends LitElement {
-  @property({ type: Array, attribute: false }) images = [];
+  @property({ type: String, attribute: true, reflect: true }) baseHost =
+    'archive.org';
 
-  @property({ type: Object, attribute: false }) book: BookManifest | undefined =
-    undefined;
+  @property({ type: Boolean, reflect: true }) signedIn = false;
 
-  @property({ type: String, reflect: true }) displayMode: 'cover' | 'viewer' =
-    'cover';
+  @property({ type: String, reflect: true }) itemIdentifier = '';
 
-  @property({ type: Object }) bookreader: BookReader | undefined = undefined;
+  @property({ type: Object }) itemMD = undefined;
+
+  @property({ type: Array }) looseImages: string[] = [];
 
   @property({ type: Object }) linerNotesManifest: BookManifest | undefined =
     undefined;
+
+  @property({ type: Object }) bookreader: BookReader | undefined = undefined;
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook: HTMLElement | undefined = undefined;
 
   firstUpdated() {
+    /** Set listeners */
     window.addEventListener('BookReader:PostInit', e => {
       // final instance - let's pin
       this.bookreader = (e as CustomEvent)?.detail.props;
@@ -47,33 +49,42 @@ export class IaPhotoViewer extends LitElement {
     });
 
     /* Listen for BookReader's web components load before initializing BR  */
-    const initializeBookReader = (e: any) => {
-      console.log('BookNav:PostInit initializeBookReader', e);
+    window.addEventListener('BrBookNav:PostInit', e => {
+      console.log('BookNav:PostInit', e);
       // this.bookreader = (e as CustomEvent)?.detail;
       // (window as any).br = this.bookreader;
       setTimeout(() => {
-        console.log(
-          'initializeBookReader setTimeoutsetTimeout',
-          this.bookreader
-        );
         this.bookreader?.init();
       }, 0); /* wait for bookreader & its main container styles to load */
-    };
-    window.addEventListener('BrBookNav:PostInit', e => initializeBookReader(e));
+    });
   }
 
   updated(changed: PropertyValues<this>) {
-    console.log('updated', changed);
-
     if (
       this.linerNotesManifest &&
       ((changed.has('lightDomHook') && this.lightDomHook) ||
         changed.has('linerNotesManifest'))
     ) {
+      this.prepareLightDomHook();
       this.loadFreshBookReaderFromManifest();
     }
-    if (changed.has('images') && this.images.length) {
+    if (changed.has('looseImages') && this.looseImages.length) {
       this.loadImages();
+    }
+  }
+
+  get imageBaseUrl(): string {
+    return `https://${this.baseHost}/download/${this.itemIdentifier}`;
+  }
+
+  prepareLightDomHook(): void {
+    // check if bookreader hook is already loaded
+    const currentBookReaderSlot = this.lightDomHook?.querySelector(
+      'div.bookreader-slot'
+    );
+
+    if (currentBookReaderSlot) {
+      this.lightDomHook?.removeChild(currentBookReaderSlot);
     }
   }
 
@@ -82,16 +93,27 @@ export class IaPhotoViewer extends LitElement {
 
   async loadFreshBookReaderFromManifest(): Promise<void> {
     // add DOM to provided lightdom hook
+    console.log('loadFreshBookReaderFromManifest', this.lightDomHook);
+
+    const currentBookReaderSlot = this.lightDomHook?.querySelector(
+      'div.bookreader-slot'
+    );
+    if (currentBookReaderSlot) {
+      this.lightDomHook?.removeChild(currentBookReaderSlot);
+    }
+
     const bookreaderSlot = document.createElement('div');
     bookreaderSlot.setAttribute('slot', 'main');
+    bookreaderSlot.classList.add('bookreader-slot');
 
     const bookreaderMain = document.createElement('div');
     bookreaderMain.setAttribute('id', 'BookReader');
     bookreaderMain.classList.add('BookReader');
     bookreaderMain.classList.add('liner-notes');
     bookreaderSlot.append(bookreaderMain);
-    this.lightDomHook?.append(bookreaderSlot);
 
+    this.lightDomHook?.append(bookreaderSlot);
+    console.log('~~ Light dom hook appended', this.lightDomHook?.childNodes);
     // gather BR Options
     const brOptions = this.linerNotesManifest?.brOptions;
     console.log('bookreaderDefaultOptions', this.bookreaderDefaultOptions);
@@ -115,19 +137,22 @@ export class IaPhotoViewer extends LitElement {
     `;
   }
 
-  get hasPhotos(): boolean {
-    return !!this.images.length || !!this.book;
-  }
-
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
+    console.log('*** RENDER  ', this.lightDomHook);
+    if (this.looseImages.length === 1) {
+      return html`<img
+        src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
+        alt=${`Main image for ${this.itemIdentifier}`}
+      />`;
+    }
+
     if (this.linerNotesManifest) {
       return html`
         <ia-bookreader
           .item=${this.linerNotesManifest}
-          .baseHost=${'https://archive.org'}
-          ?signedIn=${false}
-          class="focus-on-child-only"
+          .baseHost=${this.baseHost}
+          ?signedIn=${this.signedIn}
           style="min-height: inherit;"
           @fullscreenStateUpdated=${(e: any) => {
             console.log('MANAGE FS', e);
@@ -136,15 +161,8 @@ export class IaPhotoViewer extends LitElement {
         ></ia-bookreader>
       `;
     }
-    return html`<h3>"HELLO WORLD"</h3>
-      <slot></slot>`;
 
-    // if (!this.hasPhotos) {
-    //   return html`<i title="no image found">${audioIcon}</i>`;
-    // }
-    // if (this.displayMode === 'cover') {
-    //   return this.photoCover;
-    // }
+    return html`<h3>"HELLO WORLD -- ADD ICON HERE"</h3>`;
   }
 
   /**
@@ -236,10 +254,10 @@ export class IaPhotoViewer extends LitElement {
       ...brOptions,
       ...this.bookreaderDefaultOptions,
     };
-    console.log('~~~~ fullOptions', fullOptions);
     this.bookreader = new (window as any).BookReader(fullOptions);
 
     const isRestricted = (this.linerNotesManifest?.data as any)?.isRestricted;
+
     window.dispatchEvent(
       new CustomEvent('contextmenu', { detail: { isRestricted } })
     );
