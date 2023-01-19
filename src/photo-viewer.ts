@@ -41,7 +41,7 @@ export class IaPhotoViewer extends LitElement {
   @property({ type: Object }) lightDomHook: HTMLElement | undefined = undefined;
 
   firstUpdated() {
-    /** Set listeners */
+    /** Set listeners that load bookreader core & web component */
     window.addEventListener('BookReader:PostInit', e => {
       // final instance - let's pin
       this.bookreader = (e as CustomEvent)?.detail.props;
@@ -125,7 +125,7 @@ export class IaPhotoViewer extends LitElement {
     // new bookreader from window.BookReader
     this.bookreader = new (window as any).BookReader(fullOptions) as BookReader;
     console.log('this.bookreader --- window.br:::::', this.bookreader);
-    // bookreader will now load itself and we will initialize once its setup is complete `BookReader:PostInit && BookNav:PostInit`
+    // we will initialize once its setup is complete `BookReader:PostInit && BookNav:PostInit`
   }
 
   get photoCover(): TemplateResult {
