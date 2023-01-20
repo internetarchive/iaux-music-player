@@ -68,7 +68,7 @@ export class IaPhotoViewer extends LitElement {
       this.prepareLightDomHook();
       this.loadFreshBookReaderFromManifest();
     }
-    if (changed.has('looseImages') && this.looseImages.length) {
+    if (changed.has('looseImages') && this.looseImages?.length) {
       this.loadImages();
     }
   }
