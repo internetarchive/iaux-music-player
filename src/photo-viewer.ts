@@ -140,7 +140,7 @@ export class IaPhotoViewer extends LitElement {
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
     console.log('*** RENDER  ', this.lightDomHook);
-    if (this.looseImages.length === 1) {
+    if (this.looseImages?.length === 1) {
       return html`<img
         src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
         alt=${`Main image for ${this.itemIdentifier}`}
