@@ -197,6 +197,10 @@ export class IaPhotoViewer extends LitElement {
   }
 
   static styles = css`
+    :host {
+      display: block;
+    }
+
     div.no-images * {
       --iconFillColor: white;
       display: block;
@@ -219,6 +223,7 @@ export class IaPhotoViewer extends LitElement {
       /* allows for height to be controlled by top component */
       /* cover image will grow/shrink with container size */
       height: inherit;
+      width: -webkit-fill-available;
     }
 
     button.click-for-photos img {
