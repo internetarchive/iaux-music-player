@@ -189,6 +189,10 @@ export class IaPhotoViewer extends LitElement {
       return firstImageInfo.uri as string;
     }
 
+    if (this.looseImages?.length) {
+      return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
+    }
+
     return undefined;
   }
 
