@@ -5,7 +5,7 @@
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { MetadataResponse } from '@internetarchive/search-service';
-import '../src/photo-viewer';
+import '../src/photo-viewer/photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
