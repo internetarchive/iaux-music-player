@@ -141,6 +141,11 @@ export class AppRoot extends LitElement {
 
   @property({ type: Boolean }) signedIn = false; // shows bookmarks view
 
+  @property({ type: String }) photoDisplay:
+    | 'noData'
+    | 'linerNotes'
+    | 'looseImages' = 'linerNotes';
+
   override firstUpdated(): void {
     if (this.startAtWebamp) {
       this.selectedByRadio = channelTypes.webamp;
@@ -409,7 +414,7 @@ export class AppRoot extends LitElement {
     const url = `${location.origin}/demo`;
     return html`
       <section id="components">
-        <channel-selector
+        <iaux-channel-selector
           .backgroundTheme=${this.bgColor}
           spotify
           youtube
@@ -426,7 +431,7 @@ export class AppRoot extends LitElement {
           }}
           .url=${url}
         >
-        </channel-selector>
+        </iaux-channel-selector>
 
         <section class="player">${this.playerByRadio}</section>
         <section class="details">
@@ -435,7 +440,7 @@ export class AppRoot extends LitElement {
           <h2>on change: ${this.selectedByRadio}</h2>
         </section>
         <hr />
-        <channel-selector
+        <iaux-channel-selector
           .backgroundTheme=${this.bgColor}
           spotify
           youtube
@@ -457,7 +462,7 @@ export class AppRoot extends LitElement {
               : channelTypes.beta
           }
         >
-        </channel-selector>
+        </iaux-channel-selector>
         <section class="player">${this.playerByDropdown}</section>
         <section class="details">
           <h2>Selected by dropdown</h2>
@@ -469,17 +474,42 @@ export class AppRoot extends LitElement {
   }
 
   get photoViewer(): TemplateResult {
+    let linerNotesManifest;
+    let itemId;
+    let itemMD;
+
+    switch (this.photoDisplay) {
+      case 'linerNotes':
+        if (this.photoDisplay === 'linerNotes') {
+          linerNotesManifest = defaultLinerNotesManifest;
+          itemId = linerNotesManifest?.metadata?.identifier;
+          itemMD = linerNotesManifest?.metadata;
+        }
+        break;
+      default:
+        break;
+    }
     return html`
       <section id="components">
+        <div>
+          <h3>Various Views</h3>
+          <button @click=${() => (this.photoDisplay = 'noData')}>
+            No data
+          </button>
+          <button @click=${() => (this.photoDisplay = 'linerNotes')}>
+            with liner notes
+          </button>
+        </div>
+        <br />
         <iaux-photo-viewer
-          .linerNotesManifest=${defaultLinerNotesManifest}
+          .linerNotesManifest=${linerNotesManifest}
           .lightDomHook=${this}
           baseHost="archive.org"
-          .itemIdentifier=${defaultLinerNotesManifest?.metadata?.identifier}
-          .itemMD=${defaultLinerNotesManifest?.metadata}
+          .itemIdentifier=${itemId}
+          .itemMD=${itemMD}
           ?signedIn=${this.signedIn}
-          .linerNotesManifest=${defaultLinerNotesManifest}
           .looseImages=${[]}
+          ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
           ><div slot="main">
             <slot name="main"><p>Placeholder text</p></slot>
           </div></iaux-photo-viewer

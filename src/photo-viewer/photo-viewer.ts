@@ -3,7 +3,7 @@
 /* eslint-disable no-restricted-properties */
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-// import audioIcon from '@internetarchive/icon-audio/index.js';
+import '@internetarchive/icon-audio';
 import '@internetarchive/icon-texts';
 import {
   BookManifest,
@@ -107,7 +107,11 @@ export class IaPhotoViewer extends LitElement {
       return this.photoAlbumCover;
     }
 
-    return html`<h3>"HELLO WORLD -- ADD ICON HERE" ${this.showAllPhotos}</h3>`;
+    return html`
+      <div class="no-images">
+        <ia-icon-audio></ia-icon-audio>
+      </div>
+    `;
   }
 
   togglePhotoViewer(e: Event) {
@@ -189,6 +193,12 @@ export class IaPhotoViewer extends LitElement {
   }
 
   static styles = css`
+    div.no-images * {
+      --iconFillColor: white;
+      display: block;
+      overflow: hidden;
+    }
+
     button.click-for-photos,
     button.click-for-photos * {
       margin: auto;

@@ -28,7 +28,7 @@ export enum channelEvents {
   channelChange = 'channelChange',
 }
 
-@customElement('channel-selector')
+@customElement('iaux-channel-selector')
 export class ChannelSelector extends LitElement {
   @property({ attribute: true, type: Boolean, reflect: true }) youtube = false;
 

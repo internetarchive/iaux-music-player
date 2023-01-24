@@ -10,11 +10,11 @@ import {
   channelSpecs,
 } from '../src/channel-selector/channels';
 
-describe('`<channel-selector>`', () => {
+describe('`<iaux-channel-selector>`', () => {
   describe('Defaults', () => {
     it('Selects IA  by default', async () => {
       const el = await fixture<ChannelSelector>(
-        html`<channel-selector></channel-selector>`
+        html`<iaux-channel-selector></iaux-channel-selector>`
       );
 
       const iaChannelSelected = el.shadowRoot!.querySelector('li.selected .ia');
@@ -24,7 +24,7 @@ describe('`<channel-selector>`', () => {
     });
     it('displays IA by default', async () => {
       const el = await fixture<ChannelSelector>(
-        html`<channel-selector></channel-selector>`
+        html`<iaux-channel-selector></iaux-channel-selector>`
       );
 
       const iaChannel = el.shadowRoot!.querySelector('.selected .ia');
@@ -35,7 +35,7 @@ describe('`<channel-selector>`', () => {
     });
     it('displays WEBAMP by default', async () => {
       const el = await fixture<ChannelSelector>(
-        html`<channel-selector></channel-selector>`
+        html`<iaux-channel-selector></iaux-channel-selector>`
       );
 
       const webampChannel = el.shadowRoot!.querySelector('.wa');
@@ -46,7 +46,7 @@ describe('`<channel-selector>`', () => {
     });
     it('displays RADIO style by default', async () => {
       const el = await fixture<ChannelSelector>(
-        html`<channel-selector></channel-selector>`
+        html`<iaux-channel-selector></iaux-channel-selector>`
       );
 
       await expect(el.getAttribute('displayStyle')).to.equal('radio');
@@ -54,10 +54,10 @@ describe('`<channel-selector>`', () => {
     describe('Dropdown view', () => {
       it('shows selected icon at toggle button', async () => {
         const el = await fixture<ChannelSelector>(
-          html`<channel-selector
+          html`<iaux-channel-selector
             displaystyle="dropdown"
             selected=${channelTypes.beta}
-          ></channel-selector>`
+          ></iaux-channel-selector>`
         );
 
         await expect(el.currentlySelectedIcon).to.equal(channelIcons.beta);
@@ -89,9 +89,9 @@ describe('`<channel-selector>`', () => {
 
       it('calls for dropdown options before draw', async () => {
         const el = await fixture<ChannelSelector>(
-          html`<channel-selector
+          html`<iaux-channel-selector
             selected=${channelTypes.beta}
-          ></channel-selector>`
+          ></iaux-channel-selector>`
         );
 
         const spy = sinon.spy(el, 'dropdownOptions', ['get']);
@@ -162,11 +162,11 @@ describe('`<channel-selector>`', () => {
       it('emits `postInit` on firstUpdate', async () => {
         let postInitEventReceived = false;
         await fixture<ChannelSelector>(
-          html`<channel-selector
+          html`<iaux-channel-selector
             @postInit=${() => {
               postInitEventReceived = true;
             }}
-          ></channel-selector>`
+          ></iaux-channel-selector>`
         );
 
         await expect(postInitEventReceived).to.be.true;
@@ -175,13 +175,13 @@ describe('`<channel-selector>`', () => {
         let channelChangeEventReceived = false;
         let channelChangedTo = '';
         const el = await fixture<ChannelSelector>(
-          html`<channel-selector
+          html`<iaux-channel-selector
             spotify
             @channelChange=${(e: CustomEvent) => {
               channelChangeEventReceived = true;
               channelChangedTo = e.detail.channel;
             }}
-          ></channel-selector>`
+          ></iaux-channel-selector>`
         );
         const spotifyButton = el.shadowRoot!.querySelector(
           '.sp'
@@ -199,10 +199,10 @@ describe('`<channel-selector>`', () => {
 
   it('can select any channel at creation', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector
+      html`<iaux-channel-selector
         beta
         .selected=${channelTypes.beta}
-      ></channel-selector>`
+      ></iaux-channel-selector>`
     );
 
     const streamingSelectedAtStart = el.shadowRoot!.querySelector(
@@ -215,7 +215,7 @@ describe('`<channel-selector>`', () => {
 
   it('updates IA label when playing samples', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector samples></channel-selector>`
+      html`<iaux-channel-selector samples></iaux-channel-selector>`
     );
 
     const iaChannel = el.shadowRoot!.querySelector('li.selected .ia');
@@ -226,7 +226,7 @@ describe('`<channel-selector>`', () => {
 
   it('displays Beta with `beta` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector beta></channel-selector>`
+      html`<iaux-channel-selector beta></iaux-channel-selector>`
     );
 
     const streamingChannel = el.shadowRoot!.querySelector('.ia-beta');
@@ -238,7 +238,7 @@ describe('`<channel-selector>`', () => {
 
   it('displays SPOTIFY with `spotify` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector spotify></channel-selector>`
+      html`<iaux-channel-selector spotify></iaux-channel-selector>`
     );
 
     const spotifyChannel = el.shadowRoot!.querySelector('.sp');
@@ -250,7 +250,7 @@ describe('`<channel-selector>`', () => {
 
   it('displays YOUTUBE with `youtube` attribute', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector youtube></channel-selector>`
+      html`<iaux-channel-selector youtube></iaux-channel-selector>`
     );
 
     const youtubeChannel = el.shadowRoot!.querySelector('.yt');
@@ -262,7 +262,7 @@ describe('`<channel-selector>`', () => {
 
   it('passes the a11y audit', async () => {
     const el = await fixture<ChannelSelector>(
-      html`<channel-selector></channel-selector>`
+      html`<iaux-channel-selector></iaux-channel-selector>`
     );
 
     await expect(el).shadowDom.to.be.accessible();
