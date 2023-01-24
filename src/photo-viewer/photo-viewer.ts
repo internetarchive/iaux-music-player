@@ -124,7 +124,7 @@ export class IaPhotoViewer extends LitElement {
     return html`
       <button class="click-for-photos" @click=${this.togglePhotoViewer}>
         <img src=${image} alt=${`primary image for ${displayTitle}`} />
-        <figure><ia-icon-texts></ia-icon-texts></figure>
+        <ia-icon-texts></ia-icon-texts>
         <span class="sr-only">See all photos for ${displayTitle}</span>
       </button>
     `;
@@ -189,11 +189,14 @@ export class IaPhotoViewer extends LitElement {
   }
 
   static styles = css`
+    button.click-for-photos,
+    button.click-for-photos * {
+      margin: auto;
+    }
+
     button.click-for-photos {
       border: 1px solid transparent;
       background-color: transparent;
-      height: 100%;
-      width: 100%;
       display: block;
       padding: 5px;
       overflow: hidden;
@@ -204,8 +207,10 @@ export class IaPhotoViewer extends LitElement {
     button.click-for-photos img {
       display: block;
       overflow: hidden;
-      width: inherit;
-      height: inherit;
+      object-fit: contain;
+      max-width: 100%;
+      max-height: 100%;
+      min-height: 250px;
     }
 
     button.click-for-photos ia-icon-texts {
@@ -215,6 +220,15 @@ export class IaPhotoViewer extends LitElement {
       height: 50px;
       width: 50px;
       --iconFillColor: white;
+    }
+
+    button span.sr-only {
+      position: absolute;
+      height: 1px;
+      width: 1px;
+      top: 0;
+      left: 0;
+      visibility: hidden;
     }
   `;
 }
