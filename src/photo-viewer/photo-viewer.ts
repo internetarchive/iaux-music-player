@@ -202,6 +202,9 @@ export class IaPhotoViewer extends LitElement {
       overflow: hidden;
       cursor: pointer;
       position: relative;
+      /* allows for height to be controlled by top component */
+      /* cover image will grow/shrink with container size */
+      height: inherit;
     }
 
     button.click-for-photos img {
