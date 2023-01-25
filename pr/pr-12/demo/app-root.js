@@ -108,13 +108,17 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       <div class="no-images">
         <ia-icon-audio></ia-icon-audio>
       </div>
-    `}togglePhotoViewer(e){console.log("~~~~~ togglePhotoViewer",e,this.showAllPhotos),this.showAllPhotos=!this.showAllPhotos}get photoAlbumCover(){var e,t,i;const o=(t=(e=this.itemMD)===null||e===void 0?void 0:e.title)!==null&&t!==void 0?t:this.itemIdentifier,s=(i=this.primaryImage)!==null&&i!==void 0?i:`//${this.baseHost}/services/img/${this.itemIdentifier}`;return h`
+    `}togglePhotoViewer(){this.showAllPhotos=!this.showAllPhotos}get photoAlbumCover(){var e,t,i;const o=(t=(e=this.itemMD)===null||e===void 0?void 0:e.title)!==null&&t!==void 0?t:this.itemIdentifier,s=(i=this.primaryImage)!==null&&i!==void 0?i:`//${this.baseHost}/services/img/${this.itemIdentifier}`;return h`
       <button class="click-for-photos" @click=${this.togglePhotoViewer}>
         <img src=${s} alt=${`primary image for ${o}`} />
         <ia-icon-texts></ia-icon-texts>
         <span class="sr-only">See all photos for ${o}</span>
       </button>
     `}get imageBaseUrl(){return`https://${this.baseHost}/download/${this.itemIdentifier}`}prepareLightDomHook(){var e,t;const i=(e=this.lightDomHook)===null||e===void 0?void 0:e.querySelector("div.bookreader-slot");i&&((t=this.lightDomHook)===null||t===void 0||t.removeChild(i))}async loadImages(){}async loadFreshBookReaderFromManifest(){var e,t,i,o;console.log("loadFreshBookReaderFromManifest",this.lightDomHook);const s=(e=this.lightDomHook)===null||e===void 0?void 0:e.querySelector("div.bookreader-slot");s&&((t=this.lightDomHook)===null||t===void 0||t.removeChild(s));const a=document.createElement("div");a.setAttribute("slot","main"),a.classList.add("bookreader-slot");const d=document.createElement("div");d.setAttribute("id","BookReader"),d.classList.add("BookReader"),d.classList.add("liner-notes"),a.append(d),(i=this.lightDomHook)===null||i===void 0||i.append(a),console.log("~~ Light dom hook appended",(o=this.lightDomHook)===null||o===void 0?void 0:o.childNodes),this.bookreader=this.linerNotesManifest&&Zt(this.linerNotesManifest)}get primaryImage(){var e;if(this.linerNotesManifest&&this.bookreader)return this.bookreader.options.data.flat()[0].uri;if(!((e=this.looseImages)===null||e===void 0)&&e.length)return`${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`}};A.styles=E`
+    :host {
+      display: block;
+    }
+
     div.no-images * {
       --iconFillColor: white;
       display: block;
@@ -137,6 +141,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       /* allows for height to be controlled by top component */
       /* cover image will grow/shrink with container size */
       height: inherit;
+      width: -webkit-fill-available;
     }
 
     button.click-for-photos img {
