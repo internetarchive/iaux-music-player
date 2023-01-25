@@ -114,9 +114,7 @@ export class IaPhotoViewer extends LitElement {
     `;
   }
 
-  togglePhotoViewer(e: Event) {
-    console.log('~~~~~ togglePhotoViewer', e, this.showAllPhotos);
-
+  togglePhotoViewer(): void {
     this.showAllPhotos = !this.showAllPhotos;
   }
 
