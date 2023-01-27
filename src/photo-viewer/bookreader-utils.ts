@@ -9,7 +9,7 @@ function bookreaderDefaultOptions(): Object {
     showToolbar: false,
     onePage: { autofit: 'height' }, // options: auto, width, height
     enableFSLogoShortcut: true,
-    enableBookmarks: true,
+    enableBookmarks: false,
     enablePageResume: false,
     enableTtsPlugin: false,
     enableUrlPlugin: false,
@@ -60,8 +60,6 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
     let uri = originalGetPageURI.call(bookreader, index, brReduce, rotate);
     uri += uri.indexOf('?') > -1 ? '&' : '?';
     uri = `${uri}scale=${brReduce}&rotate=${rotate}`;
-    // eslint-disable-next-line no-console
-    console.log('URI -----', uri);
     return uri;
   };
 
