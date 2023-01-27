@@ -566,6 +566,10 @@ export class AppRoot extends LitElement {
       font-size: 16px;
     }
 
+    h1 {
+      margin-top: 0;
+    }
+
     button,
     input {
       height: 40px;

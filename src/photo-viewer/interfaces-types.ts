@@ -29,6 +29,7 @@ export interface BookReader {
   resize: () => void;
   jumpToIndex: (index: number) => void;
   getPageURI: (index: number, reduce: number, rotate: number) => string;
+  isFullscreen: () => boolean;
   ppi: string;
   options: {
     /* lists images in 1 page or 2 page spread displays */

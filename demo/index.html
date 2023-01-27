@@ -11,6 +11,7 @@
     body[components] {
       background: black;
       color: #fff;
+      margin: 0;
     }
 
     body[components].light {
@@ -33,6 +34,11 @@
       width: 400px;
       position: relative;
       overflow: hidden;
+    }
+
+    body.BRfullscreenActive #BookReader {
+      height: 100vh;
+      width: 100vw;
     }
   </style>
   <link href="https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.css" rel="stylesheet" type="text/css">
