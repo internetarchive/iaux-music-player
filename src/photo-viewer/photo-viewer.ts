@@ -127,6 +127,7 @@ export class IaPhotoViewer extends LitElement {
             <button
               id="close-photo-viewer"
               @click=${() => {
+                this.bookreader?.exitFullScreen();
                 this.togglePhotoViewer();
                 this.brInitialized = false;
               }}
