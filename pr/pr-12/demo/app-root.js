@@ -101,7 +101,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
           >
             <button
               id="close-photo-viewer"
-              @click=${()=>{this.togglePhotoViewer(),this.brInitialized=!1}}
+              @click=${()=>{var i;(i=this.bookreader)===null||i===void 0||i.exitFullScreen(),this.togglePhotoViewer(),this.brInitialized=!1}}
             >
               <span class="sr-only">Click to close Photo Viewer.</span>
               <ia-icon-texts></ia-icon-texts>
