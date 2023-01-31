@@ -1,7 +1,14 @@
 /* global: BookReader */
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-properties */
-import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
+import {
+  LitElement,
+  html,
+  TemplateResult,
+  PropertyValues,
+  css,
+  nothing,
+} from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@internetarchive/icon-audio';
 import '@internetarchive/icon-texts';
@@ -35,6 +42,8 @@ export class IaPhotoViewer extends LitElement {
   @property({ type: Boolean, reflect: true }) fullscreenActive: boolean = false;
 
   @property({ type: Boolean, reflect: true }) brInitialized: boolean = false;
+
+  @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
@@ -116,38 +125,45 @@ export class IaPhotoViewer extends LitElement {
       />`;
     }
 
-    if (this.showAllPhotos) {
-      if (this.linerNotesManifest) {
-        return html`
-          <div
-            class=${`photo-viewer-container ${
-              this.fullscreenActive ? 'fullscreenActive' : ''
-            }`}
-          >
-            <button
-              id="close-photo-viewer"
-              @click=${() => {
-                this.bookreader?.exitFullScreen();
-                this.togglePhotoViewer();
-                this.brInitialized = false;
-              }}
-            >
-              <span class="sr-only">Click to close Photo Viewer.</span>
-              <ia-icon-texts></ia-icon-texts>
-            </button>
-            <ia-bookreader
-              .item=${this.linerNotesManifest}
-              .baseHost=${this.baseHost}
-              .signedIn=${this.signedIn}
-              ><div slot="main"><slot name="main"></slot></div
-            ></ia-bookreader>
+    if (this.linerNotesManifest) {
+      return html`
+        <div
+          class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
+            this.fullscreenActive ? 'fullscreenActive' : ''
+          }`}
+        >
+          <div class="flip-card-inner">
+            <div class="flip-card-front">${this.photoAlbumCover}</div>
+            <div class="flip-card-back">
+              ${this.showAllPhotos
+                ? html`
+                    <div class=${`photo-viewer-container`}>
+                      <button
+                        id="close-photo-viewer"
+                        @click=${() => {
+                          this.bookreader?.exitFullScreen();
+                          this.togglePhotoViewer();
+                          this.brInitialized = false;
+                        }}
+                      >
+                        <span class="sr-only"
+                          >Click to close Photo Viewer.</span
+                        >
+                        <ia-icon-texts></ia-icon-texts>
+                      </button>
+                      <ia-bookreader
+                        .item=${this.linerNotesManifest}
+                        .baseHost=${this.baseHost}
+                        .signedIn=${this.signedIn}
+                        ><div slot="main"><slot name="main"></slot></div
+                      ></ia-bookreader>
+                    </div>
+                  `
+                : nothing}
+            </div>
           </div>
-        `;
-      }
-    }
-
-    if (this.linerNotesManifest || this.looseImages?.length) {
-      return this.photoAlbumCover;
+        </div>
+      `;
     }
 
     return html`
@@ -248,7 +264,7 @@ export class IaPhotoViewer extends LitElement {
     }
 
     :host[fullscreenactive],
-    .photo-viewer-container.fullscreenActive {
+    .flip-card.fullscreenActive {
       position: absolute;
       inset: 0;
       height: 100vh;
@@ -323,13 +339,36 @@ export class IaPhotoViewer extends LitElement {
       padding: 0;
     }
 
-    .photo-viewer-container {
-      position: relative;
+    .flip-card {
+      width: 100%;
       height: inherit;
+      perspective: 1000px;
     }
 
-    .photo-viewer-container ia-bookreader {
-      height: inherit;
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.show-back .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
     }
   `;
 }
