@@ -147,7 +147,13 @@ export class IaPhotoViewer extends LitElement {
       this.primaryImage ??
       `//${this.baseHost}/services/img/${this.itemIdentifier}`;
     return html`
-      <button class="click-for-photos" @click=${this.togglePhotoViewer}>
+      <button
+        class="click-for-photos"
+        @click=${async () => {
+          await this.loadFreshBookReaderFromManifest();
+          this.togglePhotoViewer();
+        }}
+      >
         <img src=${image} alt=${`primary image for ${displayTitle}`} />
         <ia-icon-texts></ia-icon-texts>
         <span class="sr-only">See all photos for ${displayTitle}</span>
@@ -212,15 +218,18 @@ export class IaPhotoViewer extends LitElement {
 
   async loadFreshBookReaderFromManifest(): Promise<void> {
     // add DOM to provided lightdom hook
-    console.log('loadFreshBookReaderFromManifest', this.lightDomHook);
+    console.log('loadFreshBookReaderFromManifest :wave:', this.lightDomHook);
     await this.mountBookReaderLightDomHook();
 
-    setTimeout(() => {
-      console.log('loading BR Liner Notes');
-      this.bookreader =
-        this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
-      this.bookreader?.init();
-    }, 0);
+    await new Promise<void>((resolve): void => {
+      setTimeout(() => {
+        console.log('loading BR Liner Notes in promise ~~~~~');
+        this.bookreader =
+          this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+        this.bookreader?.init();
+        resolve();
+      }, 0);
+    });
   }
 
   get primaryImage(): string | undefined {
@@ -281,7 +290,7 @@ export class IaPhotoViewer extends LitElement {
       /* allows for height to be controlled by top component */
       /* cover image will grow/shrink with container size */
 
-      /* height: inherit; */
+      height: inherit;
       width: -webkit-fill-available;
     }
 
