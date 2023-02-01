@@ -414,7 +414,7 @@ export class AppRoot extends LitElement {
     const url = `${location.origin}/demo`;
     return html`
       <section id="components">
-        <iaux-channel-selector
+        <channel-selector
           .backgroundTheme=${this.bgColor}
           spotify
           youtube
@@ -431,7 +431,7 @@ export class AppRoot extends LitElement {
           }}
           .url=${url}
         >
-        </iaux-channel-selector>
+        </channel-selector>
 
         <section class="player">${this.playerByRadio}</section>
         <section class="details">
@@ -440,7 +440,7 @@ export class AppRoot extends LitElement {
           <h2>on change: ${this.selectedByRadio}</h2>
         </section>
         <hr />
-        <iaux-channel-selector
+        <channel-selector
           .backgroundTheme=${this.bgColor}
           spotify
           youtube
@@ -462,7 +462,7 @@ export class AppRoot extends LitElement {
               : channelTypes.beta
           }
         >
-        </iaux-channel-selector>
+        </channel-selector>
         <section class="player">${this.playerByDropdown}</section>
         <section class="details">
           <h2>Selected by dropdown</h2>
