@@ -20,7 +20,9 @@ export type BookManifest = {
     subPrefix: IaItemMetadata['identifier'] | string; // sub file path
     bookUrl: string;
   };
-  brOptions: Object;
+  brOptions: {
+    data: [[BRImageInfo] | [BRImageInfo, BRImageInfo]];
+  };
   metadata: Object;
 };
 

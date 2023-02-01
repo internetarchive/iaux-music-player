@@ -1,14 +1,7 @@
 /* global: BookReader */
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-properties */
-import {
-  LitElement,
-  html,
-  TemplateResult,
-  PropertyValues,
-  css,
-  nothing,
-} from 'lit';
+import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@internetarchive/icon-audio';
 import '@internetarchive/icon-texts';
@@ -41,15 +34,12 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Boolean, reflect: true }) fullscreenActive: boolean = false;
 
-  @property({ type: Boolean, reflect: true }) brInitialized: boolean = false;
-
   @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
 
   firstUpdated(): void {
-    console.log('FIRST UPDATED');
     this.bindBrEvents();
   }
 
@@ -73,21 +63,6 @@ export class IaPhotoViewer extends LitElement {
       }, 1000);
     });
 
-    /* Listen for BookReader's web components load before initializing BR  */
-    window.addEventListener('BrBookNav:PostInit', e => {
-      console.log('BookNav:PostInit', e, this.bookreader);
-      // this.bookreader = (e as CustomEvent)?.detail;
-      // (window as any).br = this.bookreader;
-      setTimeout(() => {
-        if (!this.brInitialized) {
-          console.log('BR WILL INIT NOW');
-          this.bookreader?.init();
-          this.brInitialized = true;
-        }
-        console.log('BR WILL NOT NOT NOT INIT NOW');
-      }, 0); /* wait for bookreader & its main container styles to load */
-    });
-
     window.addEventListener('BookReader:fullscreenToggled', () => {
       this.fullscreenActive = this.bookreader?.isFullscreen() || false;
     });
@@ -101,14 +76,10 @@ export class IaPhotoViewer extends LitElement {
       }
     }
 
-    if (
-      this.linerNotesManifest &&
-      ((changed.has('lightDomHook') && this.lightDomHook) ||
-        changed.has('linerNotesManifest'))
-    ) {
-      this.prepareLightDomHook();
+    if (changed.has('linerNotesManifest') && this.linerNotesManifest) {
       this.loadFreshBookReaderFromManifest();
     }
+
     if (changed.has('looseImages') && this.looseImages?.length) {
       this.loadImages();
     }
@@ -135,31 +106,21 @@ export class IaPhotoViewer extends LitElement {
           <div class="flip-card-inner">
             <div class="flip-card-front">${this.photoAlbumCover}</div>
             <div class="flip-card-back">
-              ${this.showAllPhotos
-                ? html`
-                    <div class=${`photo-viewer-container`}>
-                      <button
-                        id="close-photo-viewer"
-                        @click=${() => {
-                          this.bookreader?.exitFullScreen();
-                          this.togglePhotoViewer();
-                          this.brInitialized = false;
-                        }}
-                      >
-                        <span class="sr-only"
-                          >Click to close Photo Viewer.</span
-                        >
-                        <ia-icon-texts></ia-icon-texts>
-                      </button>
-                      <ia-bookreader
-                        .item=${this.linerNotesManifest}
-                        .baseHost=${this.baseHost}
-                        .signedIn=${this.signedIn}
-                        ><div slot="main"><slot name="main"></slot></div
-                      ></ia-bookreader>
-                    </div>
-                  `
-                : nothing}
+              <div class=${`photo-viewer-container`}>
+                <button
+                  id="close-photo-viewer"
+                  @click=${() => this.togglePhotoViewer()}
+                >
+                  <span class="sr-only">Click to close Photo Viewer.</span>
+                  <ia-icon-texts></ia-icon-texts>
+                </button>
+                <ia-bookreader
+                  .item=${this.linerNotesManifest}
+                  .baseHost=${this.baseHost}
+                  .signedIn=${this.signedIn}
+                  ><div slot="main"><slot name="main"></slot></div
+                ></ia-bookreader>
+              </div>
             </div>
           </div>
         </div>
@@ -214,40 +175,58 @@ export class IaPhotoViewer extends LitElement {
   // eslint-disable-next-line no-empty-function
   async loadImages(): Promise<void> {}
 
+  async mountBookReaderLightDomHook(): Promise<void> {
+    await new Promise(resolve => {
+      const currentBookReaderSlot = this.lightDomHook?.querySelector(
+        'div.bookreader-slot'
+      );
+      if (currentBookReaderSlot) {
+        this.lightDomHook?.removeChild(currentBookReaderSlot);
+      }
+
+      const bookreaderSlot = document.createElement('div');
+      bookreaderSlot.setAttribute('slot', 'main');
+      bookreaderSlot.classList.add('bookreader-slot');
+
+      const bookreaderMain = document.createElement('div');
+
+      bookreaderMain.classList.add('liner-notes');
+      bookreaderSlot.append(bookreaderMain);
+
+      this.lightDomHook?.append(bookreaderSlot);
+      bookreaderMain.setAttribute('id', 'BookReader');
+      bookreaderMain.classList.add('BookReader');
+      console.log(
+        '~~ bookreaderSlot ',
+        bookreaderSlot.offsetHeight,
+        bookreaderSlot.offsetWidth
+      );
+
+      resolve(true);
+    });
+    console.log(
+      '~~ async Light dom hook appended',
+      this.lightDomHook?.childNodes
+    );
+  }
+
   async loadFreshBookReaderFromManifest(): Promise<void> {
     // add DOM to provided lightdom hook
     console.log('loadFreshBookReaderFromManifest', this.lightDomHook);
+    await this.mountBookReaderLightDomHook();
 
-    this.bindBrEvents();
-
-    const currentBookReaderSlot = this.lightDomHook?.querySelector(
-      'div.bookreader-slot'
-    );
-    if (currentBookReaderSlot) {
-      this.lightDomHook?.removeChild(currentBookReaderSlot);
-    }
-
-    const bookreaderSlot = document.createElement('div');
-    bookreaderSlot.setAttribute('slot', 'main');
-    bookreaderSlot.classList.add('bookreader-slot');
-
-    const bookreaderMain = document.createElement('div');
-    bookreaderMain.setAttribute('id', 'BookReader');
-    bookreaderMain.classList.add('BookReader');
-    bookreaderMain.classList.add('liner-notes');
-    bookreaderSlot.append(bookreaderMain);
-
-    this.lightDomHook?.append(bookreaderSlot);
-    console.log('~~ Light dom hook appended', this.lightDomHook?.childNodes);
-
-    this.bookreader =
-      this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+    setTimeout(() => {
+      console.log('loading BR Liner Notes');
+      this.bookreader =
+        this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+      this.bookreader?.init();
+    }, 0);
   }
 
   get primaryImage(): string | undefined {
-    if (this.linerNotesManifest && this.bookreader) {
+    if (this.linerNotesManifest) {
       const firstImageInfo =
-        this.bookreader.options.data.flat()[0] as BRImageInfo;
+        this.linerNotesManifest.brOptions.data.flat()[0] as BRImageInfo;
       return firstImageInfo.uri as string;
     }
 
@@ -296,13 +275,13 @@ export class IaPhotoViewer extends LitElement {
     }
 
     button.click-for-photos {
-      display: block;
       padding: 5px;
-      overflow: hidden;
-      position: relative;
+      /* overflow: hidden;
+      position: relative; */
       /* allows for height to be controlled by top component */
       /* cover image will grow/shrink with container size */
-      height: inherit;
+
+      /* height: inherit; */
       width: -webkit-fill-available;
     }
 
@@ -341,7 +320,7 @@ export class IaPhotoViewer extends LitElement {
 
     .flip-card {
       width: 100%;
-      height: inherit;
+      height: 100%;
       perspective: 1000px;
     }
 
@@ -352,6 +331,10 @@ export class IaPhotoViewer extends LitElement {
       text-align: center;
       transition: transform 0.6s;
       transform-style: preserve-3d;
+    }
+
+    .flip-card.show-back .flip-card-inner {
+      transform: rotateY(180deg);
     }
 
     .flip-card.show-back .flip-card-inner {
@@ -369,6 +352,15 @@ export class IaPhotoViewer extends LitElement {
 
     .flip-card-back {
       transform: rotateY(180deg);
+    }
+
+    .photo-viewer-container {
+      height: inherit;
+    }
+
+    ia-bookreader {
+      display: block;
+      height: inherit;
     }
   `;
 }
