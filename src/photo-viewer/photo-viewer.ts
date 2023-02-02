@@ -157,17 +157,19 @@ export class IaPhotoViewer extends LitElement {
       this.primaryImage ??
       `//${this.baseHost}/services/img/${this.itemIdentifier}`;
     return html`
-      <button
-        class="click-for-photos"
-        @click=${async () => {
-          await this.loadFreshBookReaderFromManifest();
-          this.togglePhotoViewer();
-        }}
-      >
-        <img src=${image} alt=${`primary image for ${displayTitle}`} />
-        <ia-icon-texts></ia-icon-texts>
-        <span class="sr-only">See all photos for ${displayTitle}</span>
-      </button>
+      <div class="cover-art">
+        <button
+          class="click-for-photos"
+          @click=${async () => {
+            await this.loadFreshBookReaderFromManifest();
+            this.togglePhotoViewer();
+          }}
+        >
+          <img src=${image} alt=${`primary image for ${displayTitle}`} />
+          <ia-icon-texts></ia-icon-texts>
+          <span class="sr-only">See all photos for ${displayTitle}</span>
+        </button>
+      </div>
     `;
   }
 
@@ -293,15 +295,11 @@ export class IaPhotoViewer extends LitElement {
       margin: auto;
     }
 
+    .cover-art,
     button.click-for-photos {
-      padding: 5px;
-      /* overflow: hidden;
-      position: relative; */
-      /* allows for height to be controlled by top component */
-      /* cover image will grow/shrink with container size */
-
       height: inherit;
-      width: -webkit-fill-available;
+      position: relative;
+      padding: 0;
     }
 
     button.click-for-photos img {

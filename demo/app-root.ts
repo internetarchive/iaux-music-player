@@ -656,7 +656,7 @@ export class AppRoot extends LitElement {
     iaux-photo-viewer {
       display: block;
       border: 1px solid red;
-      width: 400px;
+      /* width: 400px; */
       height: 400px;
     }
   `;
