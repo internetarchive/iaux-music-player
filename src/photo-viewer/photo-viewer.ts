@@ -4,7 +4,9 @@
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '@internetarchive/icon-audio';
+import '@internetarchive/icon-close-circle';
 import '@internetarchive/icon-texts';
+
 import {
   BookManifest,
   BookReader,
@@ -109,10 +111,13 @@ export class IaPhotoViewer extends LitElement {
               <div class=${`photo-viewer-container`}>
                 <button
                   id="close-photo-viewer"
-                  @click=${() => this.togglePhotoViewer()}
+                  @click=${() => {
+                    this.bookreader?.exitFullScreen();
+                    this.togglePhotoViewer();
+                  }}
                 >
                   <span class="sr-only">Click to close Photo Viewer.</span>
-                  <ia-icon-texts></ia-icon-texts>
+                  <ia-icon-close-circle></ia-icon-close-circle>
                 </button>
                 <ia-bookreader
                   .item=${this.linerNotesManifest}
@@ -303,9 +308,10 @@ export class IaPhotoViewer extends LitElement {
       min-height: 250px;
     }
 
-    button.click-for-photos ia-icon-texts {
+    button.click-for-photos ia-icon-texts,
+    button#close-photo-viewer {
       position: absolute;
-      bottom: 0;
+      top: 0;
       right: 0;
     }
 
@@ -319,12 +325,17 @@ export class IaPhotoViewer extends LitElement {
     }
 
     button#close-photo-viewer {
-      position: absolute;
       border: none;
       z-index: 2;
-      top: 0;
-      right: 0;
       padding: 0;
+    }
+
+    button#close-photo-viewer ia-icon-close-circle {
+      display: block;
+      padding: 10px;
+      --iconHeight: 20px;
+      --iconWidth: 20px;
+      --iconFillColor: #fff;
     }
 
     .flip-card {
