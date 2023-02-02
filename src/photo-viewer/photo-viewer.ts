@@ -271,10 +271,15 @@ export class IaPhotoViewer extends LitElement {
       width: 100vw;
     }
 
+    div.no-images {
+      display: flex;
+      height: inherit;
+    }
     div.no-images * {
       --iconFillColor: white;
-      display: block;
-      overflow: hidden;
+      --iconHeight: 250px;
+      --iconWidth: 250px;
+      margin: auto;
     }
 
     ia-icon-texts {
