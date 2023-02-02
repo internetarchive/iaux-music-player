@@ -67,6 +67,10 @@ export class IaPhotoViewer extends LitElement {
 
     window.addEventListener('BookReader:fullscreenToggled', () => {
       this.fullscreenActive = this.bookreader?.isFullscreen() || false;
+      const eventName = this.fullscreenActive
+        ? 'fullscreenOpened'
+        : 'fullscreenClosed';
+      this.dispatchEvent(new Event(eventName));
     });
   };
 
@@ -143,6 +147,7 @@ export class IaPhotoViewer extends LitElement {
     this.showAllPhotos = !this.showAllPhotos;
     if (!this.showAllPhotos) {
       this.fullscreenActive = false;
+      this.dispatchEvent(new Event('fullscreenClosed'));
     }
   }
 
