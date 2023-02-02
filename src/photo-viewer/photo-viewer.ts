@@ -295,16 +295,16 @@ export class IaPhotoViewer extends LitElement {
       background-color: transparent;
     }
 
-    button.click-for-photos,
-    button.click-for-photos * {
-      margin: auto;
-    }
-
     .cover-art,
     button.click-for-photos {
       height: inherit;
       position: relative;
       padding: 0;
+    }
+
+    button.click-for-photos {
+      display: flex;
+      margin: auto;
     }
 
     button.click-for-photos img {
@@ -314,6 +314,7 @@ export class IaPhotoViewer extends LitElement {
       max-width: 100%;
       max-height: 100%;
       min-height: 250px;
+      margin-top: 0;
     }
 
     button.click-for-photos ia-icon-texts,
