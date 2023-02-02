@@ -194,16 +194,16 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       background-color: transparent;
     }
 
-    button.click-for-photos,
-    button.click-for-photos * {
-      margin: auto;
-    }
-
     .cover-art,
     button.click-for-photos {
       height: inherit;
       position: relative;
       padding: 0;
+    }
+
+    button.click-for-photos {
+      display: flex;
+      margin: auto;
     }
 
     button.click-for-photos img {
@@ -213,6 +213,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       max-width: 100%;
       max-height: 100%;
       min-height: 250px;
+      margin-top: 0;
     }
 
     button.click-for-photos ia-icon-texts,
