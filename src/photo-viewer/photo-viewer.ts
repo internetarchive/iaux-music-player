@@ -368,9 +368,9 @@ export class IaPhotoViewer extends LitElement {
       transform: rotateY(180deg);
     }
 
-    .flip-card.show-back .flip-card-front {
-      transition: visibility 0.5s;
-      visibility: hidden;
+    .flip-card.show-back .flip-card-front .cover-art {
+      transition: height 0.5s;
+      height: 40%;
     }
 
     .flip-card-front,
