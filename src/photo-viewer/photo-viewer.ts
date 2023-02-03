@@ -370,11 +370,14 @@ export class IaPhotoViewer extends LitElement {
       transform: rotateY(180deg);
     }
 
+    .flip-card-front {
+      height: 100%;
+    }
+
     .flip-card-front,
     .flip-card-back {
       position: absolute;
       width: 100%;
-      height: 100%;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
