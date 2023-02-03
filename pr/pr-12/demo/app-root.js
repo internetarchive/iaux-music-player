@@ -210,6 +210,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       display: block;
       overflow: hidden;
       object-fit: contain;
+      object-position: top;
       max-width: 100%;
       max-height: 100%;
       min-height: 250px;
@@ -269,11 +270,17 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       transform: rotateY(180deg);
     }
 
+    .flip-card.show-back .flip-card-front {
+      transition: height 0.6s;
+      height: 50%;
+    }
+
     .flip-card-front,
     .flip-card-back {
       position: absolute;
       width: 100%;
       height: 100%;
+      background-color: transparent;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
@@ -288,7 +295,8 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
 
     ia-bookreader {
       display: block;
-      height: inherit;
+      /* height: inherit; */
+      background-color: transparent;
     }
   `;l([f({type:Boolean,reflect:!0})],k.prototype,"showAllPhotos",void 0);l([f({type:String,attribute:!0,reflect:!0})],k.prototype,"baseHost",void 0);l([f({type:Boolean,reflect:!0})],k.prototype,"signedIn",void 0);l([f({type:String,reflect:!0})],k.prototype,"itemIdentifier",void 0);l([f({type:Object})],k.prototype,"itemMD",void 0);l([f({type:Array})],k.prototype,"looseImages",void 0);l([f({type:Object})],k.prototype,"linerNotesManifest",void 0);l([f({type:Object})],k.prototype,"bookreader",void 0);l([f({type:Boolean,reflect:!0})],k.prototype,"fullscreenActive",void 0);l([f({type:Boolean})],k.prototype,"reInitBrAtFullscreen",void 0);l([f({type:Object})],k.prototype,"lightDomHook",void 0);k=l([L("iaux-photo-viewer")],k);let Me=class extends ${render(){return u`
       <div class="icon-label-container">
@@ -1218,7 +1226,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
     iaux-photo-viewer {
       display: block;
       border: 1px solid red;
-      /* width: 400px; */
-      height: 400px;
+      height: 630px;
+      width: 720px;
     }
   `;l([f({type:String,reflect:!0})],_.prototype,"viewToShow",void 0);l([f({type:String})],_.prototype,"selectedByDropdown",void 0);l([f({type:String})],_.prototype,"errorMsg",void 0);l([f({type:String})],_.prototype,"selectedByDropdownOnload",void 0);l([f({type:String})],_.prototype,"selectedByRadio",void 0);l([f({type:String})],_.prototype,"selectedByRadioOnload",void 0);l([f({type:String})],_.prototype,"albumId",void 0);l([f({type:String})],_.prototype,"bgColor",void 0);l([f({type:Object,attribute:!1})],_.prototype,"albumMd",void 0);l([f({type:Object,attribute:!1})],_.prototype,"albumPlaylist",void 0);l([f({type:Object,attribute:!1})],_.prototype,"album",void 0);l([f({type:String})],_.prototype,"componentToShow",void 0);l([ue("input#md-search")],_.prototype,"input",void 0);l([f({type:Boolean})],_.prototype,"signedIn",void 0);l([f({type:String})],_.prototype,"photoDisplay",void 0);_=l([L("app-root")],_);
