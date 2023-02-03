@@ -268,7 +268,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
     }
 
     .flip-card.show-back .flip-card-front {
-      transition: visibility 1s;
+      transition: visibility 0.5s;
       visibility: hidden;
     }
 
