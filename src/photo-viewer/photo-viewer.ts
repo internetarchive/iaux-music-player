@@ -267,8 +267,7 @@ export class IaPhotoViewer extends LitElement {
     .flip-card.fullscreenActive {
       position: absolute;
       inset: 0;
-      height: 100vh;
-      width: 100vw;
+      height: var(--linerNotesFullscreenHeight, 100vh);
     }
 
     div.no-images {
@@ -305,6 +304,8 @@ export class IaPhotoViewer extends LitElement {
     button.click-for-photos {
       display: flex;
       margin: auto;
+      min-height: 30%;
+      min-width: 30%;
     }
 
     button.click-for-photos img {
@@ -361,10 +362,6 @@ export class IaPhotoViewer extends LitElement {
       text-align: center;
       transition: transform 0.6s;
       transform-style: preserve-3d;
-    }
-
-    .flip-card.show-back .flip-card-inner {
-      transform: rotateY(180deg);
     }
 
     .flip-card.show-back .flip-card-inner {

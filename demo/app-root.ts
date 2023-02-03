@@ -510,6 +510,17 @@ export class AppRoot extends LitElement {
           ?signedIn=${this.signedIn}
           .looseImages=${[]}
           ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
+          @fullscreenOpened=${() => {
+            console.log('THIS FS OPENED ', this.scrollHeight);
+
+            this.style.setProperty(
+              '--linerNotesFullscreenHeight',
+              `${Math.round(window.innerHeight)}px`
+            );
+            setTimeout(() => {
+              this.scrollIntoView();
+            }, 0);
+          }}
           ><div slot="main">
             <slot name="main"><p>Placeholder text</p></slot>
           </div></iaux-photo-viewer
@@ -656,8 +667,8 @@ export class AppRoot extends LitElement {
     iaux-photo-viewer {
       display: block;
       border: 1px solid red;
-      height: 630px;
-      width: 720px;
+      width: 430px;
+      height: 720px;
     }
   `;
 }
