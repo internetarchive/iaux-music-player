@@ -311,6 +311,7 @@ export class IaPhotoViewer extends LitElement {
       display: block;
       overflow: hidden;
       object-fit: contain;
+      object-position: top;
       max-width: 100%;
       max-height: 100%;
       min-height: 250px;
@@ -370,14 +371,17 @@ export class IaPhotoViewer extends LitElement {
       transform: rotateY(180deg);
     }
 
-    .flip-card-front {
-      height: 100%;
+    .flip-card.show-back .flip-card-front {
+      transition: height 0.6s;
+      height: 50%;
     }
 
     .flip-card-front,
     .flip-card-back {
       position: absolute;
       width: 100%;
+      height: 100%;
+      background-color: transparent;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
@@ -392,7 +396,8 @@ export class IaPhotoViewer extends LitElement {
 
     ia-bookreader {
       display: block;
-      height: inherit;
+      /* height: inherit; */
+      background-color: transparent;
     }
   `;
 }
