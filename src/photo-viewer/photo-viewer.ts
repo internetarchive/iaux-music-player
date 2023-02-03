@@ -370,7 +370,7 @@ export class IaPhotoViewer extends LitElement {
 
     .flip-card.show-back .flip-card-front {
       transition: visibility 1s;
-      visibility: none;
+      visibility: hidden;
     }
 
     .flip-card-front,
