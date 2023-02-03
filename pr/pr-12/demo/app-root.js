@@ -270,6 +270,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
     .flip-card.show-back .flip-card-front .cover-art {
       transition: height 0.5s;
       height: 40%;
+      visibility: hidden;
     }
 
     .flip-card-front,
