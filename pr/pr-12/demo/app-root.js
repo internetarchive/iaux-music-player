@@ -268,8 +268,8 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
     }
 
     .flip-card.show-back .flip-card-front {
-      transition: height 0.6s;
-      height: 50%;
+      transition: visibility 1s;
+      visibility: none;
     }
 
     .flip-card-front,
