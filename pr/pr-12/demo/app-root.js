@@ -269,7 +269,7 @@ const $t=function(){const e=document.createElement("link").relList;if(e&&e.suppo
 
     .flip-card.show-back .flip-card-front {
       transition: visibility 1s;
-      visibility: none;
+      visibility: hidden;
     }
 
     .flip-card-front,
