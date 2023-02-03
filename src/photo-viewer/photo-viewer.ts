@@ -369,8 +369,8 @@ export class IaPhotoViewer extends LitElement {
     }
 
     .flip-card.show-back .flip-card-front {
-      transition: height 0.6s;
-      height: 50%;
+      transition: visibility 1s;
+      visibility: none;
     }
 
     .flip-card-front,
