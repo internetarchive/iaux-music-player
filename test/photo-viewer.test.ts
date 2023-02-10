@@ -139,6 +139,48 @@ describe('`<iaux-photo-viewer>`', () => {
           ?.querySelector('span.sr-only')
       ).to.exist;
     });
+    it('clicking on image cover button opens bookreader', async () => {
+      const listenerStub = sinon.stub();
+      const el = await fixture<IaPhotoViewer>(
+        html`<iaux-photo-viewer
+          .linerNotesManifest=${linerNotesManifestStub}
+          .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
+          .itemMd=${linerNotesManifestStub.metadata}
+          @fullscreenClosed=${() => listenerStub()}
+        ></iaux-photo-viewer>`
+      );
+
+      expect(el.showAllPhotos).to.be.false;
+
+      const coverButton = el.shadowRoot?.querySelector(
+        'button.click-for-photos'
+      ) as HTMLButtonElement;
+      expect(coverButton).to.exist;
+
+      coverButton?.click();
+      await el.updateComplete;
+
+      expect(el.showAllPhotos).to.be.true;
+
+      // dispatches event when fullscreen mode is being closed
+      window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
+      await el.updateComplete;
+      el.fullscreenActive = true;
+      await el.updateComplete;
+      expect(el.fullscreenActive).to.be.true; // confirm that fullscreen state is on
+      expect(el.showAllPhotos).to.be.true; // still showing all photos
+
+      const closeReaderButton = el.shadowRoot?.querySelector(
+        'button#close-photo-viewer'
+      ) as HTMLButtonElement;
+
+      expect(closeReaderButton).to.exist;
+      closeReaderButton?.click();
+      await el.updateComplete;
+
+      expect(el.fullscreenActive).to.be.false; // confirm that fullscreen state is off
+      expect(el.showAllPhotos).to.be.false;
+    });
   });
 
   describe('Selecting Primary Image', () => {
@@ -171,6 +213,22 @@ describe('`<iaux-photo-viewer>`', () => {
       );
       expect(el.primaryImage).to.equal(
         'https://ia800103.us.archive.org/BookReader/BookReaderImages.php?zip=/29/items/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_jp2.zip&file=cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_jp2/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_0000.jp2&id=cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera'
+      );
+    });
+  });
+  describe('Helpers', () => {
+    it('creates an image ur', async () => {
+      const el = await fixture<IaPhotoViewer>(
+        html`<iaux-photo-viewer
+          .linerNotesManifest=${linerNotesManifestStub}
+          .itemIdentifier=${'barIdentifier'}
+          .itemMd=${linerNotesManifestStub.metadata}
+          .baseHost=${'foo.boop'}
+        ></iaux-photo-viewer>`
+      );
+
+      expect(el.imageBaseUrl).to.equal(
+        'https://foo.boop/download/barIdentifier'
       );
     });
   });
