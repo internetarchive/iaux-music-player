@@ -5,6 +5,8 @@ export class BookReaderClass {
 
   resize: () => void;
 
+  isFullscreen: () => boolean;
+
   jumpToIndex: (index: number) => number;
 
   getPageURI: (index: number, reduce: number, rotate: number) => number[];
@@ -43,6 +45,7 @@ export class BookReaderClass {
   constructor() {
     this.init = () => {};
     this.resize = () => {};
+    this.isFullscreen = () => false;
     this.jumpToIndex = (index: number) => index;
     this.getPageURI = (index: number, reduce: number, rotate: number) => [
       index,

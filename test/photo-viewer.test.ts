@@ -1,5 +1,5 @@
 import { html, fixture, expect } from '@open-wc/testing';
-// import sinon from 'sinon';
+import sinon, { SinonStub } from 'sinon';
 import type { IaPhotoViewer } from '../src/photo-viewer/photo-viewer';
 import '../src/photo-viewer/photo-viewer';
 import { linerNotesManifestStub } from './utils/liner-notes-stub';
@@ -16,8 +16,70 @@ afterEach(() => {
 });
 
 describe('`<iaux-photo-viewer>`', () => {
-  it('hello', () => {
-    expect(4).to.equal(4);
+  describe('Event Listeners', () => {
+    it('listens for `BookReader:PostInit`', async () => {
+      await fixture<IaPhotoViewer>(
+        html`<iaux-photo-viewer></iaux-photo-viewer>`
+      );
+
+      const mockBr = new BookReaderClass();
+      mockBr.jumpToIndex = sinon.stub();
+      mockBr.resize = sinon.stub();
+      const mockPostInitEvent = new CustomEvent('BookReader:PostInit', {
+        detail: {
+          props: mockBr,
+        },
+      });
+      window.dispatchEvent(mockPostInitEvent);
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      expect((mockBr.jumpToIndex as SinonStub).callCount).to.equal(1);
+      expect((mockBr.resize as SinonStub).callCount).to.equal(1);
+    });
+    describe('listens for `BookReader:fullscreenToggled', () => {
+      it('tells us when `fullscreenOpened`', async () => {
+        const mockBr = new BookReaderClass();
+        mockBr.isFullscreen = () => true;
+        const yesFullscreenListener = sinon.stub();
+        const noFullscreenListener = sinon.stub();
+        const el = await fixture<IaPhotoViewer>(
+          html`<iaux-photo-viewer
+            .bookreader=${mockBr}
+            .linerNotes=${linerNotesManifestStub}
+            @fullscreenOpened=${() => yesFullscreenListener()}
+            @fullscreenClosed=${() => noFullscreenListener()}
+          ></iaux-photo-viewer>`
+        );
+
+        window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
+
+        await el.updateComplete;
+
+        expect(yesFullscreenListener.callCount).to.equal(1);
+        expect(noFullscreenListener.called).to.be.false;
+      });
+      it('tells us when `fullscreenClosed`', async () => {
+        const mockBr = new BookReaderClass();
+        mockBr.isFullscreen = () => false;
+        const yesFullscreenListener = sinon.stub();
+        const noFullscreenListener = sinon.stub();
+        const el = await fixture<IaPhotoViewer>(
+          html`<iaux-photo-viewer
+            .bookreader=${mockBr}
+            @fullscreenOpened=${() => yesFullscreenListener()}
+            @fullscreenClosed=${() => noFullscreenListener()}
+          ></iaux-photo-viewer>`
+        );
+
+        window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
+
+        await el.updateComplete;
+
+        expect(noFullscreenListener.callCount).to.equal(1);
+        expect(yesFullscreenListener.called).to.be.false;
+      });
+    });
   });
   describe('Defaults', () => {
     it('Displays Audio Icon as default', async () => {
