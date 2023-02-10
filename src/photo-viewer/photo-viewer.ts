@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-properties */
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import '@internetarchive/icon-audio';
 import '@internetarchive/icon-close-circle';
 import '@internetarchive/icon-texts';
@@ -44,6 +44,8 @@ export class IaPhotoViewer extends LitElement {
   firstUpdated(): void {
     this.bindBrEvents();
   }
+
+  @query('button.click-for-photos img') coverImage?: HTMLButtonElement;
 
   bindBrEvents = () => {
     /** Set listeners that load bookreader core & web component */
@@ -165,7 +167,19 @@ export class IaPhotoViewer extends LitElement {
             this.togglePhotoViewer();
           }}
         >
-          <img src=${image} alt=${`primary image for ${displayTitle}`} />
+          <img
+            src=${image}
+            alt=${`primary image for ${displayTitle}`}
+            @change=${(e: Event) => {
+              const target = e.target as HTMLImageElement;
+              console.log('~~~~~ CHANGE IMG', target.getBoundingClientRect());
+            }}
+            @load=${(e: Event) => {
+              const target = e.target as HTMLImageElement;
+              console.log('~~~~~ LOAD IMG', target.getBoundingClientRect());
+              console.log('cover image', this.coverImage);
+            }}
+          />
           <ia-icon-texts></ia-icon-texts>
           <span class="sr-only">See all photos for ${displayTitle}</span>
         </button>
