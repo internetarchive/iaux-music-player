@@ -10,7 +10,7 @@ beforeEach(() => {
   (window as any).BookReader = BookReaderClass as unknown as BookReader;
 });
 afterEach(() => {
-  // sinon.restore();
+  sinon.restore();
   (window as any).BookReader = undefined;
   (window as any).br = undefined;
 });
@@ -38,7 +38,7 @@ describe('`<iaux-photo-viewer>`', () => {
       expect((mockBr.resize as SinonStub).callCount).to.equal(1);
     });
     describe('listens for `BookReader:fullscreenToggled', () => {
-      it('tells us when `fullscreenOpened`', async () => {
+      it('tells us when `fullscreenOpened` or `fullscreenClosed`', async () => {
         const mockBr = new BookReaderClass();
         mockBr.isFullscreen = () => true;
         const yesFullscreenListener = sinon.stub();
@@ -46,38 +46,26 @@ describe('`<iaux-photo-viewer>`', () => {
         const el = await fixture<IaPhotoViewer>(
           html`<iaux-photo-viewer
             .bookreader=${mockBr}
-            .linerNotes=${linerNotesManifestStub}
+            .linerNotesManifest=${linerNotesManifestStub}
+            .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
+            .itemMd=${linerNotesManifestStub.metadata}
             @fullscreenOpened=${() => yesFullscreenListener()}
             @fullscreenClosed=${() => noFullscreenListener()}
           ></iaux-photo-viewer>`
         );
 
         window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
-
         await el.updateComplete;
 
         expect(yesFullscreenListener.callCount).to.equal(1);
         expect(noFullscreenListener.called).to.be.false;
-      });
-      it('tells us when `fullscreenClosed`', async () => {
-        const mockBr = new BookReaderClass();
+
         mockBr.isFullscreen = () => false;
-        const yesFullscreenListener = sinon.stub();
-        const noFullscreenListener = sinon.stub();
-        const el = await fixture<IaPhotoViewer>(
-          html`<iaux-photo-viewer
-            .bookreader=${mockBr}
-            @fullscreenOpened=${() => yesFullscreenListener()}
-            @fullscreenClosed=${() => noFullscreenListener()}
-          ></iaux-photo-viewer>`
-        );
-
         window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
-
         await el.updateComplete;
 
         expect(noFullscreenListener.callCount).to.equal(1);
-        expect(yesFullscreenListener.called).to.be.false;
+        expect(yesFullscreenListener.callCount).to.equal(1);
       });
     });
   });
