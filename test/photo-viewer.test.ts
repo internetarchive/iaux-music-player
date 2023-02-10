@@ -139,7 +139,7 @@ describe('`<iaux-photo-viewer>`', () => {
           ?.querySelector('span.sr-only')
       ).to.exist;
     });
-    it('clicking on image cover button opens bookreader', async () => {
+    it('Toggling bookreader view', async () => {
       const listenerStub = sinon.stub();
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
