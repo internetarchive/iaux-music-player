@@ -521,6 +521,16 @@ export class AppRoot extends LitElement {
               this.scrollIntoView();
             }, 0);
           }}
+          @coverImageLoaded=${(
+            e: CustomEvent<Record<'height' | 'width', number>>
+          ) => {
+            const { height } = e.detail;
+            document.body.removeAttribute('--brInTheaterHeight');
+            document.body.style.setProperty(
+              '--brInTheaterHeight',
+              `${height}px`
+            );
+          }}
           ><div slot="main">
             <slot name="main"><p>Placeholder text</p></slot>
           </div></iaux-photo-viewer

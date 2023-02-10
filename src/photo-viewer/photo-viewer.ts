@@ -77,12 +77,12 @@ export class IaPhotoViewer extends LitElement {
   };
 
   updated(changed: PropertyValues<this>) {
-    if (changed.has('showAllPhotos') && this.showAllPhotos) {
-      if (this.linerNotesManifest) {
-        this.prepareLightDomHook();
-        this.loadFreshBookReaderFromManifest();
-      }
-    }
+    // if (changed.has('showAllPhotos') && this.showAllPhotos) {
+    //   if (this.linerNotesManifest) {
+    //     this.prepareLightDomHook();
+    //     this.loadFreshBookReaderFromManifest();
+    //   }
+    // }
 
     if (changed.has('linerNotesManifest') && this.linerNotesManifest) {
       this.loadFreshBookReaderFromManifest();
@@ -163,7 +163,7 @@ export class IaPhotoViewer extends LitElement {
         <button
           class="click-for-photos"
           @click=${async () => {
-            await this.loadFreshBookReaderFromManifest();
+            // await this.loadFreshBookReaderFromManifest();
             this.togglePhotoViewer();
           }}
         >
@@ -176,8 +176,14 @@ export class IaPhotoViewer extends LitElement {
             }}
             @load=${(e: Event) => {
               const target = e.target as HTMLImageElement;
+              const { width, height } = target.getBoundingClientRect();
               console.log('~~~~~ LOAD IMG', target.getBoundingClientRect());
               console.log('cover image', this.coverImage);
+              this.dispatchEvent(
+                new CustomEvent('coverImageLoaded', {
+                  detail: { width, height, target },
+                })
+              );
             }}
           />
           <ia-icon-texts></ia-icon-texts>
