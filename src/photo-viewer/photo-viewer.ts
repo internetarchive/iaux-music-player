@@ -41,33 +41,19 @@ export class IaPhotoViewer extends LitElement {
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
 
+  @query('button.click-for-photos img') coverImage?: HTMLButtonElement;
+
+  disconnectedCallback() {
+    // eslint-disable-next-line wc/guard-super-call
+    super.disconnectedCallback();
+
+    // remove event listeners
+    window.removeEventListener('BookReader:PostInit', this.handleBrPostInit);
+  }
+
   firstUpdated(): void {
     this.bindBrEvents();
   }
-
-  @query('button.click-for-photos img') coverImage?: HTMLButtonElement;
-
-  bindBrEvents = () => {
-    /** Set listeners that load bookreader core & web component */
-    window.addEventListener('BookReader:PostInit', e => {
-      // final instance - let's pin
-      this.bookreader = (e as CustomEvent)?.detail.props;
-      (window as any).br = this.bookreader;
-
-      setTimeout(() => {
-        this.bookreader?.jumpToIndex(0);
-        this.bookreader?.resize();
-      }, 1000);
-    });
-
-    window.addEventListener('BookReader:fullscreenToggled', () => {
-      this.fullscreenActive = this.bookreader?.isFullscreen() || false;
-      const eventName = this.fullscreenActive
-        ? 'fullscreenOpened'
-        : 'fullscreenClosed';
-      this.dispatchEvent(new Event(eventName));
-    });
-  };
 
   updated(changed: PropertyValues<this>) {
     if (changed.has('linerNotesManifest') && this.linerNotesManifest) {
@@ -97,26 +83,7 @@ export class IaPhotoViewer extends LitElement {
         >
           <div class="flip-card-inner">
             <div class="flip-card-front">${this.photoAlbumCover}</div>
-            <div class="flip-card-back">
-              <div class=${`photo-viewer-container`}>
-                <button
-                  id="close-photo-viewer"
-                  @click=${() => {
-                    this.bookreader?.exitFullScreen();
-                    this.togglePhotoViewer();
-                  }}
-                >
-                  <span class="sr-only">Click to close Photo Viewer.</span>
-                  <ia-icon-close-circle></ia-icon-close-circle>
-                </button>
-                <ia-bookreader
-                  .item=${this.linerNotesManifest}
-                  .baseHost=${this.baseHost}
-                  .signedIn=${this.signedIn}
-                  ><div slot="main"><slot name="main"></slot></div
-                ></ia-bookreader>
-              </div>
-            </div>
+            <div class="flip-card-back">${this.linerNotesView}</div>
           </div>
         </div>
       `;
@@ -135,6 +102,47 @@ export class IaPhotoViewer extends LitElement {
       this.fullscreenActive = false;
       this.dispatchEvent(new Event('fullscreenClosed'));
     }
+  }
+
+  get imageBaseUrl(): string {
+    return `https://${this.baseHost}/download/${this.itemIdentifier}`;
+  }
+
+  get primaryImage(): string | undefined {
+    if (this.linerNotesManifest) {
+      const firstImageInfo =
+        this.linerNotesManifest.brOptions.data.flat()[0] as BRImageInfo;
+      return firstImageInfo.uri as string;
+    }
+
+    if (this.looseImages?.length) {
+      return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
+    }
+
+    return undefined;
+  }
+
+  get linerNotesView(): TemplateResult {
+    return html`
+      <div class=${`photo-viewer-container`}>
+        <button
+          id="close-photo-viewer"
+          @click=${() => {
+            this.bookreader?.exitFullScreen();
+            this.togglePhotoViewer();
+          }}
+        >
+          <span class="sr-only">Click to close Photo Viewer.</span>
+          <ia-icon-close-circle></ia-icon-close-circle>
+        </button>
+        <ia-bookreader
+          .item=${this.linerNotesManifest}
+          .baseHost=${this.baseHost}
+          .signedIn=${this.signedIn}
+          ><div slot="main"><slot name="main"></slot></div
+        ></ia-bookreader>
+      </div>
+    `;
   }
 
   get photoAlbumCover(): TemplateResult {
@@ -170,11 +178,33 @@ export class IaPhotoViewer extends LitElement {
     `;
   }
 
-  /* END DOM */
+  // eslint-disable-next-line no-empty-function
+  async loadImages(): Promise<void> {}
 
-  get imageBaseUrl(): string {
-    return `https://${this.baseHost}/download/${this.itemIdentifier}`;
+  /* -- BookReader -- */
+  handleBrPostInit(e: Event): void {
+    // final instance - let's pin
+    this.bookreader = (e as CustomEvent)?.detail.props;
+    (window as any).br = this.bookreader;
+
+    setTimeout(() => {
+      this.bookreader?.jumpToIndex(0);
+      this.bookreader?.resize();
+    }, 1000);
   }
+
+  bindBrEvents = () => {
+    /** Set listeners that load bookreader core & web component */
+    window.addEventListener('BookReader:PostInit', this.handleBrPostInit);
+
+    window.addEventListener('BookReader:fullscreenToggled', () => {
+      this.fullscreenActive = this.bookreader?.isFullscreen() || false;
+      const eventName = this.fullscreenActive
+        ? 'fullscreenOpened'
+        : 'fullscreenClosed';
+      this.dispatchEvent(new Event(eventName));
+    });
+  };
 
   prepareLightDomHook(): void {
     // check if bookreader hook is already loaded
@@ -187,8 +217,19 @@ export class IaPhotoViewer extends LitElement {
     }
   }
 
-  // eslint-disable-next-line no-empty-function
-  async loadImages(): Promise<void> {}
+  async loadFreshBookReaderFromManifest(): Promise<void> {
+    // add DOM to provided lightdom hook
+    await this.mountBookReaderLightDomHook();
+
+    await new Promise<void>((resolve): void => {
+      setTimeout(() => {
+        this.bookreader =
+          this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+        this.bookreader?.init();
+        resolve();
+      }, 0);
+    });
+  }
 
   async mountBookReaderLightDomHook(): Promise<void> {
     await new Promise(resolve => {
@@ -214,34 +255,7 @@ export class IaPhotoViewer extends LitElement {
       resolve(true);
     });
   }
-
-  async loadFreshBookReaderFromManifest(): Promise<void> {
-    // add DOM to provided lightdom hook
-    await this.mountBookReaderLightDomHook();
-
-    await new Promise<void>((resolve): void => {
-      setTimeout(() => {
-        this.bookreader =
-          this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
-        this.bookreader?.init();
-        resolve();
-      }, 0);
-    });
-  }
-
-  get primaryImage(): string | undefined {
-    if (this.linerNotesManifest) {
-      const firstImageInfo =
-        this.linerNotesManifest.brOptions.data.flat()[0] as BRImageInfo;
-      return firstImageInfo.uri as string;
-    }
-
-    if (this.looseImages?.length) {
-      return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
-    }
-
-    return undefined;
-  }
+  /* -- End BookReader -- */
 
   static styles = css`
     :host {
