@@ -60,19 +60,19 @@ export class IaPhotoViewer extends LitElement {
       this.loadFreshBookReaderFromManifest();
     }
 
-    if (changed.has('looseImages') && this.looseImages?.length) {
-      this.loadImages();
-    }
+    // if (changed.has('looseImages') && this.looseImages?.length) {
+    //   this.loadImages();
+    // }
   }
 
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
-    if (this.looseImages?.length === 1) {
-      return html`<img
-        src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
-        alt=${`Main image for ${this.itemIdentifier}`}
-      />`;
-    }
+    // if (this.looseImages?.length === 1) {
+    //   return html`<img
+    //     src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
+    //     alt=${`Main image for ${this.itemIdentifier}`}
+    //   />`;
+    // }
 
     if (this.linerNotesManifest) {
       return html`
@@ -115,9 +115,9 @@ export class IaPhotoViewer extends LitElement {
       return firstImageInfo.uri as string;
     }
 
-    if (this.looseImages?.length) {
-      return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
-    }
+    // if (this.looseImages?.length) {
+    //   return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
+    // }
 
     return undefined;
   }
