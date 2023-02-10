@@ -50,12 +50,6 @@ export class IaPhotoViewer extends LitElement {
   bindBrEvents = () => {
     /** Set listeners that load bookreader core & web component */
     window.addEventListener('BookReader:PostInit', e => {
-      console.log(
-        'BookReader:PostInit BookReader:PostInit',
-        e,
-        this.bookreader
-      );
-
       // final instance - let's pin
       this.bookreader = (e as CustomEvent)?.detail.props;
       (window as any).br = this.bookreader;
@@ -63,7 +57,6 @@ export class IaPhotoViewer extends LitElement {
       setTimeout(() => {
         this.bookreader?.jumpToIndex(0);
         this.bookreader?.resize();
-        console.log('POST INIT TIMEOUT RESIZED & JUMPED TO INDEX 00000');
       }, 1000);
     });
 
@@ -77,13 +70,6 @@ export class IaPhotoViewer extends LitElement {
   };
 
   updated(changed: PropertyValues<this>) {
-    // if (changed.has('showAllPhotos') && this.showAllPhotos) {
-    //   if (this.linerNotesManifest) {
-    //     this.prepareLightDomHook();
-    //     this.loadFreshBookReaderFromManifest();
-    //   }
-    // }
-
     if (changed.has('linerNotesManifest') && this.linerNotesManifest) {
       this.loadFreshBookReaderFromManifest();
     }
@@ -95,8 +81,6 @@ export class IaPhotoViewer extends LitElement {
 
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
-    console.log('*** RENDER  itemIdentifier ', this.itemIdentifier);
-
     if (this.looseImages?.length === 1) {
       return html`<img
         src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
@@ -163,22 +147,15 @@ export class IaPhotoViewer extends LitElement {
         <button
           class="click-for-photos"
           @click=${async () => {
-            // await this.loadFreshBookReaderFromManifest();
             this.togglePhotoViewer();
           }}
         >
           <img
             src=${image}
             alt=${`primary image for ${displayTitle}`}
-            @change=${(e: Event) => {
-              const target = e.target as HTMLImageElement;
-              console.log('~~~~~ CHANGE IMG', target.getBoundingClientRect());
-            }}
             @load=${(e: Event) => {
               const target = e.target as HTMLImageElement;
               const { width, height } = target.getBoundingClientRect();
-              console.log('~~~~~ LOAD IMG', target.getBoundingClientRect());
-              console.log('cover image', this.coverImage);
               this.dispatchEvent(
                 new CustomEvent('coverImageLoaded', {
                   detail: { width, height, target },
@@ -234,28 +211,16 @@ export class IaPhotoViewer extends LitElement {
       this.lightDomHook?.append(bookreaderSlot);
       bookreaderMain.setAttribute('id', 'BookReader');
       bookreaderMain.classList.add('BookReader');
-      console.log(
-        '~~ bookreaderSlot ',
-        bookreaderSlot.offsetHeight,
-        bookreaderSlot.offsetWidth
-      );
-
       resolve(true);
     });
-    console.log(
-      '~~ async Light dom hook appended',
-      this.lightDomHook?.childNodes
-    );
   }
 
   async loadFreshBookReaderFromManifest(): Promise<void> {
     // add DOM to provided lightdom hook
-    console.log('loadFreshBookReaderFromManifest :wave:', this.lightDomHook);
     await this.mountBookReaderLightDomHook();
 
     await new Promise<void>((resolve): void => {
       setTimeout(() => {
-        console.log('loading BR Liner Notes in promise ~~~~~');
         this.bookreader =
           this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
         this.bookreader?.init();
@@ -390,7 +355,7 @@ export class IaPhotoViewer extends LitElement {
 
     .flip-card.show-back .flip-card-front .cover-art {
       transition: height 0.5s;
-      height: 40%;
+      height: 100%;
       visibility: hidden;
     }
 
