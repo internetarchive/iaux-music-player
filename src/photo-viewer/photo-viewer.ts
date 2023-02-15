@@ -60,6 +60,10 @@ export class IaPhotoViewer extends LitElement {
       this.loadFreshBookReaderFromManifest();
     }
 
+    if (changed.has('showAllPhotos') && this.showAllPhotos) {
+      this.initBr(500);
+    }
+
     // if (changed.has('looseImages') && this.looseImages?.length) {
     //   this.loadImages();
     // }
@@ -220,14 +224,17 @@ export class IaPhotoViewer extends LitElement {
   async loadFreshBookReaderFromManifest(): Promise<void> {
     // add DOM to provided lightdom hook
     await this.mountBookReaderLightDomHook();
+    await this.initBr();
+  }
 
+  async initBr(awaitMs = 0): Promise<void> {
     await new Promise<void>((resolve): void => {
       setTimeout(() => {
         this.bookreader =
           this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
         this.bookreader?.init();
         resolve();
-      }, 0);
+      }, awaitMs);
     });
   }
 
