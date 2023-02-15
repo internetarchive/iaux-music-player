@@ -28,24 +28,20 @@ describe('`<iaux-photo-viewer>`', () => {
           .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
           .itemMd=${linerNotesManifestStub.metadata}
           @coverImageLoaded=${(e: CustomEvent) => {
-            console.log('FOO******');
+            listenerStub();
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             height = e.detail.height;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             width = e.detail.width;
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             target = e.target;
-            return listenerStub();
+
+            expect(height).to.equal(250);
+            expect(width).to.equal(248.8359375);
+            expect(listenerStub.callCount).to.equal(1);
           }}
         ></iaux-photo-viewer>`
       );
-
-      // eslint-disable-next-line no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      expect(height).to.equal(250);
-      expect(width).to.equal(248.8359375);
-      expect(listenerStub.callCount).to.equal(1);
     });
   });
   describe('Event Listeners', () => {
