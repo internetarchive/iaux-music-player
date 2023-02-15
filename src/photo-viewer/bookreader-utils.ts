@@ -33,7 +33,8 @@ function bookreaderDefaultOptions(): Object {
  */
 export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
   // fetch manifest
-  const brOptions = linerNotesManifest?.brOptions;
+  // eslint-disable-next-line prefer-destructuring
+  const brOptions = linerNotesManifest.brOptions;
   // core BR must be already loaded
   const fullOptions = {
     ...brOptions,
