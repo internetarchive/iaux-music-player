@@ -65,7 +65,7 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
 
   (window as any).br = bookreader as BookReader;
 
-  const isRestricted = (linerNotesManifest?.data as any)?.isRestricted;
+  const isRestricted = linerNotesManifest?.data?.isRestricted;
 
   window.dispatchEvent(
     new CustomEvent('contextmenu', { detail: { isRestricted } })
