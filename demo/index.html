@@ -1,33 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-GB">
-<head>
-  <meta charset="utf-8">
-  <style>
-    html {
-      font-size: 10px; /* This is to match petabox's base font size */
-      font-family: Helvetica, sans-serif;
-    }
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html {
+        font-size: 10px; /* This is to match petabox's base font size */
+        font-family: Helvetica, sans-serif;
+      }
 
-    body[components] {
-      background: black;
-      color: #fff;
-    }
+      body[components] {
+        background: black;
+        color: #fff;
+        margin: 0;
+      }
 
-    body[components].light {
-      background: cadetblue;
-      color: #222;
-    }
+      body[components].light {
+        background: cadetblue;
+        color: #222;
+      }
 
-    body[data] {
-      background: lightblue;
-      color: black;
-    }
-  </style>
-</head>
-<body>
-  <app-root></app-root>
+      body[data] {
+        background: lightblue;
+        color: black;
+      }
 
-  <script type="module" src="../dist/demo/app-root.js">
-  </script>
-</body>
+      modal-manager[mode='closed'] {
+        display: none;
+      }
+
+      #BookReader {
+        display: block;
+        height: var(--brInTheaterHeight, 400px) !important;
+        min-height: unset !important;
+        position: relative;
+        overflow: hidden;
+      }
+    </style>
+    <link
+      href="https://www-isa.archive.org/bookreader/BookReader-ia.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body>
+    <app-root></app-root>
+
+    <script type="module" src="../dist/demo/app-root.js"></script>
+  </body>
 </html>

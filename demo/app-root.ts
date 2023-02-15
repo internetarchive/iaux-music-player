@@ -1,14 +1,45 @@
+/* eslint-disable import/first */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-restricted-globals */
+
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { MetadataResponse } from '@internetarchive/search-service';
+import '../src/photo-viewer/photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
 import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
+
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js' as any
+);
+await import(
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/src/ia-bookreader/ia-bookreader.js' as any
+);
+
+// const linerNotesUrl = 'https://ia800104.us.archive.org/BookReader/BookReaderJSIA.php?id=cd_dark-side-of-the-moon_pink-floyd&itemPath=/23/items/cd_dark-side-of-the-moon_pink-floyd&server=ia800104.us.archive.org&format=jsonp&subPrefix=cd_dark-side-of-the-moon_pink-floyd&audioLinerNotes=1';
+const defaultLinerNotesManifest = await fetch(
+  './liner-notes-manifest-demo.json'
+).then(res => res.json());
+console.log('*** defaultLinerNotesManifest', defaultLinerNotesManifest);
 
 const albumList = [
   {
@@ -68,6 +99,7 @@ const albumList = [
     desc: 'Has 3rd party "Full Album". Clicking on Full Album should highlight full album',
   },
 ];
+
 @customElement('app-root')
 export class AppRoot extends LitElement {
   @property({ type: String, reflect: true }) viewToShow: 'components' | 'data' =
@@ -100,12 +132,18 @@ export class AppRoot extends LitElement {
 
   @property({ type: Object, attribute: false }) album: Album | null = null;
 
-  @property({ type: String }) componentToShow: 'channels' | 'photos' =
-    'channels';
+  @property({ type: String }) componentToShow: 'channels' | 'photos' = 'photos';
 
   @query('input#md-search') input!: HTMLInputElement;
 
-  override firstUpdated() {
+  @property({ type: Boolean }) signedIn = false; // shows bookmarks view
+
+  @property({ type: String }) photoDisplay:
+    | 'noData'
+    | 'linerNotes'
+    | 'looseImages' = 'linerNotes';
+
+  override firstUpdated(): void {
     if (this.startAtWebamp) {
       this.selectedByRadio = channelTypes.webamp;
       this.selectedByDropdown = channelTypes.webamp;
@@ -133,7 +171,7 @@ export class AppRoot extends LitElement {
     }
   }
 
-  get startAtWebamp() {
+  get startAtWebamp(): boolean {
     const searchParams = new URLSearchParams(location.search.slice(1));
     return searchParams.has('webamp');
   }
@@ -432,6 +470,72 @@ export class AppRoot extends LitElement {
     `;
   }
 
+  get photoViewer(): TemplateResult {
+    let linerNotesManifest;
+    let itemId;
+    let itemMD;
+
+    switch (this.photoDisplay) {
+      case 'linerNotes':
+        if (this.photoDisplay === 'linerNotes') {
+          linerNotesManifest = defaultLinerNotesManifest;
+          itemId = linerNotesManifest?.metadata?.identifier;
+          itemMD = linerNotesManifest?.metadata;
+        }
+        break;
+      default:
+        break;
+    }
+    return html`
+      <section id="components">
+        <div>
+          <h3>Various Views</h3>
+          <button @click=${() => (this.photoDisplay = 'noData')}>
+            No data
+          </button>
+          <button @click=${() => (this.photoDisplay = 'linerNotes')}>
+            with liner notes
+          </button>
+        </div>
+        <br />
+        <iaux-photo-viewer
+          .linerNotesManifest=${linerNotesManifest}
+          .lightDomHook=${this}
+          baseHost="archive.org"
+          .itemIdentifier=${itemId}
+          .itemMD=${itemMD}
+          ?signedIn=${this.signedIn}
+          .looseImages=${[]}
+          ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
+          @fullscreenOpened=${() => {
+            console.log('THIS FS OPENED ', this.scrollHeight);
+
+            this.style.setProperty(
+              '--linerNotesFullscreenHeight',
+              `${Math.round(window.innerHeight)}px`
+            );
+            setTimeout(() => {
+              this.scrollIntoView();
+            }, 0);
+          }}
+          @coverImageLoaded=${(
+            e: CustomEvent<Record<'height' | 'width', number>>
+          ) => {
+            const { height } = e.detail;
+            document.body.removeAttribute('--brInTheaterHeight');
+            document.body.style.setProperty(
+              '--brInTheaterHeight',
+              `${height}px`
+            );
+          }}
+          ><div slot="main">
+            <slot name="main"><p>Placeholder text</p></slot>
+          </div></iaux-photo-viewer
+        >
+      </section>
+    `;
+  }
+
   get componentsView(): TemplateResult {
     return html`
       <div id="menu">
@@ -457,10 +561,19 @@ export class AppRoot extends LitElement {
           >
             Channel Selectors
           </button>
+          <button
+            @click=${() => {
+              this.componentToShow = 'photos';
+            }}
+          >
+            Photos
+          </button>
         </div>
       </div>
       <hr />
       ${this.componentToShow === 'channels' ? this.channelSelectors : nothing}
+      ${this.componentToShow === 'photos' ? this.photoViewer : nothing}
+      <slot name="foo"></slot>
     `;
   }
 
@@ -469,6 +582,10 @@ export class AppRoot extends LitElement {
       display: block;
       position: relative;
       font-size: 16px;
+    }
+
+    h1 {
+      margin-top: 0;
     }
 
     button,
@@ -552,6 +669,13 @@ export class AppRoot extends LitElement {
     .album-image {
       height: 200px;
       border: 1px solid;
+    }
+
+    iaux-photo-viewer {
+      display: block;
+      border: 1px solid red;
+      width: 430px;
+      height: 720px;
     }
   `;
 }

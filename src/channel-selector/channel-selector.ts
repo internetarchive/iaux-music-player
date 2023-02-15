@@ -318,7 +318,8 @@ export class ChannelSelector extends LitElement {
         outline: none;
       }
 
-      section.radio ul {
+      section.radio ul,
+      section.radio h4 {
         color: #fff;
       }
 

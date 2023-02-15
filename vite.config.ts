@@ -6,6 +6,7 @@ export default defineConfig({
   base: './',
   root: resolve(__dirname, './demo'),
   build: {
+    target: 'esnext',
     /**
      * This is the directory where the built files will be placed
      * that we upload to GitHub Pages.
