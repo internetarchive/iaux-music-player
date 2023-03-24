@@ -12,27 +12,28 @@ import '../src/players/spotify-player';
 import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
+import { generateBookReaderManfest } from '../src/photo-viewer/bookreader-utils';
 
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/jquery-3.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/jquery-3.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/BookReader.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/BookReader.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.search.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/plugins/plugin.search.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.tts.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/plugins/plugin.tts.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.archive_analytics.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/plugins/plugin.archive_analytics.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/BookReader/plugins/plugin.text_selection.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/plugins/plugin.text_selection.js' as any
 );
 await import(
-  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-53/src/ia-bookreader/ia-bookreader.js' as any
+  'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/src/ia-bookreader/ia-bookreader.js' as any
 );
 
 // const linerNotesUrl = 'https://ia800104.us.archive.org/BookReader/BookReaderJSIA.php?id=cd_dark-side-of-the-moon_pink-floyd&itemPath=/23/items/cd_dark-side-of-the-moon_pink-floyd&server=ia800104.us.archive.org&format=jsonp&subPrefix=cd_dark-side-of-the-moon_pink-floyd&audioLinerNotes=1';
@@ -40,6 +41,12 @@ const defaultLinerNotesManifest = await fetch(
   './liner-notes-manifest-demo.json'
 ).then(res => res.json());
 console.log('*** defaultLinerNotesManifest', defaultLinerNotesManifest);
+
+const defaultLooseImagesData = await fetch('./loose-images-demo.json').then(
+  res => res.json()
+);
+
+console.log('*** defaultLooseImagesData', defaultLooseImagesData);
 
 const albumList = [
   {
@@ -136,12 +143,14 @@ export class AppRoot extends LitElement {
 
   @query('input#md-search') input!: HTMLInputElement;
 
+  @query('iaux-photo-viewer') photoViewerEl!: LitElement;
+
   @property({ type: Boolean }) signedIn = false; // shows bookmarks view
 
   @property({ type: String }) photoDisplay:
     | 'noData'
     | 'linerNotes'
-    | 'looseImages' = 'linerNotes';
+    | 'looseImages' = 'looseImages';
 
   override firstUpdated(): void {
     if (this.startAtWebamp) {
@@ -168,6 +177,10 @@ export class AppRoot extends LitElement {
       } else {
         document.querySelector('body')?.classList.add('light');
       }
+    }
+
+    if (changed.has('photoDisplay') && this.photoDisplay === 'looseImages') {
+      this.displayLooseImages();
     }
   }
 
@@ -470,6 +483,24 @@ export class AppRoot extends LitElement {
     `;
   }
 
+  async displayLooseImages(): Promise<void> {
+    (this.photoViewerEl as unknown as any).prepareLightDomHook();
+    // get bookreader element & swap out values
+    const x = await generateBookReaderManfest({
+      images: defaultLooseImagesData.image_filenames,
+      itemIdentifier: defaultLooseImagesData.item.identifier,
+      itemTitle: defaultLooseImagesData.item.title,
+      baseHost: 'archive.org',
+    });
+    console.log('####### generateBookReaderManfest', x);
+    (this.photoViewerEl as unknown as any).linerNotesManifest = x;
+    (this.photoViewerEl as unknown as any).itemMD = x.metadata;
+    (this.photoViewerEl as unknown as any).itemIdentifier =
+      x.metadata.identifier;
+
+    // (this.photoViewerEl as any)?.requestUpdate();
+  }
+
   get photoViewer(): TemplateResult {
     let linerNotesManifest;
     let itemId;
@@ -486,6 +517,14 @@ export class AppRoot extends LitElement {
       default:
         break;
     }
+    console.log(
+      '%%%%%%',
+      this.photoDisplay,
+      linerNotesManifest,
+      itemId,
+      itemMD,
+      '%%%%%%'
+    );
     return html`
       <section id="components">
         <div>
@@ -496,42 +535,80 @@ export class AppRoot extends LitElement {
           <button @click=${() => (this.photoDisplay = 'linerNotes')}>
             with liner notes
           </button>
+          <button
+            @click=${() => {
+              this.photoDisplay = 'looseImages';
+              this.displayLooseImages();
+            }}
+          >
+            loose images viewer
+          </button>
         </div>
         <br />
-        <iaux-photo-viewer
-          .linerNotesManifest=${linerNotesManifest}
-          .lightDomHook=${this}
-          baseHost="archive.org"
-          .itemIdentifier=${itemId}
-          .itemMD=${itemMD}
-          ?signedIn=${this.signedIn}
-          .looseImages=${[]}
-          ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
-          @fullscreenOpened=${() => {
-            console.log('THIS FS OPENED ', this.scrollHeight);
+        ${this.photoDisplay === 'looseImages'
+          ? html`<iaux-photo-viewer
+              .lightDomHook=${this}
+              ?signedIn=${this.signedIn}
+              baseHost="archive.org"
+              ?showLinerNotes=${true}
+              @fullscreenOpened=${() => {
+                console.log('THIS FS OPENED ', this.scrollHeight);
 
-            this.style.setProperty(
-              '--linerNotesFullscreenHeight',
-              `${Math.round(window.innerHeight)}px`
-            );
-            setTimeout(() => {
-              this.scrollIntoView();
-            }, 0);
-          }}
-          @coverImageLoaded=${(
-            e: CustomEvent<Record<'height' | 'width', number>>
-          ) => {
-            const { height } = e.detail;
-            document.body.removeAttribute('--brInTheaterHeight');
-            document.body.style.setProperty(
-              '--brInTheaterHeight',
-              `${height}px`
-            );
-          }}
-          ><div slot="main">
-            <slot name="main"><p>Placeholder text</p></slot>
-          </div></iaux-photo-viewer
-        >
+                this.style.setProperty(
+                  '--linerNotesFullscreenHeight',
+                  `${Math.round(window.innerHeight)}px`
+                );
+                setTimeout(() => {
+                  this.scrollIntoView();
+                }, 0);
+              }}
+              @coverImageLoaded=${(
+                e: CustomEvent<Record<'height' | 'width', number>>
+              ) => {
+                const { height } = e.detail;
+                document.body.removeAttribute('--brInTheaterHeight');
+                document.body.style.setProperty(
+                  '--brInTheaterHeight',
+                  `${height}px`
+                );
+              }}
+              ><div slot="main">
+                <slot name="main"><p>Placeholder text</p></slot>
+              </div></iaux-photo-viewer
+            >`
+          : html`<iaux-photo-viewer
+              .linerNotesManifest=${linerNotesManifest}
+              .lightDomHook=${this}
+              baseHost="archive.org"
+              .itemIdentifier=${itemId}
+              .itemMD=${itemMD}
+              ?signedIn=${this.signedIn}
+              ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
+              @fullscreenOpened=${() => {
+                console.log('THIS FS OPENED ', this.scrollHeight);
+
+                this.style.setProperty(
+                  '--linerNotesFullscreenHeight',
+                  `${Math.round(window.innerHeight)}px`
+                );
+                setTimeout(() => {
+                  this.scrollIntoView();
+                }, 0);
+              }}
+              @coverImageLoaded=${(
+                e: CustomEvent<Record<'height' | 'width', number>>
+              ) => {
+                const { height } = e.detail;
+                document.body.removeAttribute('--brInTheaterHeight');
+                document.body.style.setProperty(
+                  '--brInTheaterHeight',
+                  `${height}px`
+                );
+              }}
+              ><div slot="main">
+                <slot name="main"><p>Placeholder text</p></slot>
+              </div></iaux-photo-viewer
+            > `}
       </section>
     `;
   }

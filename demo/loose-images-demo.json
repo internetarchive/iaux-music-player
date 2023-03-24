@@ -1,0 +1,41 @@
+{
+  "item": {
+    "identifier":  "paf2023-03-11.aud-mtx.sos.ford.flac24",
+    "title": "Phil Lesh and Friends Live at The Salt Shed on 2023-03-11"
+  },
+  "baseHost": "archive.org",
+  "image_filenames": [
+    "/paf2023-03-11.archive-image.jpg",
+    "/paf2023-03-11.image01.jpg",
+    "/paf2023-03-11.image02.jpg",
+    "/paf2023-03-11.image03.jpg",
+    "/paf2023-03-11.image04.jpg"
+  ],
+  "metadata": {
+    "result": {
+      "identifier": "paf2023-03-11.aud-mtx.sos.ford.flac24",
+      "mediatype": "etree",
+      "collection": [
+        "PhilLeshandFriends",
+        "etree"
+      ],
+      "coverage": "Chicago, IL",
+      "creator": "Phil Lesh and Friends",
+      "date": "2023-03-11",
+      "description": "Phil Lesh And Friends<br />The Salt Shed<br />Chicago, Illinois<br />3/11/2023 - Saturday<br /><br />Source: AUD-MTX; AKG63 Naiant actives &gt; MixPre-10T<br />\u00a0\u00a0 \u00a0\u00a0\u00a0 \u00a0Franken Nak 701 &gt; MixPre-10T<br /><br />Location: within venue's OTS, 10' tall stand, 90' to stage<br /><br />Lineage: .wav @24/48&gt; WaveLab 11&gt; xAct&gt; flac24 <br /><br />Taper: sos<br />Mixed and mastered by Alex Ford<br /><br />***24/48 fileset***<br /><br />1st Set <br /><br />01. crowd/Jam &gt;<br />02. Dear Mr. Fantasy &gt;<br />03. Playin' In The Band <br />04. Jack Straw <br />05. She Said She Said<br />06. Bird Song<br />07. Liberty<br />08. Brokedown Palace<br /><br />2nd Set<br /><br />01. crowd<br />02. Jam &gt;<br />03. Dark Star &gt;<br />04. China Cat Sunflower &gt;<br />05. Space Jam &gt;<br />06. Wharf Rat &gt;<br />07. See Things Through &gt;<br />08. Dark Star &gt;<br />09. Jam &gt;<br />10. Terrapin Station &gt;<br />11. *Jack Of Roses<br />12. Stella Blue <br />13. Unbroken Chain <br /><br />Encore:<br />14. Phil Donor Rap<br />15. Band Introductions<br />16. Touch Of Grey<br /><br />* With Terrapin Station Jam \u00a0<br /><br />Phil Lesh - Bass, Vocals<br />Warren Haynes - Guitar, Vocals<br />Grahame Lesh - Guitar, Vocals <br />Jason Crosby - Keyboards, Vocals <br />Natalie Cressman - Trombone, Vocals<br />Jennifer Hartswick - Trumpet, Vocals<br />James Casey - Saxophone, Vocals<br />John Molo - Drums<br />",
+      "lineage": ".wav @24/48> WaveLab 11> xAct> flac24",
+      "scanner": "Internet Archive HTML5 Uploader 1.7.0",
+      "source": "AUD-MTX; AKG63 Naiant actives > MixPre-10T, Franken Nak 701 > MixPre-10",
+      "subject": "Live concert; Phil Lesh and Friends; 24bit; sos; Alex Ford",
+      "taper": "sos",
+      "title": "Phil Lesh and Friends Live at The Salt Shed on 2023-03-11",
+      "transferer": "Mixed and mastered by Alex Ford",
+      "type": "sound",
+      "venue": "The Salt Shed",
+      "year": "2023",
+      "uploader": "albix12@gmail.com",
+      "publicdate": "2023-03-14 01:03:44",
+      "addeddate": "2023-03-14 01:03:44"
+    }
+  }
+}
