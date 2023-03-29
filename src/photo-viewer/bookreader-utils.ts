@@ -153,10 +153,7 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
 async function fetchImageInfo(src: string) {
   const x = await new Promise((resolve, reject) => {
     const img = new Image();
-    img.onload = () => {
-      console.log('BOOOOOP');
-      resolve(img);
-    };
+    img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = src;
   });
@@ -166,7 +163,7 @@ async function fetchImageInfo(src: string) {
 async function getImageData(
   formattedImgInfo: Record<any, any>[]
 ): Promise<Record<any, any>[]> {
-  const newpt: Record<any, any> = [];
+  const updatedImageInfo: Record<any, any>[] = [];
 
   await Promise.all(
     formattedImgInfo.map(async imgInfo => {
@@ -178,16 +175,15 @@ async function getImageData(
         imgEl.width
       );
       const picPosition = formattedImgInfo.indexOf(imgInfo);
-      newpt[picPosition] = {
+      updatedImageInfo[picPosition] = {
         ...imgInfo,
         width: imgEl.width,
         height: imgEl.height,
       };
-      // newpt.push({...imgInfo, width: imgEl.width, height: imgEl.height });
     })
   );
 
-  return newpt as Record<any, any>[];
+  return updatedImageInfo;
 }
 
 export async function generateBookReaderManfest({
@@ -244,26 +240,23 @@ export async function generateBookReaderManfest({
     }
   });
 
-  console.log('~~~~~ XXXXXX', x);
   const brOptions = {
     bookId: itemIdentifier,
     bookPath: `/download/${itemIdentifier}`,
     bookTitle: itemTitle,
     defaults: 'mode/1up',
     dfaultStartLeaf: 0,
-    ppi: 100,
+    ppi: 200,
     data: x,
   };
   const fullOptions = {
     ...brOptions,
     ...bookreaderDefaultOptions(),
-    enableSearch: false,
+    ...{ enableSearch: false },
     plugins: {
       textSelection: { enabled: false },
     },
   };
-
-  console.log('~~~~~ fullOptions', fullOptions);
 
   const data = {
     streamOnly: false,
@@ -277,6 +270,6 @@ export async function generateBookReaderManfest({
     brOptions: fullOptions,
     metadata,
   };
-  console.log('**** MANIFEST _---', manifest);
+  console.log('**** MANIFEST _---', manifest, fullOptions);
   return manifest;
 }

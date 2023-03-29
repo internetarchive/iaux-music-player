@@ -216,6 +216,7 @@ export class IaPhotoViewer extends LitElement {
       setTimeout(() => {
         this.bookreader =
           this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+        console.log('&&&& BR OPTIONS', this.bookreader?.options);
         this.bookreader?.init();
         resolve();
       }, awaitMs);
