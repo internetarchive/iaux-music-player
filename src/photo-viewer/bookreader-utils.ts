@@ -38,8 +38,8 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
   const brOptions = linerNotesManifest.brOptions;
   // core BR must be already loaded
   const fullOptions = {
-    ...brOptions,
     ...bookreaderDefaultOptions(),
+    ...brOptions,
   };
 
   const bookreader = new (window as any).BookReader(fullOptions) as BookReader;
