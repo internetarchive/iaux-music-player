@@ -486,19 +486,17 @@ export class AppRoot extends LitElement {
   async displayLooseImages(): Promise<void> {
     (this.photoViewerEl as unknown as any).prepareLightDomHook();
     // get bookreader element & swap out values
-    const x = await generateBookReaderManfest({
+    const manifest = await generateBookReaderManfest({
       images: defaultLooseImagesData.image_filenames,
       itemIdentifier: defaultLooseImagesData.item.identifier,
       itemTitle: defaultLooseImagesData.item.title,
       baseHost: 'archive.org',
     });
-    console.log('####### generateBookReaderManfest', x);
-    (this.photoViewerEl as unknown as any).linerNotesManifest = x;
-    (this.photoViewerEl as unknown as any).itemMD = x.metadata;
+    console.log('####### generateBookReaderManfest', manifest);
+    (this.photoViewerEl as unknown as any).linerNotesManifest = manifest;
+    (this.photoViewerEl as unknown as any).itemMD = manifest.metadata;
     (this.photoViewerEl as unknown as any).itemIdentifier =
-      x.metadata.identifier;
-
-    // (this.photoViewerEl as any)?.requestUpdate();
+      manifest.metadata.identifier;
   }
 
   get photoViewer(): TemplateResult {
@@ -517,14 +515,6 @@ export class AppRoot extends LitElement {
       default:
         break;
     }
-    console.log(
-      '%%%%%%',
-      this.photoDisplay,
-      linerNotesManifest,
-      itemId,
-      itemMD,
-      '%%%%%%'
-    );
     return html`
       <section id="components">
         <div>
