@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-properties */
 /* eslint-disable prefer-exponentiation-operator */
+/* eslint-disable no-console */
 import type { BookManifest, BookReader } from './interfaces-types';
 
 function bookreaderDefaultOptions(): Object {
