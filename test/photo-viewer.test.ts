@@ -187,18 +187,6 @@ describe('`<iaux-photo-viewer>`', () => {
 
       expect(el.primaryImage).to.be.undefined;
     });
-    // it('from `looseImages` list', async () => {
-    //   const el = await fixture<IaPhotoViewer>(
-    //     html`<iaux-photo-viewer
-    //       .itemIdentifier=${'exampleItemId1234'}
-    //       .looseImages=${['foo.jpg', 'bar.jpg']}
-    //     ></iaux-photo-viewer>`
-    //   );
-    //   expect(el.looseImages.length).to.equal(2);
-    //   expect(el.primaryImage).to.equal(
-    //     'https://archive.org/download/exampleItemId1234/download/exampleItemId1234/foo.jpg'
-    //   );
-    // });
     it('from liner notes manifest', async () => {
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
