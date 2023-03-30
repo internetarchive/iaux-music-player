@@ -19,7 +19,7 @@
     "circular": "madge --circular --extensions ts .",
     "test": "yarn run build && yarn run lint && yarn run circular && wtr --coverage",
     "test:watch": "yarn run build && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wtr --watch\"",
-    "ghpages:build": "rimraf ghpages && yarn run prepare && vite build && cp ./demo/liner-notes-manifest-demo.json ./ghpages/demo && && cp ./demo/loose-images-demo.json ./ghpages/demo",
+    "ghpages:build": "rimraf ghpages && yarn run prepare && vite build && cp ./demo/liner-notes-manifest-demo.json ./ghpages/demo && cp ./demo/loose-images-demo.json ./ghpages/demo",
     "ghpages:publish": "yarn run ghpages:prepare -e $(git branch --show-current)",
     "ghpages:prepare": "yarn run ghpages:build && touch ghpages/.nojekyll && yarn run ghpages:generate",
     "ghpages:generate": "gh-pages -t -d ghpages -m \"Build for $(git log --pretty=format:\"%h %an %ai %s\" -n1) [skip ci]\""
