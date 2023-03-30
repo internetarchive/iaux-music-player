@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-properties */
 /* eslint-disable prefer-exponentiation-operator */
 /* eslint-disable no-console */
+import { BookReaderLeafInfo } from '../interfaces/bookreader-interface';
 import type { BookManifest, BookReader } from './interfaces-types';
 
 function bookreaderDefaultOptions(): Object {
   return {
-    // "ppi": "600",
     el: '#BookReader',
     showToolbar: false,
     onePage: { autofit: 'height' }, // options: auto, width, height
@@ -77,80 +77,6 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
   return bookreader;
 }
 
-/*
-{
-  "width": 2787,
-  "height": 2800,
-  "uri": "https:\/\/ia800103.us.archive.org\/BookReader\/BookReaderImages.php?zip=\/29\/items\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_jp2.zip&file=cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_jp2\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_0000.jp2&id=cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-  "leafNum": 0,
-  "pageType": "Normal",
-  "pageSide": "R"
-}
-
-{
-  "has_image": true,
-  "carousel": {
-    "/paf2023-03-11.archive-image_thumb.jpg": [
-      null,
-      "/paf2023-03-11.archive-image.jpg"
-    ],
-    "/paf2023-03-11.image01_thumb.jpg": [
-      null,
-      "/paf2023-03-11.image01.jpg"
-    ],
-    "/paf2023-03-11.image02_thumb.jpg": [
-      null,
-      "/paf2023-03-11.image02.jpg"
-    ],
-    "/paf2023-03-11.image03_thumb.jpg": [
-      null,
-      "/paf2023-03-11.image03.jpg"
-    ],
-    "/paf2023-03-11.image04_thumb.jpg": [
-      null,
-      "/paf2023-03-11.image04.jpg"
-    ]
-  },
-  "image_url": "https: //ia601602.us.archive.org/26/items/paf2023-03-11.aud-mtx.sos.ford.flac24/paf2023-03-11.archive-image.jpg?cnt=0",
-  "image_filenames": [
-    "/paf2023-03-11.archive-image.jpg",
-    "/paf2023-03-11.image01.jpg",
-    "/paf2023-03-11.image02.jpg",
-    "/paf2023-03-11.image03.jpg",
-    "/paf2023-03-11.image04.jpg"
-  ]
-}
-
-
-  "brOptions": {
-    "bookId": "cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-    "bookPath": "\/29\/items\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-    "imageFormat": "jp2",
-    "server": "ia800103.us.archive.org",
-    "subPrefix": "cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-    "zip": "\/29\/items\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera_jp2.zip",
-    "bookTitle": "Hanna-Barbera Cartoon Sound Fx",
-    "defaults": "mode\/1up",
-    "ppi": "600",
-    "defaultStartLeaf": 0,
-    "pageProgression": "lr",
-    "vars": {
-      "bookId": "cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-      "bookPath": "\/29\/items\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera\/cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera",
-      "server": "ia800103.us.archive.org",
-      "subPrefix": "cd_hanna-barbera-cartoon-sound-fx_william-hanna-joseph-barbera"
-    },
-    "plugins": {
-      "textSelection": {
-        "enabled": false
-      }
-    },
-    "data": []
-  },
-
-
-*/
-
 async function fetchImageInfo(src: string) {
   const x = await new Promise((resolve, reject) => {
     const img = new Image();
@@ -168,7 +94,12 @@ async function getImageData(
 
   await Promise.all(
     formattedImgInfo.map(async imgInfo => {
-      const imgEl = (await fetchImageInfo(imgInfo.uri)) as HTMLImageElement;
+      let imgEl;
+      try {
+        imgEl = (await fetchImageInfo(imgInfo.uri)) as HTMLImageElement;
+      } catch (e) {
+        imgEl = new Image(300, 300);
+      }
       console.log(
         '^^^^^^^^^^^^^^ FETCH IMAGE ~~~~~~~',
         imgEl,
@@ -193,18 +124,12 @@ export async function generateBookReaderManfest({
   itemTitle = '',
   baseHost = 'archive.org',
 }): Promise<Record<any, any>> {
-  const metadata = (
-    (await fetch(
-      `https://${baseHost}/metadata/${itemIdentifier}/metadata`
-    ).then(res => res.json())) as any
-  ).result;
-  console.log(
-    '~~~~~ generateBookReaderManfest',
-    images,
-    itemIdentifier,
-    itemTitle,
-    baseHost
-  );
+  const metadata =
+    (
+      (await fetch(
+        `https://${baseHost}/metadata/${itemIdentifier}/metadata`
+      ).then(res => res.json())) as any
+    ).result || {};
 
   const formatted = images.map(
     (imgPath: string, index: number): Record<any, any> => {
@@ -219,25 +144,24 @@ export async function generateBookReaderManfest({
       };
     }
   );
-  console.log('~~~~~ formattedformatted', formatted);
 
-  const formattedWithImageData = await getImageData(formatted);
-
-  const x: Record<any, any>[][] = [];
-
+  const formattedWithImageData = (await getImageData(
+    formatted
+  )) as BookReaderLeafInfo[];
+  const spread: BookReaderLeafInfo[][] = [];
   formattedWithImageData.forEach((page, index) => {
     if (index === 0) {
-      x.push([page]);
+      spread.push([page]);
       return;
     }
 
     if (index % 2 === 1) {
-      x.push([page]);
+      spread.push([page]);
       return;
     }
 
     if (index % 2 === 0) {
-      x[x.length - 1].push(page);
+      spread[spread.length - 1].push(page);
     }
   });
 
@@ -248,7 +172,7 @@ export async function generateBookReaderManfest({
     defaults: 'mode/1up',
     dfaultStartLeaf: 0,
     ppi: 200,
-    data: x,
+    data: spread,
   };
   const fullOptions = {
     ...brOptions,

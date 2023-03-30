@@ -105,7 +105,6 @@ export class IaPhotoViewer extends LitElement {
     if (this.linerNotesManifest) {
       const firstImageInfo =
         this.linerNotesManifest.brOptions.data?.flat()[0] as BRImageInfo;
-      console.log('firstImageInfofirstImageInfofirstImageInfo', firstImageInfo);
       return (firstImageInfo?.uri as string) || undefined;
     }
 
