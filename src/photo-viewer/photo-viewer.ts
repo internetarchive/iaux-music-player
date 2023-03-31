@@ -36,6 +36,8 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
 
+  @property({ type: Boolean }) noImageAvailable: boolean = false;
+
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
 
@@ -65,26 +67,26 @@ export class IaPhotoViewer extends LitElement {
 
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
-    if (this.linerNotesManifest) {
+    if (this.noImageAvailable) {
       return html`
-        <div
-          class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
-            this.fullscreenActive ? 'fullscreenActive' : ''
-          }`}
-        >
-          <div class="flip-card-inner">
-            <div class="flip-card-front">${this.photoAlbumCover}</div>
-            <div class="flip-card-back">${this.linerNotesView}</div>
-          </div>
+        <div class="no-images">
+          <iamusic-noimage .iaIdentifier=${this.itemIdentifier}
+            >no image available</iamusic-noimage
+          >
         </div>
       `;
     }
 
     return html`
-      <div class="no-images">
-        <iamusic-noimage .iaIdentifier=${this.itemIdentifier}
-          >no image available</iamusic-noimage
-        >
+      <div
+        class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
+          this.fullscreenActive ? 'fullscreenActive' : ''
+        }`}
+      >
+        <div class="flip-card-inner">
+          <div class="flip-card-front">${this.photoAlbumCover}</div>
+          <div class="flip-card-back">${this.linerNotesView}</div>
+        </div>
       </div>
     `;
   }

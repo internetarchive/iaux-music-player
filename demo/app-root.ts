@@ -598,6 +598,7 @@ export class AppRoot extends LitElement {
                   `${height}px`
                 );
               }}
+              ?noImageAvailable=${this.photoDisplay === 'noData'}
               ><div slot="main">
                 <slot name="main"><p>Placeholder text</p></slot>
               </div></iaux-photo-viewer
