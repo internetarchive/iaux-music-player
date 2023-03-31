@@ -1146,7 +1146,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
           <h2>on change: ${this.selectedByDropdown}</h2>
         </section>
       </section>
-    `}async displayLooseImages(){this.photoViewerEl.prepareLightDomHook();const e=await ti({images:ne.image_filenames,itemIdentifier:ne.item.identifier,itemTitle:ne.item.title,baseHost:"archive.org"});console.log("####### generateBookReaderManfest",e),this.photoViewerEl.linerNotesManifest=e,this.photoViewerEl.itemMD=e.metadata,this.photoViewerEl.itemIdentifier=e.metadata.identifier}get photoViewer(){var e;let t,i,o;switch(this.photoDisplay){case"noData":i="foo-data-12345-ddd";break;case"linerNotes":this.photoDisplay==="linerNotes"&&(t=At,i=(e=t?.metadata)===null||e===void 0?void 0:e.identifier,o=t?.metadata);break}return h`
+    `}async displayLooseImages(){this.photoViewerEl.prepareLightDomHook();const e=await ti({images:ne.image_filenames,itemIdentifier:ne.item.identifier,itemTitle:ne.item.title,baseHost:"archive.org"});console.log("####### generateBookReaderManifest",e),this.photoViewerEl.linerNotesManifest=e,this.photoViewerEl.itemMD=e.metadata,this.photoViewerEl.itemIdentifier=e.metadata.identifier}get photoViewer(){var e;let t,i,o;switch(this.photoDisplay){case"noData":i="foo-data-12345-ddd";break;case"linerNotes":this.photoDisplay==="linerNotes"&&(t=At,i=(e=t?.metadata)===null||e===void 0?void 0:e.identifier,o=t?.metadata);break}return h`
       <section id="components">
         <div>
           <h3>Various Views</h3>
