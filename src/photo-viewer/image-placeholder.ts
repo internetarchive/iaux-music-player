@@ -36,8 +36,8 @@ export class IaMusicImagePlaceholder extends LitElement {
     ia-icon-audio {
       margin: auto;
       display: block;
-      height: 100%;
-      width: 100%;
+      height: var(--imageHeight, 100%);
+      width: var(--imageWidth, 100%);
     }
     :host {
       height: 100%;
