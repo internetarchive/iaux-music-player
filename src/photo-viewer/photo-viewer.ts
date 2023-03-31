@@ -28,8 +28,6 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Object }) itemMD?: IaItemMetadata;
 
-  @property({ type: Array }) looseImages: string[] = [];
-
   @property({ type: Object }) linerNotesManifest?: BookManifest;
 
   @property({ type: Object }) bookreader?: BookReader;
