@@ -63,21 +63,10 @@ export class IaPhotoViewer extends LitElement {
     if (changed.has('showAllPhotos') && this.showAllPhotos) {
       this.initBr(500);
     }
-
-    // if (changed.has('looseImages') && this.looseImages?.length) {
-    //   this.loadImages();
-    // }
   }
 
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
-    // if (this.looseImages?.length === 1) {
-    //   return html`<img
-    //     src=${`${this.imageBaseUrl}${this.looseImages[0]}`}
-    //     alt=${`Main image for ${this.itemIdentifier}`}
-    //   />`;
-    // }
-
     if (this.linerNotesManifest) {
       return html`
         <div
@@ -115,13 +104,9 @@ export class IaPhotoViewer extends LitElement {
   get primaryImage(): string | undefined {
     if (this.linerNotesManifest) {
       const firstImageInfo =
-        this.linerNotesManifest.brOptions.data.flat()[0] as BRImageInfo;
-      return firstImageInfo.uri as string;
+        this.linerNotesManifest.brOptions.data?.flat()[0] as BRImageInfo;
+      return (firstImageInfo?.uri as string) || undefined;
     }
-
-    // if (this.looseImages?.length) {
-    //   return `${this.imageBaseUrl}/download/${this.itemIdentifier}/${this.looseImages[0]}`;
-    // }
 
     return undefined;
   }
@@ -182,9 +167,6 @@ export class IaPhotoViewer extends LitElement {
     `;
   }
 
-  // eslint-disable-next-line no-empty-function
-  async loadImages(): Promise<void> {}
-
   /* -- BookReader -- */
   handleBrPostInit(e: Event): void {
     // final instance - let's pin
@@ -228,10 +210,12 @@ export class IaPhotoViewer extends LitElement {
   }
 
   async initBr(awaitMs = 0): Promise<void> {
+    console.log('&&&& INIT BR');
     await new Promise<void>((resolve): void => {
       setTimeout(() => {
         this.bookreader =
           this.linerNotesManifest && loadBookReader(this.linerNotesManifest);
+        console.log('&&&& BR OPTIONS', this.bookreader?.options);
         this.bookreader?.init();
         resolve();
       }, awaitMs);

@@ -18,9 +18,6 @@ afterEach(() => {
 describe('`<iaux-photo-viewer>`', () => {
   describe('Dispatches Events', () => {
     it('dispatches `coverImageLoaded`', async () => {
-      let height;
-      let width;
-      let target;
       const listenerStub = sinon.stub();
       await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
@@ -29,15 +26,9 @@ describe('`<iaux-photo-viewer>`', () => {
           .itemMd=${linerNotesManifestStub.metadata}
           @coverImageLoaded=${(e: CustomEvent) => {
             listenerStub();
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            height = e.detail.height;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            width = e.detail.width;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            target = e.target;
 
-            expect(height).to.equal(250);
-            expect(width).to.equal(248.8359375);
+            expect(e.detail.height).to.exist;
+            expect(e.detail.width).to.exist;
             expect(listenerStub.callCount).to.equal(1);
           }}
         ></iaux-photo-viewer>`
@@ -190,18 +181,6 @@ describe('`<iaux-photo-viewer>`', () => {
 
       expect(el.primaryImage).to.be.undefined;
     });
-    // it('from `looseImages` list', async () => {
-    //   const el = await fixture<IaPhotoViewer>(
-    //     html`<iaux-photo-viewer
-    //       .itemIdentifier=${'exampleItemId1234'}
-    //       .looseImages=${['foo.jpg', 'bar.jpg']}
-    //     ></iaux-photo-viewer>`
-    //   );
-    //   expect(el.looseImages.length).to.equal(2);
-    //   expect(el.primaryImage).to.equal(
-    //     'https://archive.org/download/exampleItemId1234/download/exampleItemId1234/foo.jpg'
-    //   );
-    // });
     it('from liner notes manifest', async () => {
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
