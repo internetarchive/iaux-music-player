@@ -12,7 +12,7 @@ import '../src/players/spotify-player';
 import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
-import { generateBookReaderManfest } from '../src/photo-viewer/bookreader-utils';
+import { generateBookReaderManifest } from '../src/photo-viewer/bookreader-utils';
 
 await import(
   'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/jquery-3.js' as any
@@ -486,13 +486,13 @@ export class AppRoot extends LitElement {
   async displayLooseImages(): Promise<void> {
     (this.photoViewerEl as unknown as any).prepareLightDomHook();
     // get bookreader element & swap out values
-    const manifest = await generateBookReaderManfest({
+    const manifest = await generateBookReaderManifest({
       images: defaultLooseImagesData.image_filenames,
       itemIdentifier: defaultLooseImagesData.item.identifier,
       itemTitle: defaultLooseImagesData.item.title,
       baseHost: 'archive.org',
     });
-    console.log('####### generateBookReaderManfest', manifest);
+    console.log('####### generateBookReaderManifest', manifest);
     (this.photoViewerEl as unknown as any).linerNotesManifest = manifest;
     (this.photoViewerEl as unknown as any).itemMD = manifest.metadata;
     (this.photoViewerEl as unknown as any).itemIdentifier =

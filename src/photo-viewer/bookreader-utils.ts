@@ -118,7 +118,7 @@ async function getImageData(
   return updatedImageInfo;
 }
 
-export async function generateBookReaderManfest({
+export async function generateBookReaderManifest({
   images = [],
   itemIdentifier = '',
   itemTitle = '',
