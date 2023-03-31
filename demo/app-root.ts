@@ -538,6 +538,12 @@ export class AppRoot extends LitElement {
           </button>
         </div>
         <br />
+        ${this.photoDisplay === 'noData'
+          ? html`<iaux-photo-viewer
+              noimageavailable
+              .iaIdentifer=${'foo-id'}
+            ></iaux-photo-viewer>`
+          : nothing}
         ${this.photoDisplay === 'looseImages'
           ? html`<iaux-photo-viewer
               .lightDomHook=${this}
@@ -598,7 +604,6 @@ export class AppRoot extends LitElement {
                   `${height}px`
                 );
               }}
-              ?noImageAvailable=${this.photoDisplay === 'noData'}
               ><div slot="main">
                 <slot name="main"><p>Placeholder text</p></slot>
               </div></iaux-photo-viewer

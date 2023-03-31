@@ -36,7 +36,7 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
 
-  @property({ type: Boolean }) noImageAvailable: boolean = false;
+  @property({ type: Boolean, reflect: true }) noImageAvailable: boolean = false;
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
@@ -138,9 +138,9 @@ export class IaPhotoViewer extends LitElement {
 
   get photoAlbumCover(): TemplateResult {
     const displayTitle = this.itemMD?.title ?? this.itemIdentifier;
-    const image =
-      this.primaryImage ??
-      `//${this.baseHost}/services/img/${this.itemIdentifier}`;
+    const image = this.primaryImage
+      ? this.primaryImage
+      : `//${this.baseHost}/services/img/${this.itemIdentifier}`;
     return html`
       <div class="cover-art">
         <button
