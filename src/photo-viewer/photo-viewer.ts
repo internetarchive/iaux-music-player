@@ -3,7 +3,6 @@
 /* eslint-disable no-restricted-properties */
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import '@internetarchive/icon-audio';
 import '@internetarchive/icon-close-circle';
 import '@internetarchive/icon-texts';
 
@@ -14,6 +13,7 @@ import {
   IaItemMetadata,
 } from './interfaces-types';
 import { loadBookReader } from './bookreader-utils';
+import './image-placeholder';
 
 @customElement('iaux-photo-viewer')
 export class IaPhotoViewer extends LitElement {
@@ -84,7 +84,9 @@ export class IaPhotoViewer extends LitElement {
 
     return html`
       <div class="no-images">
-        <ia-icon-audio></ia-icon-audio>
+        <iamusic-noimage .iaIdentifier=${this.itemIdentifier}
+          >no image available</iamusic-noimage
+        >
       </div>
     `;
   }

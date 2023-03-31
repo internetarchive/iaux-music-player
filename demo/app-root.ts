@@ -505,6 +505,9 @@ export class AppRoot extends LitElement {
     let itemMD;
 
     switch (this.photoDisplay) {
+      case 'noData':
+        itemId = 'foo-data-12345-ddd';
+        break;
       case 'linerNotes':
         if (this.photoDisplay === 'linerNotes') {
           linerNotesManifest = defaultLinerNotesManifest;
