@@ -89,9 +89,9 @@ describe('`<iaux-photo-viewer>`', () => {
     });
   });
   describe('Defaults', () => {
-    it('Displays `<iamusic-noimage>` as default', async () => {
+    it('Displays `<iamusic-noimage>` with attribute flag `noimageavailable`', async () => {
       const el = await fixture<IaPhotoViewer>(
-        html`<iaux-photo-viewer></iaux-photo-viewer>`
+        html`<iaux-photo-viewer noimageavailable></iaux-photo-viewer>`
       );
 
       expect(el.shadowRoot).to.exist;
