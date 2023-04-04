@@ -4,7 +4,7 @@ import '@internetarchive/icon-audio';
 
 @customElement('iamusic-noimage')
 export class IaMusicImagePlaceholder extends LitElement {
-  @property({ type: String, reflect: true }) iaIdentifier = '';
+  @property({ type: String, reflect: true, attribute: true }) iaIdentifier = '';
 
   @property({ type: String, reflect: true }) gradType = '';
 

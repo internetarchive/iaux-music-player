@@ -24,7 +24,8 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Boolean, reflect: true }) signedIn: boolean = false;
 
-  @property({ type: String, reflect: true }) itemIdentifier: string = '';
+  @property({ type: String, reflect: true, attribute: true })
+  itemIdentifier: string = '';
 
   @property({ type: Object }) itemMD?: IaItemMetadata;
 
