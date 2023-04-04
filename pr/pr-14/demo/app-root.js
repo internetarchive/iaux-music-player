@@ -129,7 +129,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       width: 100%;
     }
 
-    *[gradtype='grad0'] {
+    .grad0 {
       background: linear-gradient(
         hsl(340, 80%, 55%),
         hsl(0, 80%, 33%) 35%,
@@ -138,7 +138,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    *[gradtype='grad1'] {
+    .grad1 {
       background: linear-gradient(
         hsl(300, 80%, 55%),
         hsl(330, 80%, 33%) 35%,
@@ -147,7 +147,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    *[gradtype='grad2'] {
+    .grad2 {
       background: linear-gradient(
         hsl(200, 80%, 55%),
         hsl(230, 80%, 33%) 35%,
@@ -156,7 +156,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    *[gradtype='grad3'] {
+    .grad3 {
       background: linear-gradient(
         hsl(160, 80%, 55%),
         hsl(190, 80%, 33%) 35%,
@@ -165,7 +165,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    *[gradtype='grad4'] {
+    .grad4 {
       background: linear-gradient(
         hsl(250, 80%, 55%),
         hsl(280, 80%, 33%) 35%,
@@ -174,7 +174,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    *[gradtype='grad5'] {
+    .grad5 {
       background: linear-gradient(
         hsl(280, 80%, 55%),
         hsl(310, 80%, 33%) 35%,
