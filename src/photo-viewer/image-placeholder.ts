@@ -8,26 +8,43 @@ export class IaMusicImagePlaceholder extends LitElement {
 
   @property({ type: String, reflect: true }) gradType = '';
 
+  updated(changedProperties: Map<string, unknown>): void {
+    if (changedProperties.has('iaIdentifier')) {
+      this.setGradType();
+    }
+  }
+
   private hashStrToInt(str: string): number {
     return str
       .split('')
       .reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
   }
 
-  get hashedIdentifier(): string {
+  setGradType(): void {
+    let gradient = 0;
     if (!this.iaIdentifier) {
       this.gradType = 'grad0';
-      return 'grad0';
+    } else {
+      gradient = this.hashStrToInt(this.iaIdentifier) % 6; // returns 0-5
+      this.gradType = `grad${gradient}`;
     }
-    const gradient = this.hashStrToInt(this.iaIdentifier) % 6; // returns 0-5
-    this.gradType = `grad${gradient}`;
-    return `grad${gradient}`;
+    this.dispatchEvent(
+      new CustomEvent('iaMusicNoImageAvailable', {
+        detail: {
+          gradient,
+          gradType: this.gradType,
+          identifier: this.iaIdentifier,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   override render(): TemplateResult {
     return html`
-      <div class=${`no-image ${this.hashedIdentifier}`}>
-        <ia-icon-audio></ia-icon-audio>
+      <div class="no-image">
+        <ia-icon-audio class=${this.gradType}></ia-icon-audio>
       </div>
     `;
   }
@@ -38,13 +55,14 @@ export class IaMusicImagePlaceholder extends LitElement {
       display: block;
       height: var(--imageHeight, 100%);
       width: var(--imageWidth, 100%);
+      opacity: 0.8;
     }
     :host {
       height: 100%;
       width: 100%;
     }
 
-    :host([gradtype='grad0']) {
+    *[gradtype='grad0'] {
       background: linear-gradient(
         hsl(340, 80%, 55%),
         hsl(0, 80%, 33%) 35%,
@@ -53,7 +71,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    :host([gradtype='grad1']) {
+    *[gradtype='grad1'] {
       background: linear-gradient(
         hsl(300, 80%, 55%),
         hsl(330, 80%, 33%) 35%,
@@ -62,7 +80,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    :host([gradtype='grad2']) {
+    *[gradtype='grad2'] {
       background: linear-gradient(
         hsl(200, 80%, 55%),
         hsl(230, 80%, 33%) 35%,
@@ -71,7 +89,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    :host([gradtype='grad3']) {
+    *[gradtype='grad3'] {
       background: linear-gradient(
         hsl(160, 80%, 55%),
         hsl(190, 80%, 33%) 35%,
@@ -80,7 +98,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    :host([gradtype='grad4']) {
+    *[gradtype='grad4'] {
       background: linear-gradient(
         hsl(250, 80%, 55%),
         hsl(280, 80%, 33%) 35%,
@@ -89,7 +107,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    :host([gradtype='grad5']) {
+    *[gradtype='grad5'] {
       background: linear-gradient(
         hsl(280, 80%, 55%),
         hsl(310, 80%, 33%) 35%,
