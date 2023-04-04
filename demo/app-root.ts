@@ -541,7 +541,7 @@ export class AppRoot extends LitElement {
         ${this.photoDisplay === 'noData'
           ? html`<iaux-photo-viewer
               noimageavailable
-              .iaIdentifer=${'foo-id'}
+              .itemIdentifier=${Math.random().toString(36).slice(2)}
             ></iaux-photo-viewer>`
           : nothing}
         ${this.photoDisplay === 'looseImages'
@@ -750,8 +750,9 @@ export class AppRoot extends LitElement {
     iaux-photo-viewer {
       display: block;
       border: 1px solid red;
-      width: 430px;
-      height: 720px;
+      width: 450px;
+      height: 450px;
+      /* height: 720px; */
     }
   `;
 }
