@@ -1,6 +1,6 @@
 import { expect } from '@open-wc/testing';
 import sinon from 'sinon';
-import { generateBookReaderManfest } from '../src/photo-viewer/bookreader-utils';
+import { generateBookReaderManifest } from '../src/photo-viewer/bookreader-utils';
 
 // mock fetch reference https://gist.github.com/lkrych/ad537915c69f09ad597767655d2b9211
 function jsonOk(body: any) {
@@ -30,9 +30,9 @@ afterEach(() => {
   sinon.restore();
 });
 
-describe('`generateBookReaderManfest`', () => {
+describe('`generateBookReaderManifest`', () => {
   it('creates a BookReader manifest', async () => {
-    const manifest = await generateBookReaderManfest({
+    const manifest = await generateBookReaderManifest({
       images: ['foo1.jpg', 'foo2.jpg', 'foo3.jpg'] as unknown as any,
       itemIdentifier: 'bar-item',
       itemTitle: 'Bar Item',

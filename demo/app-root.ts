@@ -12,7 +12,7 @@ import '../src/players/spotify-player';
 import '../src/players/youtube-player';
 import { Album } from '../src/models/album';
 import { PlaylistTrack } from '../src/models/track';
-import { generateBookReaderManfest } from '../src/photo-viewer/bookreader-utils';
+import { generateBookReaderManifest } from '../src/photo-viewer/bookreader-utils';
 
 await import(
   'https://esm.archive.org/@internetarchive/bookreader@5.0.0-55/BookReader/jquery-3.js' as any
@@ -486,13 +486,13 @@ export class AppRoot extends LitElement {
   async displayLooseImages(): Promise<void> {
     (this.photoViewerEl as unknown as any).prepareLightDomHook();
     // get bookreader element & swap out values
-    const manifest = await generateBookReaderManfest({
+    const manifest = await generateBookReaderManifest({
       images: defaultLooseImagesData.image_filenames,
       itemIdentifier: defaultLooseImagesData.item.identifier,
       itemTitle: defaultLooseImagesData.item.title,
       baseHost: 'archive.org',
     });
-    console.log('####### generateBookReaderManfest', manifest);
+    console.log('####### generateBookReaderManifest', manifest);
     (this.photoViewerEl as unknown as any).linerNotesManifest = manifest;
     (this.photoViewerEl as unknown as any).itemMD = manifest.metadata;
     (this.photoViewerEl as unknown as any).itemIdentifier =
@@ -505,6 +505,9 @@ export class AppRoot extends LitElement {
     let itemMD;
 
     switch (this.photoDisplay) {
+      case 'noData':
+        itemId = 'foo-data-12345-ddd';
+        break;
       case 'linerNotes':
         if (this.photoDisplay === 'linerNotes') {
           linerNotesManifest = defaultLinerNotesManifest;
@@ -535,6 +538,12 @@ export class AppRoot extends LitElement {
           </button>
         </div>
         <br />
+        ${this.photoDisplay === 'noData'
+          ? html`<iaux-photo-viewer
+              noimageavailable
+              .itemIdentifier=${Math.random().toString(36).slice(2)}
+            ></iaux-photo-viewer>`
+          : nothing}
         ${this.photoDisplay === 'looseImages'
           ? html`<iaux-photo-viewer
               .lightDomHook=${this}
@@ -741,8 +750,8 @@ export class AppRoot extends LitElement {
     iaux-photo-viewer {
       display: block;
       border: 1px solid red;
-      width: 430px;
-      height: 720px;
+      width: 450px;
+      height: 450px;
     }
   `;
 }

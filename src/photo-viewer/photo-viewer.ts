@@ -3,7 +3,6 @@
 /* eslint-disable no-restricted-properties */
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import '@internetarchive/icon-audio';
 import '@internetarchive/icon-close-circle';
 import '@internetarchive/icon-texts';
 
@@ -14,6 +13,7 @@ import {
   IaItemMetadata,
 } from './interfaces-types';
 import { loadBookReader } from './bookreader-utils';
+import './image-placeholder';
 
 @customElement('iaux-photo-viewer')
 export class IaPhotoViewer extends LitElement {
@@ -24,11 +24,10 @@ export class IaPhotoViewer extends LitElement {
 
   @property({ type: Boolean, reflect: true }) signedIn: boolean = false;
 
-  @property({ type: String, reflect: true }) itemIdentifier: string = '';
+  @property({ type: String, reflect: true, attribute: true })
+  itemIdentifier: string = '';
 
   @property({ type: Object }) itemMD?: IaItemMetadata;
-
-  @property({ type: Array }) looseImages: string[] = [];
 
   @property({ type: Object }) linerNotesManifest?: BookManifest;
 
@@ -37,6 +36,8 @@ export class IaPhotoViewer extends LitElement {
   @property({ type: Boolean, reflect: true }) fullscreenActive: boolean = false;
 
   @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
+
+  @property({ type: Boolean, reflect: true }) noImageAvailable: boolean = false;
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
@@ -67,24 +68,26 @@ export class IaPhotoViewer extends LitElement {
 
   /** there's an unnamed slot always in use */
   render(): TemplateResult {
-    if (this.linerNotesManifest) {
+    if (this.noImageAvailable) {
       return html`
-        <div
-          class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
-            this.fullscreenActive ? 'fullscreenActive' : ''
-          }`}
-        >
-          <div class="flip-card-inner">
-            <div class="flip-card-front">${this.photoAlbumCover}</div>
-            <div class="flip-card-back">${this.linerNotesView}</div>
-          </div>
+        <div class="no-images">
+          <iamusic-noimage .iaIdentifier=${this.itemIdentifier}
+            >no image available</iamusic-noimage
+          >
         </div>
       `;
     }
 
     return html`
-      <div class="no-images">
-        <ia-icon-audio></ia-icon-audio>
+      <div
+        class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
+          this.fullscreenActive ? 'fullscreenActive' : ''
+        }`}
+      >
+        <div class="flip-card-inner">
+          <div class="flip-card-front">${this.photoAlbumCover}</div>
+          <div class="flip-card-back">${this.linerNotesView}</div>
+        </div>
       </div>
     `;
   }
@@ -136,9 +139,9 @@ export class IaPhotoViewer extends LitElement {
 
   get photoAlbumCover(): TemplateResult {
     const displayTitle = this.itemMD?.title ?? this.itemIdentifier;
-    const image =
-      this.primaryImage ??
-      `//${this.baseHost}/services/img/${this.itemIdentifier}`;
+    const image = this.primaryImage
+      ? this.primaryImage
+      : `//${this.baseHost}/services/img/${this.itemIdentifier}`;
     return html`
       <div class="cover-art">
         <button
