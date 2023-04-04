@@ -129,6 +129,10 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       width: 100%;
     }
 
+    ia-icon-audio {
+      border: 1px solid #fff8;
+    }
+
     ia-icon-audio.grad0 {
       background: linear-gradient(
         hsl(340, 80%, 55%),
