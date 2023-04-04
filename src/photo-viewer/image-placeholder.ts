@@ -62,6 +62,10 @@ export class IaMusicImagePlaceholder extends LitElement {
       width: 100%;
     }
 
+    ia-icon-audio {
+      border: 1px solid #fff8;
+    }
+
     ia-icon-audio.grad0 {
       background: linear-gradient(
         hsl(340, 80%, 55%),
