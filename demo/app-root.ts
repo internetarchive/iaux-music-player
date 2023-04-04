@@ -752,7 +752,6 @@ export class AppRoot extends LitElement {
       border: 1px solid red;
       width: 450px;
       height: 450px;
-      /* height: 720px; */
     }
   `;
 }
