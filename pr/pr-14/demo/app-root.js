@@ -135,15 +135,6 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
 
     ia-icon-audio.grad0 {
       background: linear-gradient(
-        hsl(340, 80%, 55%),
-        hsl(0, 80%, 33%) 35%,
-        hsl(0, 80%, 22%) 70%,
-        hsl(0, 0%, 0%)
-      );
-    }
-
-    ia-icon-audio.grad1 {
-      background: linear-gradient(
         hsl(300, 80%, 55%),
         hsl(330, 80%, 33%) 35%,
         hsl(330, 80%, 22%) 70%,
@@ -151,7 +142,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    ia-icon-audio.grad2 {
+    ia-icon-audio.grad1 {
       background: linear-gradient(
         hsl(200, 80%, 55%),
         hsl(230, 80%, 33%) 35%,
@@ -160,7 +151,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    ia-icon-audio.grad3 {
+    ia-icon-audio.grad2 {
       background: linear-gradient(
         hsl(160, 80%, 55%),
         hsl(190, 80%, 33%) 35%,
@@ -169,7 +160,7 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    ia-icon-audio.grad4 {
+    ia-icon-audio.grad3 {
       background: linear-gradient(
         hsl(250, 80%, 55%),
         hsl(280, 80%, 33%) 35%,
@@ -178,11 +169,20 @@ const Ct=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       );
     }
 
-    ia-icon-audio.grad5 {
+    ia-icon-audio.grad4 {
       background: linear-gradient(
         hsl(280, 80%, 55%),
         hsl(310, 80%, 33%) 35%,
         hsl(310, 80%, 22%) 70%,
+        hsl(0, 0%, 0%)
+      );
+    }
+
+    ia-icon-audio.grad5 {
+      background: linear-gradient(
+        hsl(340, 80%, 55%),
+        hsl(0, 80%, 33%) 35%,
+        hsl(0, 80%, 22%) 70%,
         hsl(0, 0%, 0%)
       );
     }
