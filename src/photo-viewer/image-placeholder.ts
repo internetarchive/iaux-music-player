@@ -62,7 +62,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       width: 100%;
     }
 
-    .grad0 {
+    ia-icon-audio.grad0 {
       background: linear-gradient(
         hsl(340, 80%, 55%),
         hsl(0, 80%, 33%) 35%,
@@ -71,7 +71,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    .grad1 {
+    ia-icon-audio.grad1 {
       background: linear-gradient(
         hsl(300, 80%, 55%),
         hsl(330, 80%, 33%) 35%,
@@ -80,7 +80,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    .grad2 {
+    ia-icon-audio.grad2 {
       background: linear-gradient(
         hsl(200, 80%, 55%),
         hsl(230, 80%, 33%) 35%,
@@ -89,7 +89,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    .grad3 {
+    ia-icon-audio.grad3 {
       background: linear-gradient(
         hsl(160, 80%, 55%),
         hsl(190, 80%, 33%) 35%,
@@ -98,7 +98,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    .grad4 {
+    ia-icon-audio.grad4 {
       background: linear-gradient(
         hsl(250, 80%, 55%),
         hsl(280, 80%, 33%) 35%,
@@ -107,7 +107,7 @@ export class IaMusicImagePlaceholder extends LitElement {
       );
     }
 
-    .grad5 {
+    ia-icon-audio.grad5 {
       background: linear-gradient(
         hsl(280, 80%, 55%),
         hsl(310, 80%, 33%) 35%,
