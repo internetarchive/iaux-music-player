@@ -5,12 +5,12 @@ https://developers.google.com/youtube/player_parameters
 IA youtube urn:
 urn:youtube:p3o5PzqmYik
 */
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 
 @customElement('youtube-player')
 export class YouTubePlayer extends LitElement {
-  @property({ type: String, reflect: true }) iaYouTubeUrn = '';
+  @property({ type: String, reflect: true }) iaUrn = '';
 
   @property({ type: Boolean, reflect: true }) display: boolean = false;
 
@@ -19,20 +19,21 @@ export class YouTubePlayer extends LitElement {
   @query('iframe') iframe!: HTMLIFrameElement;
 
   get youTubeUrl(): string {
-    if (!this.iaYouTubeUrn || !this.iaYouTubeUrn.match(/urn:youtube:/g)) {
+    if (!this.iaUrn || !this.iaUrn.match(/urn:youtube:/g)) {
       return '';
     }
 
-    const youTubeId = this.iaYouTubeUrn.replace(/urn:youtube:/g, '');
+    const youTubeId = this.iaUrn.replace(/urn:youtube:/g, '');
     const youtubeId = youTubeId.replace(/:/g, '/');
     const otherParams = `origin=${this.baseHost}&widgetid=1&autoplay=1&rel=0`;
-    return `https://www.youtube.com/embed/${youtubeId}?${otherParams}`;
+    const finalUrl = `https://www.youtube.com/embed/${youtubeId}?${otherParams}`;
+    return finalUrl;
   }
 
   render() {
     const url = this.youTubeUrl;
     if (!url) {
-      return html`<h3>Invalid YouTube ID: ${this.iaYouTubeUrn}</h3>`;
+      return nothing;
     }
 
     return html`
@@ -40,7 +41,7 @@ export class YouTubePlayer extends LitElement {
         id="embed-iframe"
         src="${url}"
         width="100%"
-        height="180"
+        height="200"
         frameborder="0"
         allowtransparency="true"
         allow="encrypted-media"

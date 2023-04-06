@@ -6,7 +6,7 @@ describe('`<youtube-player>`', () => {
   describe('Defaults', () => {
     it('displays iframe', async () => {
       const el = await fixture<YouTubePlayer>(html`
-        <youtube-player iaYouTubeUrn="urn:youtube:foobar123"></youtube-player>
+        <youtube-player iaUrn="urn:youtube:foobar123"></youtube-player>
       `);
 
       const iframe = el.shadowRoot?.querySelector('iframe');
@@ -18,7 +18,7 @@ describe('`<youtube-player>`', () => {
     });
     it("transforms IA's urn to a YouTube embed URL", async () => {
       const el = await fixture<YouTubePlayer>(html`
-        <youtube-player iaYouTubeUrn="urn:youtube:xyz123"></youtube-player>
+        <youtube-player iaUrn="urn:youtube:xyz123"></youtube-player>
       `);
 
       expect(el.youTubeUrl).to.equal(
@@ -28,12 +28,12 @@ describe('`<youtube-player>`', () => {
       expect(el.youTubeUrl).to.contain('autoplay=1'); // auto plays video after loading
       expect(el.youTubeUrl).to.contain('origin=https://archive.org'); // default origin
     });
-    it('needs: `iaYouTubeUrn`', async () => {
+    it('needs: `iaUrn`', async () => {
       const el = await fixture<YouTubePlayer>(
         html`<youtube-player></youtube-player>`
       );
 
-      expect(el.iaYouTubeUrn).to.be.empty;
+      expect(el.iaUrn).to.be.empty;
 
       const invalidUriPlaceholder = el.shadowRoot?.querySelector('h3');
       expect(invalidUriPlaceholder).to.exist;

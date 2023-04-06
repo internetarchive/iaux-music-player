@@ -8,12 +8,10 @@ describe('`<spotify-player>`', () => {
   describe('Defaults', () => {
     it('displays iframe', async () => {
       const el = await fixture<SpotifyPlayer>(html`
-        <spotify-player
-          iaSpotifyUrn="urn:spotify:album:foobar123"
-        ></spotify-player>
+        <spotify-player iaUrn="urn:spotify:album:foobar123"></spotify-player>
       `);
 
-      el.iaSpotifyUrn = 'urn:spotify:album:foobar123';
+      el.iaUrn = 'urn:spotify:album:foobar123';
       await el.updateComplete;
 
       const iframe = el.shadowRoot?.querySelector('iframe');
@@ -24,21 +22,19 @@ describe('`<spotify-player>`', () => {
     });
     it("transforms IA's urn to a spotify embed URL", async () => {
       const el = await fixture<SpotifyPlayer>(html`
-        <spotify-player
-          iaSpotifyUrn="urn:spotify:playlist:xyz123"
-        ></spotify-player>
+        <spotify-player iaUrn="urn:spotify:playlist:xyz123"></spotify-player>
       `);
 
       expect(el.spotifyUrl).to.equal(
         'https://open.spotify.com/embed/playlist/xyz123'
       );
     });
-    it('needs: `iaSpotifyUrn`', async () => {
+    it('needs: `iaUrn`', async () => {
       const el = await fixture<SpotifyPlayer>(
         html`<spotify-player></spotify-player>`
       );
 
-      expect(el.iaSpotifyUrn).to.be.empty;
+      expect(el.iaUrn).to.be.empty;
 
       const invalidUriPlaceholder = el.shadowRoot?.querySelector('h3');
       expect(invalidUriPlaceholder).to.exist;

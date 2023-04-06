@@ -124,7 +124,8 @@ export class Album {
       orig: '',
       image: '',
       duration: '-- : --',
-      track: '0',
+      track: 0,
+      iaTrackNum: -1,
       sources: [],
     };
 
