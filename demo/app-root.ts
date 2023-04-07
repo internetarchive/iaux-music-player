@@ -10,8 +10,10 @@ import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
 import '../src/players/spotify-player';
 import '../src/players/youtube-player';
+import '../src/players/externalchannels-player';
+
 import { Album } from '../src/models/album';
-import { PlaylistTrack } from '../src/models/track';
+import { PlaylistTrack, Track } from '../src/models/track';
 import { generateBookReaderManifest } from '../src/photo-viewer/bookreader-utils';
 
 await import(
@@ -110,7 +112,7 @@ const albumList = [
 @customElement('app-root')
 export class AppRoot extends LitElement {
   @property({ type: String, reflect: true }) viewToShow: 'components' | 'data' =
-    'components';
+    'data';
 
   @property({ type: String }) selectedByDropdown: channelTypes =
     channelTypes.beta;
@@ -144,6 +146,8 @@ export class AppRoot extends LitElement {
   @query('input#md-search') input!: HTMLInputElement;
 
   @query('iaux-photo-viewer') photoViewerEl!: LitElement;
+
+  @property({ type: Object }) selectedTrack?: Track;
 
   @property({ type: Boolean }) signedIn = false; // shows bookmarks view
 
@@ -180,7 +184,9 @@ export class AppRoot extends LitElement {
     }
 
     if (changed.has('photoDisplay') && this.photoDisplay === 'looseImages') {
-      this.displayLooseImages();
+      if (this.viewToShow === 'components') {
+        this.displayLooseImages();
+      }
     }
   }
 
@@ -192,13 +198,13 @@ export class AppRoot extends LitElement {
   get playerByRadio(): TemplateResult {
     if (this.selectedByRadio === channelTypes.spotify) {
       return html`<spotify-player
-        iAspotifyUrn="urn:spotify:track:6smNPW8bUwL8VbSzgz0CLf"
+        iaUrn="urn:spotify:track:6smNPW8bUwL8VbSzgz0CLf"
       ></spotify-player>`;
     }
 
     if (this.selectedByRadio === channelTypes.youtube) {
       return html`<youtube-player
-        iaYouTubeUrn="urn:youtube:p3o5PzqmYik"
+        iaUrn="urn:youtube:p3o5PzqmYik"
       ></youtube-player>`;
     }
 
@@ -208,13 +214,13 @@ export class AppRoot extends LitElement {
   get playerByDropdown(): TemplateResult {
     if (this.selectedByDropdown === channelTypes.spotify) {
       return html`<spotify-player
-        iAspotifyUrn="urn:spotify:track:6smNPW8bUwL8VbSzgz0CLf"
+        iaUrn="urn:spotify:track:6smNPW8bUwL8VbSzgz0CLf"
       ></spotify-player>`;
     }
 
     if (this.selectedByDropdown === channelTypes.youtube) {
       return html`<youtube-player
-        iaYouTubeUrn="urn:youtube:p3o5PzqmYik"
+        iaUrn="urn:youtube:p3o5PzqmYik"
       ></youtube-player>`;
     }
 
@@ -276,10 +282,7 @@ export class AppRoot extends LitElement {
       ).then(res => res.json());
       this.albumPlaylist = playlist;
       this.albumMd = new MetadataResponse(md);
-      this.album = new Album(
-        this.albumMd as MetadataResponse,
-        this.albumPlaylist as PlaylistTrack[]
-      );
+      this.album = new Album(md, this.albumPlaylist as PlaylistTrack[]);
       (window as any).Album = this.album;
     } catch (e: any) {
       this.errorMsg = e.message;
@@ -298,13 +301,13 @@ export class AppRoot extends LitElement {
 
     const spTrackNums = (
       this.album.spotifyTracks.reduce((acc: (number | string)[], tr) => {
-        acc.push(tr?.track || 'n/a');
+        acc.push(Number.isInteger(tr?.track) ? `${tr?.track}` : 'n/a');
         return acc;
       }, []) as number[]
     ).join(', ');
     const ytTrackNums = (
       this.album.youtubeTracks.reduce((acc: (number | string)[], tr) => {
-        acc.push(tr?.track || 'n/a');
+        acc.push(Number.isInteger(tr?.track) ? `${tr?.track}` : 'n/a');
         return acc;
       }, []) as number[]
     ).join(', ');
@@ -363,9 +366,61 @@ export class AppRoot extends LitElement {
             ><dt>Has Spotify Album?</dt>
             <dd>${this.album.spotifyId ? this.album.spotifyId : 'NO'}</dd></dr
           >
+          <dr
+            ><dt>External channels player component</dt>
+            <dd>
+              <externalchannels-player
+                .selectedChannel=${channelTypes.spotify}
+                .album=${this.album}
+                .selectedTrack=${this.selectedTrack}
+                id="dedicated-spotify-player"
+              ></externalchannels-player>
+              <div>
+                <p>Available Spotify Tracks</p>
+                ${this.album.spotifyTracks.map(
+                  track =>
+                    html`
+                      <button
+                        @click=${() =>
+                          this.displayTrack(track, channelTypes.spotify)}
+                      >
+                        ${track.track} - ${track.title}
+                      </button>
+                    `
+                )}
+              </div>
+              <externalchannels-player
+                .selectedChannel=${channelTypes.youtube}
+                .album=${this.album}
+                id="dedicated-youtube-player"
+                .selectedTrack=${this.selectedTrack}
+              ></externalchannels-player>
+              <div>
+                <p>Available YouTube Tracks</p>
+                ${this.album.youtubeTracks.map(
+                  track =>
+                    html`
+                      <button
+                        @click=${() =>
+                          this.displayTrack(track, channelTypes.youtube)}
+                      >
+                        ${track.track} - ${track.title}
+                      </button>
+                    `
+                )}
+              </div>
+            </dd></dr
+          >
         </dl>
       </section>
     `;
+  }
+
+  displayTrack(track: Track, channelType: channelTypes): void {
+    console.log('Displaying track: ', { track, channelType });
+    // easier to set both players at the same time
+    // should show graceful degradation if selected track is not available
+    this.selectedTrack = track;
   }
 
   get demoClicks(): TemplateResult {
@@ -484,7 +539,7 @@ export class AppRoot extends LitElement {
   }
 
   async displayLooseImages(): Promise<void> {
-    (this.photoViewerEl as unknown as any).prepareLightDomHook();
+    (this.photoViewerEl as unknown as any)?.prepareLightDomHook();
     // get bookreader element & swap out values
     const manifest = await generateBookReaderManifest({
       images: defaultLooseImagesData.image_filenames,
@@ -719,8 +774,8 @@ export class AppRoot extends LitElement {
     #demo-clicks {
       border: 3px solid green;
       padding: 5px;
-      max-height: 200px;
-      overflow-y: auto;
+      max-height: 300px;
+      overflow-y: scroll;
     }
 
     .demo {
