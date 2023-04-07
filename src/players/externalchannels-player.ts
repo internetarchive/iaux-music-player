@@ -10,19 +10,15 @@ import { channelTypes } from '../channel-selector/channels';
 
 @customElement('externalchannels-player')
 export class ExternalChannelsPlayer extends LitElement {
-  @property({ type: String }) selectedChannel: channelTypes | '' = '';
+  @property({ type: String, attribute: true, reflect: true }) selectedChannel:
+    | channelTypes
+    | '' = '';
 
-  @property({ type: Function }) playerApi: any = undefined;
+  @property({ type: Object }) playerApi: any = undefined;
 
   @property({ type: Object }) album?: Album;
 
   @property({ type: Object }) selectedTrack?: Track;
-
-  /* ia player index is -1 */
-  @property({ type: Array }) spotifyTracksIaIndex: number[] = [];
-
-  /* ia player index is -1 */
-  @property({ type: Array }) youtubeTracksIaIndex: number[] = [];
 
   @state()
   currentTrackNum?: number;
@@ -69,37 +65,80 @@ export class ExternalChannelsPlayer extends LitElement {
     );
   }
 
-  onTracklistClickCallback(trackNum: number): void {
-    this.currentTrackNum = trackNum;
+  onTracklistClickCallback(iaTrackNum: number): void {
+    this.currentTrackNum = iaTrackNum + 1;
+    let selectedTrack = this.album?.tracks.find(
+      tr => tr.track === this.currentTrackNum
+    );
+    if (this.selectedChannel === channelTypes.spotify) {
+      const spotifyTrack = this.album?.spotifyTracks.find(
+        tr => tr.track === this.currentTrackNum
+      );
+      selectedTrack = spotifyTrack ?? this.album?.spotifyTracks[0];
+    } else if (this.selectedChannel === channelTypes.youtube) {
+      const ytTrack = this.album?.youtubeTracks.find(
+        tr => tr.track === this.currentTrackNum
+      );
+      selectedTrack = ytTrack ?? this.album?.youtubeTracks[0];
+    }
+
+    this.selectedTrack = selectedTrack;
+    console.log('*** onTracklistClickCallback ** ', {
+      selectedTrack,
+      iaTrackNum,
+      currentTrackNum: this.currentTrackNum,
+    });
   }
 
   updateToSelectedChannel(): void {
     if (this.selectedChannel === 'youtube') {
-      const youtubeTracks = this.album?.youtubeTracks || [];
+      const youtubeTracks = this.album!.youtubeTracks || [];
+      const iaYtTracklist: number[] = [];
       console.log('youtubeTracks', youtubeTracks);
       if (youtubeTracks.length) {
         // set tracklist
         const ytTrackNums = (
-          this.album?.youtubeTracks.reduce((acc: (number | string)[], tr) => {
-            acc.push(Number.isInteger(tr?.track) ? `${tr?.track}` : 'n/a');
+          youtubeTracks.reduce((acc: (number | string)[], tr) => {
+            const trackNum = Number.isInteger(tr!.track)
+              ? `${tr!.track}`
+              : 'n/a';
+            acc.push(trackNum);
+            // side effect while we walk list
+            if (trackNum !== 'n/a') {
+              const iaTrackNum = Number(trackNum) - 1;
+              iaYtTracklist.push(iaTrackNum);
+            }
             return acc;
           }, []) as number[]
         ).join(', ');
-        console.log('ytTrackNums', ytTrackNums);
-        this.playerApi?.headless(ytTrackNums, this.onTracklistClickCallback);
+        console.log('ytTrackNums', { ytTrackNums, iaYtTracklist });
+        this.playerApi?.headless(iaYtTracklist, (iaTrackNumSelected: number) =>
+          this.onTracklistClickCallback(iaTrackNumSelected)
+        );
       }
     } else if (this.selectedChannel === 'spotify') {
       const spotifyTracks = this.album?.spotifyTracks || [];
+      const iaSpTracklist: number[] = [];
       console.log('spotifyTracks', spotifyTracks);
       if (spotifyTracks.length) {
         const spTrackNums = (
           this.album?.spotifyTracks.reduce((acc: (number | string)[], tr) => {
-            acc.push(Number.isInteger(tr?.track) ? `${tr?.track}` : 'n/a');
+            const trackNum = Number.isInteger(tr!.track)
+              ? `${tr!.track}`
+              : 'n/a';
+            acc.push(trackNum);
+            // side effect while we walk list
+            if (trackNum !== 'n/a') {
+              const iaTrackNum = Number(trackNum) - 1;
+              iaSpTracklist.push(iaTrackNum);
+            }
             return acc;
           }, []) as number[]
         ).join(', ');
-        console.log('spTrackNums ------', spTrackNums);
-        this.playerApi?.headless(spTrackNums, this.onTracklistClickCallback);
+        console.log('spTrackNums ------', { spTrackNums, iaSpTracklist });
+        this.playerApi?.headless(iaSpTracklist, (iaTrackNumSelected: number) =>
+          this.onTracklistClickCallback(iaTrackNumSelected)
+        );
       }
     } else {
       (this.playerApi as any)?.headless();
