@@ -30,8 +30,8 @@ export class Album {
 
   item: MetadataResponse;
 
-  constructor(item: MetadataResponse, tracks: PlaylistTrack[]) {
-    this.item = item;
+  constructor(item: Record<any, any>, tracks: PlaylistTrack[]) {
+    this.item = new MetadataResponse(item);
     this.rawPlaylistTracks = tracks;
     this.tracks = tracks;
     this.filterFiles(this.item.files as File[]);
@@ -124,7 +124,8 @@ export class Album {
       orig: '',
       image: '',
       duration: '-- : --',
-      track: '0',
+      track: 0,
+      iaTrackNum: -1,
       sources: [],
     };
 
