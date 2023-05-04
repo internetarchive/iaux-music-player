@@ -91,7 +91,7 @@ describe('`<iaux-photo-viewer>`', () => {
   describe('Defaults', () => {
     it('Displays `<iamusic-noimage>` with attribute flag `noimageavailable`', async () => {
       const el = await fixture<IaPhotoViewer>(
-        html`<iaux-photo-viewer noimageavailable></iaux-photo-viewer>`
+        html`<iaux-photo-viewer noimageavailable ready></iaux-photo-viewer>`
       );
 
       expect(el.shadowRoot).to.exist;
@@ -113,6 +113,7 @@ describe('`<iaux-photo-viewer>`', () => {
     it('starts with album cover button', async () => {
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
+          ready
           .linerNotesManifest=${linerNotesManifestStub}
           .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
           .itemMd=${linerNotesManifestStub.metadata}
@@ -140,6 +141,7 @@ describe('`<iaux-photo-viewer>`', () => {
       const listenerStub = sinon.stub();
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
+          ready
           .linerNotesManifest=${linerNotesManifestStub}
           .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
           .itemMd=${linerNotesManifestStub.metadata}
@@ -191,6 +193,7 @@ describe('`<iaux-photo-viewer>`', () => {
     it('from liner notes manifest', async () => {
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
+          ready
           .linerNotesManifest=${linerNotesManifestStub}
           .itemIdentifier=${linerNotesManifestStub.metadata.identifier}
           .itemMd=${linerNotesManifestStub.metadata}
@@ -205,6 +208,7 @@ describe('`<iaux-photo-viewer>`', () => {
     it('creates an image ur', async () => {
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
+          ready
           .linerNotesManifest=${linerNotesManifestStub}
           .itemIdentifier=${'barIdentifier'}
           .itemMd=${linerNotesManifestStub.metadata}
