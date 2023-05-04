@@ -1,7 +1,14 @@
 /* global: BookReader */
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-properties */
-import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
+import {
+  LitElement,
+  html,
+  TemplateResult,
+  PropertyValues,
+  css,
+  nothing,
+} from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import '@internetarchive/icon-close-circle';
 import '@internetarchive/icon-texts';
@@ -17,6 +24,8 @@ import './image-placeholder';
 
 @customElement('iaux-photo-viewer')
 export class IaPhotoViewer extends LitElement {
+  @property({ type: Boolean, reflect: true }) ready = false;
+
   @property({ type: Boolean, reflect: true }) showAllPhotos = false;
 
   @property({ type: String, attribute: true, reflect: true }) baseHost: string =
@@ -67,7 +76,11 @@ export class IaPhotoViewer extends LitElement {
   }
 
   /** there's an unnamed slot always in use */
-  render(): TemplateResult {
+  render(): TemplateResult | typeof nothing {
+    if (!this.ready) {
+      return nothing;
+    }
+
     if (this.noImageAvailable) {
       return html`
         <div class="no-images">
