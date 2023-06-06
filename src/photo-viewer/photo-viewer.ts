@@ -4,7 +4,6 @@
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import '@internetarchive/icon-close-circle';
-import '@internetarchive/icon-texts';
 
 import {
   BookManifest,
@@ -413,15 +412,16 @@ export class IaPhotoViewer extends LitElement {
     }
     .flip-card #see-more-cta p {
       display: inline-block;
-
       margin: 0;
-      margin-right: 10px;
+      margin-right: 8px;
     }
     .flip-card #see-more-cta svg {
       position: absolute;
       width: 16px;
-      margin-top: -1px;
       margin-left: 0px;
+      top: 0;
+      right: 8px;
+      margin-top: -2px;
     }
     .flip-card #see-more-cta .fill-color {
       fill: white;
