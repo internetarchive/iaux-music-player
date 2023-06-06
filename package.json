@@ -29,7 +29,6 @@
     "@internetarchive/ia-dropdown": "1.0.5",
     "@internetarchive/icon-audio": "^1.3.4",
     "@internetarchive/icon-close-circle": "^1.3.5",
-    "@internetarchive/icon-texts": "^1.3.4",
     "@internetarchive/search-service": "0.3.4",
     "lit": "^2.5.0",
     "typescript-memoize": "^1.1.0"
