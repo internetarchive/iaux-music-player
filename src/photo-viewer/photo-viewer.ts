@@ -169,11 +169,8 @@ export class IaPhotoViewer extends LitElement {
             }}
           />
           <span class="sr-only">See all photos for ${displayTitle}</span>
-          
           <div id="see-more-cta">
             <p><span>See more</span> <span>${SeeMoreIcon}</span></p>
-          </div>
-
           </div>
         </button>
       </div>

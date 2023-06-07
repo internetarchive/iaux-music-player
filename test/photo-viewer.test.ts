@@ -128,7 +128,7 @@ describe('`<iaux-photo-viewer>`', () => {
       expect(
         el.shadowRoot
           ?.querySelector('button.click-for-photos')
-          ?.querySelector('ia-icon-texts')
+          ?.querySelector('#see-more-cta')
       ).to.exist;
       expect(
         el.shadowRoot
