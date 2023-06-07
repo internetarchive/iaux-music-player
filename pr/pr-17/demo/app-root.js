@@ -222,11 +222,8 @@ const Tt=function(){const e=document.createElement("link").relList;if(e&&e.suppo
             @load=${s=>{const a=s.target,{width:d,height:n}=a.getBoundingClientRect();this.dispatchEvent(new CustomEvent("coverImageLoaded",{detail:{width:d,height:n,target:a}}))}}
           />
           <span class="sr-only">See all photos for ${i}</span>
-          
           <div id="see-more-cta">
             <p><span>See more</span> <span>${oi}</span></p>
-          </div>
-
           </div>
         </button>
       </div>
