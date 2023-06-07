@@ -362,7 +362,6 @@ const Tt=function(){const e=document.createElement("link").relList;if(e&&e.suppo
 
     ia-bookreader {
       display: block;
-      /* height: inherit; */
       background-color: transparent;
     }
 
@@ -371,10 +370,8 @@ const Tt=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       font-family: 'Helvetica Neue Bold', Helvetica, Arial, sans-serif;
       font-weight: bold;
       font-size: 14px;
-      color: white;
       align-self: end;
       margin: 0;
-
       position: absolute;
       top: 0;
       right: 0;
@@ -391,6 +388,10 @@ const Tt=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       top: 0;
       right: 0;
       margin-top: -2px;
+    }
+
+    .flip-card #see-more-cta {
+      color: white;
     }
     .flip-card #see-more-cta .fill-color {
       fill: white;
