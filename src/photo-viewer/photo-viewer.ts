@@ -393,7 +393,6 @@ export class IaPhotoViewer extends LitElement {
 
     ia-bookreader {
       display: block;
-      /* height: inherit; */
       background-color: transparent;
     }
 
@@ -402,10 +401,8 @@ export class IaPhotoViewer extends LitElement {
       font-family: 'Helvetica Neue Bold', Helvetica, Arial, sans-serif;
       font-weight: bold;
       font-size: 14px;
-      color: white;
       align-self: end;
       margin: 0;
-
       position: absolute;
       top: 0;
       right: 0;
@@ -422,6 +419,10 @@ export class IaPhotoViewer extends LitElement {
       top: 0;
       right: 0;
       margin-top: -2px;
+    }
+
+    .flip-card #see-more-cta {
+      color: white;
     }
     .flip-card #see-more-cta .fill-color {
       fill: white;
