@@ -277,7 +277,7 @@ const Tt=function(){const e=document.createElement("link").relList;if(e&&e.suppo
       display: flex;
       margin: auto;
       min-height: 30%;
-      min-width: 30%;
+      min-width: 25%;
     }
 
     button.click-for-photos img {
