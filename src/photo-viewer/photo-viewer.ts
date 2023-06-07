@@ -308,7 +308,7 @@ export class IaPhotoViewer extends LitElement {
       display: flex;
       margin: auto;
       min-height: 30%;
-      min-width: 30%;
+      min-width: 25%;
     }
 
     button.click-for-photos img {
