@@ -155,9 +155,6 @@ export class IaPhotoViewer extends LitElement {
             this.togglePhotoViewer();
           }}
         >
-          <div id="see-more-cta">
-            <p>See more ${SeeMoreIcon}</p>
-          </div>
           <img
             src=${image}
             alt=${`primary image for ${displayTitle}`}
@@ -172,6 +169,12 @@ export class IaPhotoViewer extends LitElement {
             }}
           />
           <span class="sr-only">See all photos for ${displayTitle}</span>
+          
+          <div id="see-more-cta">
+            <p><span>See more</span> <span>${SeeMoreIcon}</span></p>
+          </div>
+
+          </div>
         </button>
       </div>
     `;
@@ -306,9 +309,6 @@ export class IaPhotoViewer extends LitElement {
       margin: auto;
       min-height: 30%;
       min-width: 30%;
-      flex-direction: column;
-      height: inherit;
-      align-items: center;
     }
 
     button.click-for-photos img {
@@ -317,9 +317,8 @@ export class IaPhotoViewer extends LitElement {
       object-fit: contain;
       object-position: top;
       max-width: 100%;
-      max-height: 100%;
-      min-height: 250px;
-      margin-top: 0;
+      margin-top: 18px;
+      max-height: calc(var(--linerNotesInTheaterHeight, 100%) - 30px);
     }
 
     button.click-for-photos ia-icon-texts,
@@ -408,19 +407,23 @@ export class IaPhotoViewer extends LitElement {
       font-size: 14px;
       color: white;
       align-self: end;
-      margin-right: 15px;
+      margin: 0;
+
+      position: absolute;
+      top: 0;
+      right: 0;
     }
     .flip-card #see-more-cta p {
       display: inline-block;
       margin: 0;
-      margin-right: 8px;
+      width: 90px;
     }
     .flip-card #see-more-cta svg {
       position: absolute;
       width: 16px;
       margin-left: 0px;
       top: 0;
-      right: 8px;
+      right: 0;
       margin-top: -2px;
     }
     .flip-card #see-more-cta .fill-color {
