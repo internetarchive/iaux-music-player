@@ -112,7 +112,7 @@ const albumList = [
 @customElement('app-root')
 export class AppRoot extends LitElement {
   @property({ type: String, reflect: true }) viewToShow: 'components' | 'data' =
-    'data';
+    'components';
 
   @property({ type: String }) selectedByDropdown: channelTypes =
     channelTypes.beta;
@@ -601,6 +601,7 @@ export class AppRoot extends LitElement {
           : nothing}
         ${this.photoDisplay === 'looseImages'
           ? html`<iaux-photo-viewer
+              .backgroundTheme=${this.bgColor}
               .lightDomHook=${this}
               ?signedIn=${this.signedIn}
               baseHost="archive.org"
@@ -631,6 +632,7 @@ export class AppRoot extends LitElement {
               </div></iaux-photo-viewer
             >`
           : html`<iaux-photo-viewer
+              .backgroundTheme=${this.bgColor}
               .linerNotesManifest=${linerNotesManifest}
               .lightDomHook=${this}
               baseHost="archive.org"

@@ -4,7 +4,6 @@
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import '@internetarchive/icon-close-circle';
-import '@internetarchive/icon-texts';
 
 import {
   BookManifest,
@@ -14,6 +13,8 @@ import {
 } from './interfaces-types';
 import { loadBookReader } from './bookreader-utils';
 import './image-placeholder';
+// eslint-disable-next-line import/no-named-default
+import { default as SeeMoreIcon } from './more-inside-icon';
 
 @customElement('iaux-photo-viewer')
 export class IaPhotoViewer extends LitElement {
@@ -38,6 +39,9 @@ export class IaPhotoViewer extends LitElement {
   @property({ type: Boolean }) reInitBrAtFullscreen: boolean = false;
 
   @property({ type: Boolean, reflect: true }) noImageAvailable: boolean = false;
+
+  @property({ attribute: true, type: String, reflect: true })
+  backgroundTheme: 'light' | 'dark' = 'dark';
 
   /** Element to append BookReader's current light dom to display photo */
   @property({ type: Object }) lightDomHook?: HTMLElement;
@@ -78,11 +82,12 @@ export class IaPhotoViewer extends LitElement {
       `;
     }
 
+    const bgClass = this.backgroundTheme === 'light' ? 'light' : '';
+    const showAllPhotosClass = this.showAllPhotos ? 'show-back' : '';
+    const fullscreenClass = this.fullscreenActive ? 'fullscreenActive' : '';
     return html`
       <div
-        class=${`flip-card ${this.showAllPhotos ? 'show-back' : ''} ${
-          this.fullscreenActive ? 'fullscreenActive' : ''
-        }`}
+        class=${`flip-card ${showAllPhotosClass} ${fullscreenClass} ${bgClass}`}
       >
         <div class="flip-card-inner">
           <div class="flip-card-front">${this.photoAlbumCover}</div>
@@ -163,8 +168,10 @@ export class IaPhotoViewer extends LitElement {
               );
             }}
           />
-          <ia-icon-texts></ia-icon-texts>
           <span class="sr-only">See all photos for ${displayTitle}</span>
+          <div id="see-more-cta">
+            <p><span>See more</span> <span>${SeeMoreIcon}</span></p>
+          </div>
         </button>
       </div>
     `;
@@ -298,7 +305,7 @@ export class IaPhotoViewer extends LitElement {
       display: flex;
       margin: auto;
       min-height: 30%;
-      min-width: 30%;
+      min-width: 25%;
     }
 
     button.click-for-photos img {
@@ -307,9 +314,8 @@ export class IaPhotoViewer extends LitElement {
       object-fit: contain;
       object-position: top;
       max-width: 100%;
-      max-height: 100%;
-      min-height: 250px;
-      margin-top: 0;
+      margin-top: 18px;
+      max-height: calc(var(--linerNotesInTheaterHeight, 100%) - 30px);
     }
 
     button.click-for-photos ia-icon-texts,
@@ -387,8 +393,46 @@ export class IaPhotoViewer extends LitElement {
 
     ia-bookreader {
       display: block;
-      /* height: inherit; */
       background-color: transparent;
+    }
+
+    /* see more cta */
+    .flip-card #see-more-cta {
+      font-family: 'Helvetica Neue Bold', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 14px;
+      align-self: end;
+      margin: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .flip-card #see-more-cta p {
+      display: inline-block;
+      margin: 0;
+      width: 90px;
+    }
+    .flip-card #see-more-cta svg {
+      position: absolute;
+      width: 16px;
+      margin-left: 0px;
+      top: 0;
+      right: 0;
+      margin-top: -2px;
+    }
+
+    .flip-card #see-more-cta {
+      color: white;
+    }
+    .flip-card #see-more-cta .fill-color {
+      fill: white;
+    }
+
+    .flip-card.light #see-more-cta {
+      color: #222;
+    }
+    .flip-card.light #see-more-cta .fill-color {
+      fill: #222;
     }
   `;
 }
