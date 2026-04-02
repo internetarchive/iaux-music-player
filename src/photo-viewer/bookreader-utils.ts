@@ -24,6 +24,8 @@ function bookreaderDefaultOptions(): Object {
     controls: {
       twoPage: { visible: false },
       viewmode: { visible: false },
+      bookLeft: { visible: false },
+      bookRight: { visible: false },
     },
     bookType: 'linerNotes', // bookType: linerNotes, book
   };
