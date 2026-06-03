@@ -62,10 +62,10 @@ export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
   ) => {
     // IA only supports power of 2 reduces
     const brReduce = Math.pow(2, Math.floor(Math.log2(Math.max(1, reduce))));
-    let uri = originalGetPageURI.call(bookreader, index, brReduce, rotate);
-    uri += uri.indexOf('?') > -1 ? '&' : '?';
-    uri = `${uri}scale=${brReduce}&rotate=${rotate}`;
-    return uri;
+    const uri = originalGetPageURI.call(bookreader, index, brReduce, rotate);
+    if (!uri) return uri;
+    const sep = uri.indexOf('?') > -1 ? '&' : '?';
+    return `${uri}${sep}scale=${brReduce}&rotate=${rotate}`;
   };
 
   (window as any).br = bookreader as BookReader;
