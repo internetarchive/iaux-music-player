@@ -1,6 +1,5 @@
 /* global: BookReader */
-/* eslint-disable no-console */
-/* eslint-disable no-restricted-properties */
+
 import { LitElement, html, TemplateResult, PropertyValues, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import '@internetarchive/icon-close-circle';
@@ -13,7 +12,6 @@ import {
 } from './interfaces-types';
 import { loadBookReader } from './bookreader-utils';
 import './image-placeholder';
-// eslint-disable-next-line import/no-named-default
 import { default as SeeMoreIcon } from './more-inside-icon';
 
 @customElement('iaux-photo-viewer')
@@ -49,7 +47,6 @@ export class IaPhotoViewer extends LitElement {
   @query('button.click-for-photos img') coverImage?: HTMLButtonElement;
 
   disconnectedCallback() {
-    // eslint-disable-next-line wc/guard-super-call
     super.disconnectedCallback();
 
     // remove event listeners

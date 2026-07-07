@@ -29,10 +29,7 @@ export type channelSpecs = {
 };
 
 export type optionOnClickCallback =
-  | Event
-  | CustomEvent
-  | optionInterface
-  | undefined;
+  Event | CustomEvent | optionInterface | undefined;
 
 type iconInterface = {
   [key in channelTypes]: TemplateResult;
@@ -160,10 +157,12 @@ export const iaLink = ({
 }: channelSpecs): TemplateResult => {
   const label = samples ? channelLabels.iaSamples : channelLabels.iaPlayer;
   return html`
-    <a href=${href} @click=${() => onClick()}>${iaLabel({
-    label,
-    selected,
-  })}</button>
+    <a href=${href} @click=${() => onClick()}
+      >${iaLabel({
+        label,
+        selected,
+      })}</a
+    >
   `;
 };
 
@@ -181,43 +180,35 @@ export const iaButton = ({
   `;
 };
 
-export const iaBetaButton = ({
-  onClick,
-  selected,
-}: channelSpecs) => html`<button
-  @click=${(x: optionOnClickCallback) => onClick(x)}
-  class="ia-beta"
->
-  ${betaLabel(selected)}
-</button>`;
+export const iaBetaButton = ({ onClick, selected }: channelSpecs) =>
+  html`<button
+    @click=${(x: optionOnClickCallback) => onClick(x)}
+    class="ia-beta"
+  >
+    ${betaLabel(selected)}
+  </button>`;
 
-export const spotifyButton = ({
-  onClick,
-  selected,
-}: channelSpecs) => html`<button
-  @click=${(x: optionOnClickCallback) => onClick(x)}
-  class="sp"
->
-  ${spotifyLabel(selected)}
-</button>`;
+export const spotifyButton = ({ onClick, selected }: channelSpecs) =>
+  html`<button @click=${(x: optionOnClickCallback) => onClick(x)} class="sp">
+    ${spotifyLabel(selected)}
+  </button>`;
 
 export const webampLink = ({ onClick, href, selected }: channelSpecs) => {
   const webampUrl = `${href}?webamp=default`;
   return html`
-    <a href=${webampUrl} @click=${(x: optionOnClickCallback) =>
-    onClick(x)} class="wa">${webampLabel(selected)}</button>
+    <a
+      href=${webampUrl}
+      @click=${(x: optionOnClickCallback) => onClick(x)}
+      class="wa"
+      >${webampLabel(selected)}</a
+    >
   `;
 };
 
-export const youtubeButton = ({
-  onClick,
-  selected,
-}: channelSpecs) => html`<button
-  @click=${(x: optionOnClickCallback) => onClick(x)}
-  class="yt"
->
-  ${youtubeLabel(selected)}
-</button>`;
+export const youtubeButton = ({ onClick, selected }: channelSpecs) =>
+  html`<button @click=${(x: optionOnClickCallback) => onClick(x)} class="yt">
+    ${youtubeLabel(selected)}
+  </button>`;
 
 /** Dropdown options */
 export interface dropdownOptionsInterface extends channelSpecs {

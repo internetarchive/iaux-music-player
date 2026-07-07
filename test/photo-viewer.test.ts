@@ -1,24 +1,26 @@
-import { html, fixture, expect } from '@open-wc/testing';
-import sinon, { SinonStub } from 'sinon';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { html, fixture } from '@open-wc/testing-helpers';
 import type { IaPhotoViewer } from '../src/photo-viewer/photo-viewer';
 import '../src/photo-viewer/photo-viewer';
 import { linerNotesManifestStub } from './utils/liner-notes-stub';
 import { BookReader } from '../src/photo-viewer/interfaces-types';
 import { BookReaderClass } from './utils/bookreader-stub';
 
-beforeEach(() => {
+// The stub stays installed for the whole file: the photo viewer constructs
+// window.BookReader asynchronously, so late constructions from a finished
+// test must still hit the stub class.
+beforeAll(() => {
   (window as any).BookReader = BookReaderClass as unknown as BookReader;
 });
 afterEach(() => {
-  sinon.restore();
-  (window as any).BookReader = undefined;
+  vi.restoreAllMocks();
   (window as any).br = undefined;
 });
 
 describe('`<iaux-photo-viewer>`', () => {
   describe('Dispatches Events', () => {
     it('dispatches `coverImageLoaded`', async () => {
-      const listenerStub = sinon.stub();
+      const listenerStub = vi.fn();
       await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
           .linerNotesManifest=${linerNotesManifestStub}
@@ -29,7 +31,7 @@ describe('`<iaux-photo-viewer>`', () => {
 
             expect(e.detail.height).to.exist;
             expect(e.detail.width).to.exist;
-            expect(listenerStub.callCount).to.equal(1);
+            expect(listenerStub).toHaveBeenCalledTimes(1);
           }}
         ></iaux-photo-viewer>`
       );
@@ -42,26 +44,30 @@ describe('`<iaux-photo-viewer>`', () => {
       );
 
       const mockBr = new BookReaderClass();
-      mockBr.jumpToIndex = sinon.stub();
-      mockBr.resize = sinon.stub();
+      mockBr.jumpToIndex = vi.fn();
+      mockBr.resize = vi.fn();
       const mockPostInitEvent = new CustomEvent('BookReader:PostInit', {
         detail: {
           props: mockBr,
         },
       });
       window.dispatchEvent(mockPostInitEvent);
-      // eslint-disable-next-line no-promise-executor-return
-      await new Promise(resolve => setTimeout(resolve, 1200));
 
-      expect((mockBr.jumpToIndex as SinonStub).callCount).to.equal(1);
-      expect((mockBr.resize as SinonStub).callCount).to.equal(1);
+      // the handler defers these calls behind a 1s setTimeout
+      await vi.waitFor(
+        () => {
+          expect(mockBr.jumpToIndex).toHaveBeenCalledTimes(1);
+          expect(mockBr.resize).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 2500 }
+      );
     });
     describe('listens for `BookReader:fullscreenToggled', () => {
       it('tells us when `fullscreenOpened` or `fullscreenClosed`', async () => {
         const mockBr = new BookReaderClass();
         mockBr.isFullscreen = () => true;
-        const yesFullscreenListener = sinon.stub();
-        const noFullscreenListener = sinon.stub();
+        const yesFullscreenListener = vi.fn();
+        const noFullscreenListener = vi.fn();
         const el = await fixture<IaPhotoViewer>(
           html`<iaux-photo-viewer
             .bookreader=${mockBr}
@@ -76,15 +82,15 @@ describe('`<iaux-photo-viewer>`', () => {
         window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
         await el.updateComplete;
 
-        expect(yesFullscreenListener.callCount).to.equal(1);
-        expect(noFullscreenListener.called).to.be.false;
+        expect(yesFullscreenListener).toHaveBeenCalledTimes(1);
+        expect(noFullscreenListener).not.toHaveBeenCalled();
 
         mockBr.isFullscreen = () => false;
         window.dispatchEvent(new Event('BookReader:fullscreenToggled'));
         await el.updateComplete;
 
-        expect(noFullscreenListener.callCount).to.equal(1);
-        expect(yesFullscreenListener.callCount).to.equal(1);
+        expect(noFullscreenListener).toHaveBeenCalledTimes(1);
+        expect(yesFullscreenListener).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -137,7 +143,7 @@ describe('`<iaux-photo-viewer>`', () => {
       ).to.exist;
     });
     it('Toggling bookreader view', async () => {
-      const listenerStub = sinon.stub();
+      const listenerStub = vi.fn();
       const el = await fixture<IaPhotoViewer>(
         html`<iaux-photo-viewer
           .linerNotesManifest=${linerNotesManifestStub}

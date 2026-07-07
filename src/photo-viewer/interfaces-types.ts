@@ -23,7 +23,7 @@ export type BookManifest = {
   brOptions: {
     data: [[BRImageInfo] | [BRImageInfo, BRImageInfo]];
   };
-  metadata: Object;
+  metadata: object;
 };
 
 export interface BookReader {

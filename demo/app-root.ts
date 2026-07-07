@@ -1,10 +1,6 @@
-/* eslint-disable import/first */
-/* eslint-disable no-return-assign */
-/* eslint-disable no-restricted-globals */
-
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { MetadataResponse } from '@internetarchive/search-service';
+import { MetadataResponse } from '@internetarchive/metadata-service';
 import '../src/photo-viewer/photo-viewer';
 import { channelTypes } from '../src/channel-selector/channels';
 import '../src/channel-selector/channel-selector';
@@ -38,7 +34,7 @@ try {
   await import(
     'https://esm.archive.org/@internetarchive/bookreader@5.0.0-110/src/ia-bookreader/ia-bookreader.js' as any
   );
-} catch (e) {
+} catch {
   // ia-bookreader.js may trigger duplicate custom element registrations
   // from its dependency tree via the CDN; safe to ignore
 }
@@ -157,9 +153,7 @@ export class AppRoot extends LitElement {
   @property({ type: Boolean }) signedIn = false; // shows bookmarks view
 
   @property({ type: String }) photoDisplay:
-    | 'noData'
-    | 'linerNotes'
-    | 'looseImages' = 'looseImages';
+    'noData' | 'linerNotes' | 'looseImages' = 'looseImages';
 
   override firstUpdated(): void {
     if (this.startAtWebamp) {
@@ -242,36 +236,38 @@ export class AppRoot extends LitElement {
           </button>
           <button @click=${() => (this.viewToShow = 'data')}>Data</button>
 
-          ${this.viewToShow === 'data'
-            ? html`<div>
-                <form @submit=${(e: Event) => this.formInputSubmit(e)}>
-                  <label
-                    ><span>Item ID:</span
-                    ><input
-                      id="md-search"
-                      placeholder=""
-                      .value=${this.albumId}
-                  /></label>
-                </form>
-                <button
-                  @click=${() => {
-                    this.albumId = '';
-                    this.album = null;
-                    this.albumMd = null;
-                    this.albumPlaylist = null;
-                    this.errorMsg = '';
-                  }}
-                >
-                  CLEAR
-                </button>
-              </div>`
-            : nothing}
+          ${
+            this.viewToShow === 'data'
+              ? html`<div>
+                  <form @submit=${(e: Event) => this.formInputSubmit(e)}>
+                    <label
+                      ><span>Item ID:</span
+                      ><input
+                        id="md-search"
+                        placeholder=""
+                        .value=${this.albumId}
+                    /></label>
+                  </form>
+                  <button
+                    @click=${() => {
+                      this.albumId = '';
+                      this.album = null;
+                      this.albumMd = null;
+                      this.albumPlaylist = null;
+                      this.errorMsg = '';
+                    }}
+                  >
+                    CLEAR
+                  </button>
+                </div>`
+              : nothing
+          }
         </h1>
         <hr />
         <hr />
-        ${this.viewToShow === 'components'
-          ? this.componentsView
-          : this.dataView}
+        ${
+          this.viewToShow === 'components' ? this.componentsView : this.dataView
+        }
       </section>
     `;
   }
@@ -383,15 +379,14 @@ export class AppRoot extends LitElement {
               <div>
                 <p>Available Spotify Tracks</p>
                 ${this.album.spotifyTracks.map(
-                  track =>
-                    html`
-                      <button
-                        @click=${() =>
-                          this.displayTrack(track, channelTypes.spotify)}
-                      >
-                        ${track.track} - ${track.title}
-                      </button>
-                    `
+                  track => html`
+                    <button
+                      @click=${() =>
+                        this.displayTrack(track, channelTypes.spotify)}
+                    >
+                      ${track.track} - ${track.title}
+                    </button>
+                  `
                 )}
               </div>
               <externalchannels-player
@@ -403,15 +398,14 @@ export class AppRoot extends LitElement {
               <div>
                 <p>Available YouTube Tracks</p>
                 ${this.album.youtubeTracks.map(
-                  track =>
-                    html`
-                      <button
-                        @click=${() =>
-                          this.displayTrack(track, channelTypes.youtube)}
-                      >
-                        ${track.track} - ${track.title}
-                      </button>
-                    `
+                  track => html`
+                    <button
+                      @click=${() =>
+                        this.displayTrack(track, channelTypes.youtube)}
+                    >
+                      ${track.track} - ${track.title}
+                    </button>
+                  `
                 )}
               </div>
             </dd></dr
@@ -452,9 +446,11 @@ export class AppRoot extends LitElement {
       <section id="data">
         <div></div>
         ${this.demoClicks}
-        ${this.errorMsg
-          ? html`<h2 id="error">ERROR: ${this.errorMsg}</h2>`
-          : nothing}
+        ${
+          this.errorMsg
+            ? html`<h2 id="error">ERROR: ${this.errorMsg}</h2>`
+            : nothing
+        }
 
         <h2>
           Info for:
@@ -490,9 +486,9 @@ export class AppRoot extends LitElement {
           youtube
           beta
           samples
-          .selected=${this.startAtWebamp
-            ? channelTypes.webamp
-            : this.selectedByRadio}
+          .selected=${
+            this.startAtWebamp ? channelTypes.webamp : this.selectedByRadio
+          }
           @postInit=${(e: CustomEvent) => {
             this.selectedByRadioOnload = e.detail.channel as channelTypes;
           }}
@@ -524,12 +520,11 @@ export class AppRoot extends LitElement {
             this.selectedByDropdown = e.detail.channel as channelTypes;
           }}
           .selected=${
-            // eslint-disable-next-line no-nested-ternary
             this.startAtWebamp
               ? channelTypes.webamp
               : this.selectedByDropdown
-              ? this.selectedByDropdown
-              : channelTypes.beta
+                ? this.selectedByDropdown
+                : channelTypes.beta
           }
         >
         </channel-selector>
@@ -598,78 +593,82 @@ export class AppRoot extends LitElement {
           </button>
         </div>
         <br />
-        ${this.photoDisplay === 'noData'
-          ? html`<iaux-photo-viewer
-              noimageavailable
-              .itemIdentifier=${Math.random().toString(36).slice(2)}
-            ></iaux-photo-viewer>`
-          : nothing}
-        ${this.photoDisplay === 'looseImages'
-          ? html`<iaux-photo-viewer
-              .backgroundTheme=${this.bgColor}
-              .lightDomHook=${this}
-              ?signedIn=${this.signedIn}
-              baseHost="archive.org"
-              ?showLinerNotes=${true}
-              @fullscreenOpened=${() => {
-                console.log('THIS FS OPENED ', this.scrollHeight);
+        ${
+          this.photoDisplay === 'noData'
+            ? html`<iaux-photo-viewer
+                noimageavailable
+                .itemIdentifier=${Math.random().toString(36).slice(2)}
+              ></iaux-photo-viewer>`
+            : nothing
+        }
+        ${
+          this.photoDisplay === 'looseImages'
+            ? html`<iaux-photo-viewer
+                .backgroundTheme=${this.bgColor}
+                .lightDomHook=${this}
+                ?signedIn=${this.signedIn}
+                baseHost="archive.org"
+                ?showLinerNotes=${true}
+                @fullscreenOpened=${() => {
+                  console.log('THIS FS OPENED ', this.scrollHeight);
 
-                this.style.setProperty(
-                  '--linerNotesFullscreenHeight',
-                  `${Math.round(window.innerHeight)}px`
-                );
-                setTimeout(() => {
-                  this.scrollIntoView();
-                }, 0);
-              }}
-              @coverImageLoaded=${(
-                e: CustomEvent<Record<'height' | 'width', number>>
-              ) => {
-                const { height } = e.detail;
-                document.body.removeAttribute('--brInTheaterHeight');
-                document.body.style.setProperty(
-                  '--brInTheaterHeight',
-                  `${height}px`
-                );
-              }}
-              ><div slot="main">
-                <slot name="main"><p>Placeholder text</p></slot>
-              </div></iaux-photo-viewer
-            >`
-          : html`<iaux-photo-viewer
-              .backgroundTheme=${this.bgColor}
-              .linerNotesManifest=${linerNotesManifest}
-              .lightDomHook=${this}
-              baseHost="archive.org"
-              .itemIdentifier=${itemId}
-              .itemMD=${itemMD}
-              ?signedIn=${this.signedIn}
-              ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
-              @fullscreenOpened=${() => {
-                console.log('THIS FS OPENED ', this.scrollHeight);
+                  this.style.setProperty(
+                    '--linerNotesFullscreenHeight',
+                    `${Math.round(window.innerHeight)}px`
+                  );
+                  setTimeout(() => {
+                    this.scrollIntoView();
+                  }, 0);
+                }}
+                @coverImageLoaded=${(
+                  e: CustomEvent<Record<'height' | 'width', number>>
+                ) => {
+                  const { height } = e.detail;
+                  document.body.removeAttribute('--brInTheaterHeight');
+                  document.body.style.setProperty(
+                    '--brInTheaterHeight',
+                    `${height}px`
+                  );
+                }}
+                ><div slot="main">
+                  <slot name="main"><p>Placeholder text</p></slot>
+                </div></iaux-photo-viewer
+              >`
+            : html`<iaux-photo-viewer
+                .backgroundTheme=${this.bgColor}
+                .linerNotesManifest=${linerNotesManifest}
+                .lightDomHook=${this}
+                baseHost="archive.org"
+                .itemIdentifier=${itemId}
+                .itemMD=${itemMD}
+                ?signedIn=${this.signedIn}
+                ?showLinerNotes=${this.photoDisplay === 'linerNotes'}
+                @fullscreenOpened=${() => {
+                  console.log('THIS FS OPENED ', this.scrollHeight);
 
-                this.style.setProperty(
-                  '--linerNotesFullscreenHeight',
-                  `${Math.round(window.innerHeight)}px`
-                );
-                setTimeout(() => {
-                  this.scrollIntoView();
-                }, 0);
-              }}
-              @coverImageLoaded=${(
-                e: CustomEvent<Record<'height' | 'width', number>>
-              ) => {
-                const { height } = e.detail;
-                document.body.removeAttribute('--brInTheaterHeight');
-                document.body.style.setProperty(
-                  '--brInTheaterHeight',
-                  `${height}px`
-                );
-              }}
-              ><div slot="main">
-                <slot name="main"><p>Placeholder text</p></slot>
-              </div></iaux-photo-viewer
-            > `}
+                  this.style.setProperty(
+                    '--linerNotesFullscreenHeight',
+                    `${Math.round(window.innerHeight)}px`
+                  );
+                  setTimeout(() => {
+                    this.scrollIntoView();
+                  }, 0);
+                }}
+                @coverImageLoaded=${(
+                  e: CustomEvent<Record<'height' | 'width', number>>
+                ) => {
+                  const { height } = e.detail;
+                  document.body.removeAttribute('--brInTheaterHeight');
+                  document.body.style.setProperty(
+                    '--brInTheaterHeight',
+                    `${height}px`
+                  );
+                }}
+                ><div slot="main">
+                  <slot name="main"><p>Placeholder text</p></slot>
+                </div></iaux-photo-viewer
+              > `
+        }
       </section>
     `;
   }

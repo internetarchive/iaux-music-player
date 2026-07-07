@@ -14,21 +14,29 @@ on:
 
 concurrency: preview-${{ github.ref }}
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        if: github.event.action != 'closed'
         with:
-          node-version: 16.x
+          node-version: 22.x
+          cache: npm
 
+      # On close the preview is only torn down, so skip the build
       - name: Install and Build
+        if: github.event.action != 'closed'
         run: |
-          yarn install
-          yarn ghpages:build
+          npm ci
+          npm run ghpages:build
 
       # Reference: https://github.com/rossjrw/pr-preview-action
       - name: Deploy preview
