@@ -8,32 +8,44 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 22.x
+          cache: npm
 
       - name: Install dependencies
-        run: yarn install
-  
+        run: npm ci
+
       - name: Create build files for gh-pages deploy
-        run: yarn ghpages:build
+        run: npm run ghpages:build
 
       # Reference: https://github.com/JamesIves/github-pages-deploy-action
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: ghpages
           clean-exclude: pr/
           force: false
           target-folder: main
-          token: ${{ secrets.GH_TOKEN }}
+
+      # The gh-pages branch root has no index.html of its own, so this keeps
+      # https://internetarchive.github.io/iaux-music-player/ redirecting to
+      # the main demo. clean: false leaves main/ and pr/ untouched.
+      - name: Deploy root redirect 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: .github/gh-pages-root
+          clean: false
+          force: false

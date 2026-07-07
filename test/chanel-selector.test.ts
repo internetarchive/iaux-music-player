@@ -1,5 +1,5 @@
-import { html, fixture, expect } from '@open-wc/testing';
-import sinon from 'sinon';
+import { describe, expect, it, vi } from 'vitest';
+import { html, fixture } from '@open-wc/testing-helpers';
 
 import type { ChannelSelector } from '../src/channel-selector/channel-selector';
 import '../src/channel-selector/channel-selector';
@@ -94,14 +94,14 @@ describe('`<channel-selector>`', () => {
           ></channel-selector>`
         );
 
-        const spy = sinon.spy(el, 'dropdownOptions', ['get']);
+        const spy = vi.spyOn(el, 'dropdownOptions', 'get');
         el.displayStyle = 'dropdown';
         await el.updateComplete;
-        expect(spy.get.called).to.be.true;
+        expect(spy).toHaveBeenCalled();
       });
 
       it('`createDropdownOptions` creates array of possible options', async () => {
-        const onClick = sinon.stub();
+        const onClick = vi.fn();
         const baseConfig: channelSpecs = {
           onClick,
           selected: true,
@@ -265,6 +265,6 @@ describe('`<channel-selector>`', () => {
       html`<channel-selector></channel-selector>`
     );
 
-    await expect(el).shadowDom.to.be.accessible();
+    await expect(el).to.be.accessible();
   });
 });

@@ -1,5 +1,4 @@
-/* eslint-disable no-use-before-define */
-import { File } from '@internetarchive/search-service';
+import { File } from '@internetarchive/iaux-item-metadata';
 
 /**
  * Track
@@ -55,7 +54,7 @@ export class Track extends File implements PlaylistTrack {
   }
 
   override get title(): string {
-    return this._playlistTrack?.title || this?.title || this.name;
+    return this._playlistTrack?.title || super.title || this.name;
   }
 
   get youtubeId(): string {

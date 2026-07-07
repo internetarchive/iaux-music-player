@@ -1,10 +1,7 @@
-/* eslint-disable no-restricted-properties */
-/* eslint-disable prefer-exponentiation-operator */
-/* eslint-disable no-console */
 import { BookReaderLeafInfo } from '../interfaces/bookreader-interface';
 import type { BookManifest, BookReader } from './interfaces-types';
 
-function bookreaderDefaultOptions(): Object {
+function bookreaderDefaultOptions(): object {
   return {
     el: '#BookReader',
     showToolbar: false,
@@ -37,7 +34,7 @@ function bookreaderDefaultOptions(): Object {
 export function loadBookReader(linerNotesManifest: BookManifest): BookReader {
   // fetch manifest
   // debugger;
-  // eslint-disable-next-line prefer-destructuring
+
   const brOptions = linerNotesManifest.brOptions;
   // core BR must be already loaded
   const fullOptions = {
@@ -99,7 +96,7 @@ async function getImageData(
       let imgEl;
       try {
         imgEl = (await fetchImageInfo(imgInfo.uri)) as HTMLImageElement;
-      } catch (e) {
+      } catch {
         imgEl = new Image(300, 300);
       }
       console.log(

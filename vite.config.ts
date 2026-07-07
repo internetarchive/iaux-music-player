@@ -1,10 +1,10 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
-  root: resolve(__dirname, './demo'),
+  root: resolve(import.meta.dirname, './demo'),
   build: {
     target: 'esnext',
     /**
@@ -16,7 +16,7 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'demo/index.html'),
+        main: resolve(import.meta.dirname, 'demo/index.html'),
       },
       output: {
         entryFileNames: 'app-root.js',

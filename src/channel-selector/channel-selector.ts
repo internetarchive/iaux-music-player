@@ -1,4 +1,3 @@
-/* eslint-disable import/no-duplicates */
 import { html, css, LitElement, TemplateResult, nothing } from 'lit';
 import { property, customElement, query } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';

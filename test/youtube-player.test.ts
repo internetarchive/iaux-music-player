@@ -1,4 +1,5 @@
-import { html, fixture, expect } from '@open-wc/testing';
+import { describe, expect, it } from 'vitest';
+import { html, fixture } from '@open-wc/testing-helpers';
 import type { YouTubePlayer } from '../src/players/youtube-player';
 import '../src/players/youtube-player';
 
@@ -42,7 +43,7 @@ describe('`<youtube-player>`', () => {
         html`<youtube-player></youtube-player>`
       );
 
-      await expect(el).shadowDom.to.be.accessible();
+      await expect(el).to.be.accessible();
     });
   });
 });

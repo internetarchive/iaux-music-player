@@ -5,6 +5,8 @@
 A music player made for archive.org detail pages to help unlock and surface what's contained in the music item.
 One can play songs, read liner notes, and see the audio fingerprinting found across various music providers.
 
+Live demo: https://internetarchive.github.io/iaux-music-player/
+
 ### CSS Variables
 `--channel-selector-text-color`
 `--channel-selector-title-color`
@@ -14,49 +16,34 @@ One can play songs, read liner notes, and see the audio fingerprinting found acr
 Currently, we are developing the individual components to compose the main player.
 We will release these components out for consumption to our current players while we wrangle the main view.
 
-## Local Demo with `web-dev-server`
+## Local Demo with Vite
 ```bash
-yarn && yarn start
+npm install && npm start
 ```
 To run a local development server that serves the basic demo located in `demo/index.html`
 
-## Testing with Web Test Runner
-To run the suite of Web Test Runner tests, run
+## Testing with Vitest
+
+Tests run in headless Chromium via Vitest browser mode. To run the full suite (build, lint, circular dependency check, tests with coverage), run
 ```bash
-yarn run test
+npm test
 ```
 
-To run the tests in watch mode (for &lt;abbr title=&#34;test driven development&#34;&gt;TDD&lt;/abbr&gt;, for example), run
+To run the tests in watch mode (for <abbr title="test driven development">TDD</abbr>, for example), run
 
 ```bash
-yarn run test:watch
+npm run test:watch
 ```
 
 ## Linting with ESLint, Prettier, and Types
 To scan the project for linting errors, run
 ```bash
-yarn run lint
-```
-
-You can lint with ESLint and Prettier individually as well
-```bash
-yarn run lint:eslint
-```
-```bash
-yarn run lint:prettier
+npm run lint
 ```
 
 To automatically fix many linting errors, run
 ```bash
-yarn run format
-```
-
-You can format using ESLint and Prettier individually as well
-```bash
-yarn run format:eslint
-```
-```bash
-yarn run format:prettier
+npm run format
 ```
 
 ## Tooling configs

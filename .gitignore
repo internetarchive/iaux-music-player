@@ -20,7 +20,6 @@
 /dist/
 /out-tsc/
 /bookreader/
-
-package-lock.json
+/ghpages/
 
 storybook-static

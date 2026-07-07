@@ -1,20 +1,24 @@
-  {
+{
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2021",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
-    "lib": ["es2017", "dom"],
+    "lib": ["es2021", "dom", "dom.iterable"],
     "strict": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "outDir": "dist",
     "sourceMap": true,
     "inlineSources": true,
     "rootDir": "./",
-    "declaration": true
+    "declaration": true,
+    "plugins": [
+      {
+        "name": "ts-lit-plugin"
+      }
+    ]
   },
   "include": ["**/*.ts"]
 }

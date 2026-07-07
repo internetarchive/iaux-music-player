@@ -11,8 +11,7 @@ import { channelTypes } from '../channel-selector/channels';
 @customElement('externalchannels-player')
 export class ExternalChannelsPlayer extends LitElement {
   @property({ type: String, attribute: true, reflect: true }) selectedChannel:
-    | channelTypes
-    | '' = '';
+    channelTypes | '' = '';
 
   @property({ type: Object }) playerApi: any = undefined;
 

@@ -1,10 +1,5 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable max-classes-per-file */
-import {
-  File,
-  MetadataResponse,
-  StringField,
-} from '@internetarchive/search-service';
+import { File, StringField } from '@internetarchive/iaux-item-metadata';
+import { MetadataResponse } from '@internetarchive/metadata-service';
 import { PlaylistTrack, Spectrogram, Track, TrackDetails } from './track';
 
 /**
@@ -73,7 +68,8 @@ export class Album {
       return [''];
     }
 
-    const exId = this.item.metadata['external-identifier'] as StringField;
+    const exId: StringField | undefined =
+      this.item.metadata.external_identifier;
     return exId?.values?.length ? exId.values : [exId?.value || ''];
   }
 

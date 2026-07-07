@@ -1,5 +1,4 @@
-import { expect } from '@open-wc/testing';
-import sinon from 'sinon';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { generateBookReaderManifest } from '../src/photo-viewer/bookreader-utils';
 
 // mock fetch reference https://gist.github.com/lkrych/ad537915c69f09ad597767655d2b9211
@@ -22,12 +21,16 @@ const MOCK_JSON = {
 
 let stub: any;
 beforeEach(() => {
-  stub = sinon.stub(window, 'fetch'); // add stub
-  stub.onCall(0).returns(jsonOk(MOCK_JSON));
+  // The manifest fetch gets the mock response; the base implementation keeps
+  // any unexpected fetch off the network. Image lookups don't use fetch —
+  // they go through `new Image()` and fall back to a 300x300 placeholder
+  // when the load fails.
+  stub = vi.spyOn(window, 'fetch').mockImplementation(() => undefined as any);
+  stub.mockReturnValueOnce(jsonOk(MOCK_JSON));
 });
 
 afterEach(() => {
-  sinon.restore();
+  vi.restoreAllMocks();
 });
 
 describe('`generateBookReaderManifest`', () => {

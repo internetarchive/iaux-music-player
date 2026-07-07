@@ -1,5 +1,5 @@
-import { html, fixture, expect } from '@open-wc/testing';
-// import sinon from 'sinon';
+import { describe, expect, it } from 'vitest';
+import { html, fixture } from '@open-wc/testing-helpers';
 
 import type { SpotifyPlayer } from '../src/players/spotify-player';
 import '../src/players/spotify-player';
@@ -48,7 +48,7 @@ describe('`<spotify-player>`', () => {
         html`<spotify-player></spotify-player>`
       );
 
-      await expect(el).shadowDom.to.be.accessible();
+      await expect(el).to.be.accessible();
     });
   });
 });
